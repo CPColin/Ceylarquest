@@ -1,0 +1,1 @@
+shared class Card(String description, Action+ actions) {}
