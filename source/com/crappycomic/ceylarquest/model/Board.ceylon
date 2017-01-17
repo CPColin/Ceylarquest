@@ -5,6 +5,7 @@ import ceylon.collection {
 
 shared alias Path => [Node+];
 
+// TODO: sort
 "The game board, a layout of [[Node]]s and their connections to each other."
 shared abstract class Board() {
     "Maps [[Node]]s to their one or more destinations, in the order they should be tried."
@@ -18,6 +19,18 @@ shared abstract class Board() {
     
     "The [[Card]]s that players can draw."
     shared formal [Card+] cards;
+    
+    shared Node calculateClosestNode(Integer x, Integer y) {
+        value closestNode
+                = nodes.keys
+                .map((Node node) => [node, calculateDistance(x, y, *node.location)])
+                .sort(byIncreasing(([Node, Integer] node) => node[1]))
+                .first;
+        
+        assert (exists closestNode);
+        
+        return closestNode[0];
+    }
     
     shared Node? getNode(String id) {
         return nodeIds[id];
@@ -125,6 +138,10 @@ shared abstract class Board() {
         }
         
         return index - 1;
+    }
+    
+    Integer calculateDistance(Integer x0, Integer y0, Integer x1, Integer y1) {
+        return ((x1 - x0) ^ 2 + (y1 - y0) ^ 2);
     }
     
     Boolean containsWellOrbit(List<Node> path, Integer fromIndex) {

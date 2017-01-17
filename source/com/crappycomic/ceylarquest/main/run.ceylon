@@ -3,7 +3,6 @@ import ceylon.json {
 }
 
 import com.crappycomic.ceylarquest.model {
-    Board,
     Color,
     Game,
     InvalidSave,
@@ -19,13 +18,28 @@ import com.crappycomic.ceylarquest.view {
 import java.awt {
     AwtColor = Color,
     BasicStroke,
+    Dimension,
     Graphics,
     Graphics2D
 }
 
+import java.awt.geom {
+    AffineTransform
+}
+
+import java.awt.image {
+    BufferedImage
+}
+
+import java.util.concurrent {
+    Executors,
+    TimeUnit
+}
+
 import javax.swing {
     JFrame,
-    JPanel
+    JPanel,
+    JScrollPane
 }
 
 String json = JsonObject {
@@ -60,7 +74,15 @@ shared void run() {
     }
 }
 
-class JavaGraphicsContext(Graphics2D g) satisfies GraphicsContext {
+class JavaGraphicsContext(Graphics2D g, Integer width, Integer height) satisfies GraphicsContext {
+    shared actual void clear() {
+        g.clearRect(0, 0, width, height);
+    }
+    
+    shared void drawImage(BufferedImage image) {
+        g.drawImage(image, AffineTransform(), null);
+    }
+    
     shared actual void drawLine(Location from, Location to, Color color, Integer width) {
         value stroke = g.stroke;
         
@@ -73,7 +95,7 @@ class JavaGraphicsContext(Graphics2D g) satisfies GraphicsContext {
         g.stroke = stroke;
     }
     
-    shared actual void fillCircle(Location center, Integer radius, Color color) {
+    shared actual void fillCircle(Location center, Color color, Integer radius) {
         value diameter = radius * 2;
         
         g.color = awtColor(color, 128);
@@ -81,24 +103,88 @@ class JavaGraphicsContext(Graphics2D g) satisfies GraphicsContext {
         g.fillOval(center[0] - radius, center[1] - radius, diameter, diameter);
     }
     
+    shared actual void fillRect(Location topLeft, Color color, Integer width, Integer height) {
+        g.color = awtColor(color);
+        
+        g.fillRect(topLeft[0], topLeft[1], width, height);
+    }
+    
     AwtColor awtColor(Color color, Integer alpha = 255)
         => AwtColor(color[0], color[1], color[2], alpha);
 }
+
+variable BufferedImage? closestNodes = null;
 
 class BoardPanel() extends JPanel() {
     shared actual void paint(Graphics g) {
         assert (is Graphics2D g);
         
-        BoardOverlay(JavaGraphicsContext(g)).highlightNodes(game.board);
+        value context = JavaGraphicsContext(g, width, height);
+        
+        if (exists closestNodes = closestNodes) {
+            context.clear();
+            
+            context.drawImage(closestNodes);
+        }
+        else {
+            BoardOverlay(game.board, context).highlightNodes();
+        }
     }
 }
 
+late BoardPanel panel;
+
 void overlay() {
     value frame = JFrame();
-    value panel = BoardPanel();
     
-    frame.setSize(1280, 1280);
-    frame.add(panel);
+    panel = BoardPanel();
+    panel.preferredSize = Dimension(1280, 1280);
+    
+    frame.title = "Ceylarquest Debug Stuff";
+    frame.add(JScrollPane(panel));
     frame.defaultCloseOperation = JFrame.exitOnClose;
+    frame.setMinimumSize(Dimension(640, 640));
+    frame.setLocationRelativeTo(null);
+    frame.extendedState = JFrame.maximizedBoth;
     frame.visible = true;
+    
+    value executorService = Executors.newSingleThreadExecutor();
+    
+    executorService.submit(calculateClosestNodes);
+}
+
+void calculateClosestNodes() {
+    value start = system.milliseconds;
+    value image = BufferedImage(1280, 1280, BufferedImage.typeIntRgb);
+    value graphics = image.createGraphics();
+    value context = JavaGraphicsContext(graphics, image.width, image.height);
+    
+    context.fillRect([0, 0], [0, 0, 0], image.width, image.height);
+    
+    package.closestNodes = image;
+    
+    value executorService = Executors.newSingleThreadScheduledExecutor();
+    
+    executorService.scheduleAtFixedRate(() => panel.repaint(), 1, 1, TimeUnit.seconds);
+    
+    for (x in 0..image.width) {
+        for (y in 0..image.height) {
+            value closestNode = game.board.calculateClosestNode(x, y);
+            value nodeHash = closestNode.id.hash.magnitude;
+            
+            value color = [
+                (nodeHash * 13) % 256,
+                (nodeHash * 3) % 256,
+                (nodeHash * 37) % 256
+            ];
+            
+            context.fillRect([x, y], color, 1, 1);
+        }
+    }
+    
+    graphics.dispose();
+    
+    panel.repaint();
+    
+    print("took ``system.milliseconds - start`` ms");
 }

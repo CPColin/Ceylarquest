@@ -1,8 +1,5 @@
 import com.crappycomic.ceylarquest.model {
-    Board,
     Color,
-    Node,
-    Ownable,
     Location
 }
 
@@ -45,6 +42,13 @@ Float pi() {
 }
 
 object g satisfies GraphicsContext {
+    shared actual void clear() {
+        value canvas = getCanvas();
+        value context = getContext(canvas);
+        
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    
     shared actual void drawLine(Location from, Location to, Color color, Integer width) {
         value canvas = getCanvas();
         value context = getContext(canvas);
@@ -59,7 +63,7 @@ object g satisfies GraphicsContext {
         context.stroke();
     }
     
-    shared actual void fillCircle(Location center, Integer radius, Color color) {
+    shared actual void fillCircle(Location center, Color color, Integer radius) {
         value canvas = getCanvas();
         value context = getContext(canvas);
         
@@ -71,30 +75,27 @@ object g satisfies GraphicsContext {
         context.fill();
     }
     
+    shared actual void fillRect(Location topLeft, Color color, Integer width, Integer height) {
+        value canvas = getCanvas();
+        value context = getContext(canvas);
+        
+        context.fillStyle = rgba(color, 0.75);
+        
+        context.fillRect(topLeft[0], topLeft[1], width, height);
+    }
+    
     String rgba(Color color, Float alpha = 1.0)
         => "rgba(``color[0]``, ``color[1]``, ``color[2]``, ``alpha``)";
 }
 
-Board board = tropicHopBoard;
+BoardOverlay boardOverlay = BoardOverlay(tropicHopBoard, g);
 
 shared void clear() {
-    dynamic { console.log("clearing"); }
-    
-    value canvas = getCanvas();
-    value context = getContext(canvas);
-    
-    dynamic {
-        console.log(canvas);
-        console.log(context);
-    }
-    
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    g.clear();
 }
 
 shared void highlightNodes() {
-    value boardOverlay = BoardOverlay(g);
-    
-    boardOverlay.highlightNodes(board);
+    boardOverlay.highlightNodes(getRadius());
 }
 
 variable Integer nodeAreaX = 0;
@@ -114,14 +115,7 @@ shared void drawNodeAreas() {
 }
 
 void calculateNodeAreas(JsContext context, Integer width, Integer height) {
-    Node node = calculateClosestNode(nodeAreaX, nodeAreaY);
-    Integer nodeHash = node.hash;
-    Integer r = 255 - (nodeHash * 2);
-    Integer g = (nodeHash * 37) % 256;
-    Integer b = nodeHash * 3;
-    
-    context.fillStyle = "rgba(``r``, ``g``, ``b``, 0.75)";
-    context.fillRect(nodeAreaX, nodeAreaY, nodeAreaRadius, nodeAreaRadius);
+    boardOverlay.drawClosestNode(nodeAreaX, nodeAreaY, nodeAreaRadius, nodeAreaRadius);
     
     nodeAreaX += nodeAreaRadius;
     
@@ -135,12 +129,6 @@ void calculateNodeAreas(JsContext context, Integer width, Integer height) {
             setTimeout(void() {calculateNodeAreas(context, width, height);}, 0);
         }
     }
-}
-
-String getFillStyle(Ownable ownable) {
-    value [red, green, blue] = ownable.deedGroup.color;
-    
-    return "rgba(``red``, ``green``, ``blue``, 0.75)";
 }
 
 JsCanvas getCanvas() {
@@ -159,20 +147,4 @@ Integer getRadius() {
         
         return if (is Integer radius) then radius else 0;
     }
-}
-
-Node calculateClosestNode(Integer x0, Integer y0) {
-    value closestNode
-        = board.nodes.keys
-            .map((Node node) => [node, calculateDistance(x0, y0, *node.location)])
-            .sort(byIncreasing(([Node, Integer] node) => node[1]))
-            .first;
-    
-    assert (exists closestNode);
-    
-    return closestNode[0];
-}
-
-Integer calculateDistance(Integer x0, Integer y0, Integer x1, Integer y1) {
-    return ((x1 - x0) ^ 2 + (y1 - y0) ^ 2);
 }
