@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<script src="//requirejs.org/docs/release/2.1.22/minified/require.js"></script>
+<script type="text/javascript">
+require.config({
+	baseUrl : 'modules'
+});
+
+var boardDebug;
+
+require(
+	[ 'com/crappycomic/ceylarquest/www/boardDebug/1.0.0/com.crappycomic.ceylarquest.www.boardDebug-1.0.0' ],
+	function(app) {
+		boardDebug = app;
+	}
+);
+</script>
+<style>
+body {
+   background: url(starfield.png) fixed;
+}
+</style>
+</head>
+<body>
+<a href="#" onclick="boardDebug.clear(); return false;">Clear</a>
+<input id="radius" type="number" value="20" onchange="boardDebug.clear(); boardDebug.highlightNodes();" />
+<a href="#" onclick="boardDebug.highlightNodes(); return false;">Highlight</a>
+<a href="#" onclick="boardDebug.drawNodeAreas(); return false;">Draw Areas</a>
+<canvas id="board" width="1280" height="1280" style="background-image: url(tropichop.png);"></canvas>
+</body>
+</html>

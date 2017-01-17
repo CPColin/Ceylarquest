@@ -18,7 +18,7 @@ shared serializable class Game {
     
     MutableList<Player> activePlayers;
     
-    Board board;
+    shared Board board;
     
     MutableMap<Ownable, Player> ownedNodes = HashMap<Ownable, Player>();
     
