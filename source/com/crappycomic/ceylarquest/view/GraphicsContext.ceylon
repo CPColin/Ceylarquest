@@ -3,6 +3,10 @@ import com.crappycomic.ceylarquest.model {
     Location
 }
 
+shared Color black = [0, 0, 0];
+
+shared Color white = [255, 255, 255];
+
 shared interface GraphicsContext {
     shared formal void clear();
     

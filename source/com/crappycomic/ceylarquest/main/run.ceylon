@@ -3,34 +3,20 @@ import ceylon.json {
 }
 
 import com.crappycomic.ceylarquest.model {
-    Color,
     Game,
     InvalidSave,
-    Location,
     loadGame
 }
-
 import com.crappycomic.ceylarquest.view {
-    BoardOverlay,
-    GraphicsContext
+    black
 }
 
 import java.awt {
-    AwtColor = Color,
-    BasicStroke,
-    Dimension,
-    Graphics,
-    Graphics2D
+    Dimension
 }
-
-import java.awt.geom {
-    AffineTransform
-}
-
 import java.awt.image {
     BufferedImage
 }
-
 import java.util.concurrent {
     Executors,
     TimeUnit
@@ -38,7 +24,6 @@ import java.util.concurrent {
 
 import javax.swing {
     JFrame,
-    JPanel,
     JScrollPane
 }
 
@@ -74,63 +59,7 @@ shared void run() {
     }
 }
 
-class JavaGraphicsContext(Graphics2D g, Integer width, Integer height) satisfies GraphicsContext {
-    shared actual void clear() {
-        g.clearRect(0, 0, width, height);
-    }
-    
-    shared void drawImage(BufferedImage image) {
-        g.drawImage(image, AffineTransform(), null);
-    }
-    
-    shared actual void drawLine(Location from, Location to, Color color, Integer width) {
-        value stroke = g.stroke;
-        
-        g.stroke = BasicStroke(width.float);
-        g.color = awtColor(color, 255);
-        
-        g.drawLine(from[0], from[1], to[0], to[1]);
-        
-        // TODO: care about resetting the stroke?
-        g.stroke = stroke;
-    }
-    
-    shared actual void fillCircle(Location center, Color color, Integer radius) {
-        value diameter = radius * 2;
-        
-        g.color = awtColor(color, 128);
-        
-        g.fillOval(center[0] - radius, center[1] - radius, diameter, diameter);
-    }
-    
-    shared actual void fillRect(Location topLeft, Color color, Integer width, Integer height) {
-        g.color = awtColor(color);
-        
-        g.fillRect(topLeft[0], topLeft[1], width, height);
-    }
-    
-    AwtColor awtColor(Color color, Integer alpha = 255)
-        => AwtColor(color[0], color[1], color[2], alpha);
-}
-
 variable BufferedImage? closestNodes = null;
-
-class BoardPanel() extends JPanel() {
-    shared actual void paint(Graphics g) {
-        assert (is Graphics2D g);
-        
-        value context = JavaGraphicsContext(g, width, height);
-        
-        if (exists closestNodes = closestNodes) {
-            context.clear();
-            
-            context.drawImage(closestNodes);
-        }
-        else {
-            BoardOverlay(game.board, context).highlightNodes();
-        }
-    }
-}
 
 late BoardPanel panel;
 
@@ -148,9 +77,9 @@ void overlay() {
     frame.extendedState = JFrame.maximizedBoth;
     frame.visible = true;
     
-    value executorService = Executors.newSingleThreadExecutor();
-    
-    executorService.submit(calculateClosestNodes);
+    //value executorService = Executors.newSingleThreadExecutor();
+    //
+    //executorService.submit(calculateClosestNodes);
 }
 
 void calculateClosestNodes() {
@@ -159,7 +88,7 @@ void calculateClosestNodes() {
     value graphics = image.createGraphics();
     value context = JavaGraphicsContext(graphics, image.width, image.height);
     
-    context.fillRect([0, 0], [0, 0, 0], image.width, image.height);
+    context.fillRect([0, 0], black, image.width, image.height);
     
     package.closestNodes = image;
     

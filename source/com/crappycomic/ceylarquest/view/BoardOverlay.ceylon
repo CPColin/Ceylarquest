@@ -7,12 +7,8 @@ import com.crappycomic.ceylarquest.model {
 
 "A visual representation of a [[Game]] state. Does not include the background of the [[Board]]."
 shared class BoardOverlay(Board board, GraphicsContext g) {
-    Color white = [255, 255, 255];
-    
     // Temporary, for debugging
     shared void highlightNodes(Integer width = 20) {
-        g.clear();
-        
         value nodes = board.nodes.keys;
         
         for (node in nodes) {

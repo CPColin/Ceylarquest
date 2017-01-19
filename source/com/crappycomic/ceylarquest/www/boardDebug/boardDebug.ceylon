@@ -95,6 +95,7 @@ shared void clear() {
 }
 
 shared void highlightNodes() {
+    clear();
     boardOverlay.highlightNodes(getRadius());
 }
 
