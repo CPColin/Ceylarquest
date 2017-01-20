@@ -1,5 +1,4 @@
 import ceylon.collection {
-    HashMap,
     LinkedList
 }
 
@@ -10,9 +9,6 @@ shared alias Path => [Node+];
 shared abstract class Board() {
     "Maps [[Node]]s to their one or more destinations, in the order they should be tried."
     shared formal Map<Node, Node|[Node, Node]> nodes;
-    
-    "Maps [[Node]] ID's to the objects that have them."
-    shared Map<String, Node> nodeIds => HashMap { for (node in nodes.keys) node.id -> node };
     
     "The [[Node]] that players start on."
     shared formal Node start;
@@ -33,7 +29,7 @@ shared abstract class Board() {
     }
     
     shared Node? getNode(String id) {
-        return nodeIds[id];
+        return nodes.keys.find((node) => node.id == id);
     }
     
     shared [Node+] getDestinations(Node node) {

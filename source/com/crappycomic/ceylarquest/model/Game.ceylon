@@ -16,7 +16,7 @@ shared serializable class Game {
     // PlayerState would track current position, cash, fuel, etc.,
     // or the game encapsulates all the state directly
     
-    MutableList<Player> activePlayers;
+    shared MutableList<Player> activePlayers;
     
     shared Board board;
     
@@ -34,11 +34,24 @@ shared serializable class Game {
     
     Map<Player, String> playerNames;
     
-    shared new(Board board, Map<Player, String> playerNames) {
+    shared new(Board board, {<Player -> String>*} playerNames, {Player*}? activePlayers = null,
+            {<Player -> Node>*}? playerLocations = null) {
         this.board = board;
-        this.playerNames = playerNames;
+        this.playerNames = map(playerNames);
         
-        activePlayers = ArrayList<Player> { elements = randomize(playerNames.keys); };
+        if (exists activePlayers) {
+            this.activePlayers = ArrayList<Player> { elements = activePlayers; };
+        }
+        else {
+            this.activePlayers = ArrayList<Player> { elements = randomize(this.playerNames.keys); };
+        }
+        
+        this.activePlayers.removeWhere((player) => !this.playerNames.defines(player));
+        
+        if (exists playerLocations) {
+            playerLocations.filter((player -> _) => this.activePlayers.contains(player))
+                .each((player -> location) => this.playerLocations.put(player, location));
+        }
     }
     
     "Returns the index that should be used when calculating

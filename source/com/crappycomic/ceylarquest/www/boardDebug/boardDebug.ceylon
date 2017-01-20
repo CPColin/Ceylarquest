@@ -1,6 +1,12 @@
+import ceylon.numeric.float {
+    pi
+}
+
 import com.crappycomic.ceylarquest.model {
     Color,
-    Location
+    InvalidSave,
+    Location,
+    loadGame
 }
 
 import com.crappycomic.ceylarquest.view {
@@ -10,6 +16,10 @@ import com.crappycomic.ceylarquest.view {
 
 import com.crappycomic.tropichop {
     tropicHopBoard
+}
+
+import debug {
+    debugGameJson
 }
 
 dynamic JsCanvas {
@@ -35,18 +45,25 @@ dynamic JsContext {
     shared formal void stroke();
 }
 
-Float pi() {
-    dynamic {
-        return Math.PI;
-    }
-}
-
 object g satisfies GraphicsContext {
     shared actual void clear() {
         value canvas = getCanvas();
         value context = getContext(canvas);
         
         context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    
+    shared actual void drawCircle(Location center, Color color, Integer radius, Integer width) {
+        value canvas = getCanvas();
+        value context = getContext(canvas);
+        
+        context.lineWidth = width;
+        context.strokeStyle = rgba(color);
+        
+        context.beginPath();
+        context.arc(center[0], center[1], radius, 0.0, 2.0 * pi);
+        
+        context.stroke();
     }
     
     shared actual void drawLine(Location from, Location to, Color color, Integer width) {
@@ -67,10 +84,10 @@ object g satisfies GraphicsContext {
         value canvas = getCanvas();
         value context = getContext(canvas);
         
-        context.fillStyle = rgba(color, 0.5);
+        context.fillStyle = rgba(color);
         
         context.beginPath();
-        context.arc(center[0], center[1], radius, 0.0, 2.0 * pi());
+        context.arc(center[0], center[1], radius, 0.0, 2.0 * pi);
         
         context.fill();
     }
@@ -79,19 +96,41 @@ object g satisfies GraphicsContext {
         value canvas = getCanvas();
         value context = getContext(canvas);
         
-        context.fillStyle = rgba(color, 0.75);
+        context.fillStyle = rgba(color);
         
         context.fillRect(topLeft[0], topLeft[1], width, height);
     }
     
-    String rgba(Color color, Float alpha = 1.0)
-        => "rgba(``color[0]``, ``color[1]``, ``color[2]``, ``alpha``)";
+    String rgba(Color color)
+        => "rgba(``color.red``, ``color.green``, ``color.blue``, ``color.alpha.float / 255``)";
 }
 
-BoardOverlay boardOverlay = BoardOverlay(tropicHopBoard, g);
+BoardOverlay boardOverlay = createBoardOverlay();
+
+BoardOverlay createBoardOverlay() {
+    /*
+     TODO File a bug report for this:
+     The com.crappycomic.tropichop module is loaded via the debug module in Java mode, but the
+     browser gets a "module X not available" error. Manually touching the module, for now.
+     */ 
+    value board = tropicHopBoard;
+    value game = loadGame(debugGameJson);
+    
+    if (is InvalidSave game) {
+        throw Exception(game.string);
+    }
+    else {
+        return BoardOverlay(game, g);
+    }
+}
 
 shared void clear() {
     g.clear();
+}
+
+shared void drawActivePlayers() {
+    clear();
+    boardOverlay.drawActivePlayers();
 }
 
 shared void highlightNodes() {

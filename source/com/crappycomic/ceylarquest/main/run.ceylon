@@ -1,14 +1,15 @@
-import ceylon.json {
-    JsonObject
-}
-
 import com.crappycomic.ceylarquest.model {
+    Color,
     Game,
     InvalidSave,
     loadGame
 }
 import com.crappycomic.ceylarquest.view {
     black
+}
+
+import debug {
+    debugGameJson
 }
 
 import java.awt {
@@ -27,24 +28,12 @@ import javax.swing {
     JScrollPane
 }
 
-String json = JsonObject {
-    "board" -> JsonObject {
-        "moduleName" -> "com.crappycomic.tropichop",
-        "packageName" -> "com.crappycomic.tropichop",
-        "objectName" -> "tropicHopBoard"
-    },
-    "players" -> JsonObject {
-        "cyan" -> "Cyan",
-        "red" -> "Red"
-    }
-}.pretty;
-
 late Game game;
 
 shared void run() {
-    print(json);
+    print(debugGameJson);
     
-    value game = loadGame(json);
+    value game = loadGame(debugGameJson);
     
     switch (game)
     case (is InvalidSave) {
@@ -101,11 +90,11 @@ void calculateClosestNodes() {
             value closestNode = game.board.calculateClosestNode(x, y);
             value nodeHash = closestNode.id.hash.magnitude;
             
-            value color = [
+            value color = Color(
                 (nodeHash * 13) % 256,
                 (nodeHash * 3) % 256,
                 (nodeHash * 37) % 256
-            ];
+            );
             
             context.fillRect([x, y], color, 1, 1);
         }

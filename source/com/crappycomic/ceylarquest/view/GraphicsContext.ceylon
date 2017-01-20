@@ -3,12 +3,14 @@ import com.crappycomic.ceylarquest.model {
     Location
 }
 
-shared Color black = [0, 0, 0];
+shared Color black = Color(0, 0, 0);
 
-shared Color white = [255, 255, 255];
+shared Color white = Color(255, 255, 255);
 
 shared interface GraphicsContext {
     shared formal void clear();
+    
+    shared formal void drawCircle(Location center, Color color, Integer radius, Integer width = 1);
     
     shared formal void drawLine(Location from, Location to, Color color, Integer width = 1);
     

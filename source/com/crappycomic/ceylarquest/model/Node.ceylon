@@ -29,6 +29,7 @@ shared interface FuelStationable
 shared interface Node
         satisfies Identifiable {
     shared String id {
+        // TODO: something in here is breaking when run in a browser
         value objectValue = classDeclaration(this).objectValue;
         
         assert (exists objectValue);

@@ -5,6 +5,7 @@ import com.crappycomic.ceylarquest.model {
     Card,
     CollectCash,
     CollectFuelStation,
+    Color,
     CostsFuelToLeave,
     DeedGroup,
     FuelSalable,
@@ -39,10 +40,10 @@ shared object tropicHopBoard extends Board() {
     interface Resort
             satisfies Port & Ownable {}
     
-    value westIsland = DeedGroup([255, 255, 0]);
-    value eastIsland = DeedGroup([192, 92, 0]);
-    value distilleries = DeedGroup([192, 192, 192]);
-    value resorts = DeedGroup([96, 96, 96]);
+    value westIsland = DeedGroup(Color(255, 255, 0));
+    value eastIsland = DeedGroup(Color(192, 92, 0));
+    value distilleries = DeedGroup(Color(192, 192, 192));
+    value resorts = DeedGroup(Color(96, 96, 96));
     
     object companyHQ satisfies FreePort & FuelSalable {
         name = "Company HQ";
