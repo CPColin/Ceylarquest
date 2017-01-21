@@ -113,6 +113,7 @@ BoardOverlay createBoardOverlay() {
      The com.crappycomic.tropichop module is loaded via the debug module in Java mode, but the
      browser gets a "module X not available" error. Manually touching the module, for now.
      */ 
+    suppressWarnings("unusedDeclaration")
     value board = tropicHopBoard;
     value game = loadGame(debugGameJson);
     

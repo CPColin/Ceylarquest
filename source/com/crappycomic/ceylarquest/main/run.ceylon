@@ -31,8 +31,6 @@ import javax.swing {
 late Game game;
 
 shared void run() {
-    print(debugGameJson);
-    
     value game = loadGame(debugGameJson);
     
     switch (game)

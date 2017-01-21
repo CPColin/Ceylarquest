@@ -15,6 +15,9 @@ import com.crappycomic.ceylarquest.model {
 "A visual representation of a [[Game]] state. Does not include the background of the [[Board]]."
 shared class BoardOverlay(Game game, GraphicsContext g) {
     // TODO: be nice to define this in terms of the board image size
+    Integer nodeRadius = 20;
+    
+    // TODO: this too
     Integer playerRadius = 10;
     
     // TODO: this too
@@ -33,6 +36,14 @@ shared class BoardOverlay(Game game, GraphicsContext g) {
                 g.fillCircle(center, player.color, playerRadius);
                 g.drawCircle(center, black, playerRadius, playerStroke);
             });
+        }
+    }
+    
+    "Colors every [[game.ownedNodes|owned node]] accoding to the player who owned it."
+    shared void drawOwnedNodes() {
+        for (node -> player in game.ownedNodes) {
+            print("node: ``node`` -> player: ``player``");
+            g.fillCircle(node.location, player.color.withAlpha(128), nodeRadius);
         }
     }
     

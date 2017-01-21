@@ -23,6 +23,12 @@ shared String debugGameJson => JsonObject {
         // "blue" -> "companyHQ", default
         "magenta" -> "eastFreeport",
         "green" -> "westB"
+    },
+    "ownedNodes" -> JsonObject {
+        "westC" -> "green",
+        "eastFreePort" -> "red", // Invalid because it's not Ownable
+        "westRum" -> "cyan", // Invalid because Cyan is dead
+        "eastRum" -> "blue"
     }
 }.pretty;
 

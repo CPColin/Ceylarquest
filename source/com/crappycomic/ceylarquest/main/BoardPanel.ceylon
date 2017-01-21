@@ -67,8 +67,10 @@ class BoardPanel() extends JPanel() {
                 context.drawImage(foregroundImage);
             }
             
-            BoardOverlay(game, context).drawActivePlayers();
+            value boardOverlay = BoardOverlay(game, context);
+            
+            boardOverlay.drawActivePlayers();
+            boardOverlay.drawOwnedNodes();
         }
     }
-    
 }
