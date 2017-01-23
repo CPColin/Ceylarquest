@@ -69,8 +69,10 @@ class BoardPanel() extends JPanel() {
             
             value boardOverlay = BoardOverlay(game, context);
             
-            boardOverlay.drawActivePlayers();
             boardOverlay.drawOwnedNodes();
+            //boardOverlay.highlightNodes();
+            boardOverlay.drawPlacedFuelStations();
+            boardOverlay.drawActivePlayers();
         }
     }
 }

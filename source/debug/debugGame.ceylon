@@ -14,21 +14,31 @@ shared String debugGameJson => JsonObject {
         "red" -> "Red",
         "blue" -> "Blue",
         "magenta" -> "Magenta",
-        "green" -> "Green"
+        "green" -> "Green",
+        "yellow" -> "Yellow"
     },
-    "activePlayers" -> JsonArray({"red", "blue", "magenta", "green"}),
+    "activePlayers" -> JsonArray {
+        "red",
+        "blue",
+        "magenta",
+        "green",
+        "yellow"
+    },
     "playerLocations" -> JsonObject {
-        // "cyan" -> "dead",
-        // "red" -> "companyHQ", default
-        // "blue" -> "companyHQ", default
+        "cyan" -> "westFreeport", // Ignored because Cyan is not active
         "magenta" -> "eastFreeport",
         "green" -> "westB"
     },
     "ownedNodes" -> JsonObject {
         "westC" -> "green",
         "eastFreePort" -> "red", // Invalid because it's not Ownable
-        "westRum" -> "cyan", // Invalid because Cyan is dead
+        "westRum" -> "cyan", // Invalid because Cyan is not active
         "eastRum" -> "blue"
+    },
+    "placedFuelStations" -> JsonArray {
+        "westC",
+        "eastD",
+        "eastFreeport" // Invalid becayse it's not FuelStationable
     }
 }.pretty;
 

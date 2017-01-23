@@ -38,8 +38,6 @@ shared void run() {
         print("Invalid save: " + game.string);
     }
     case (is Game) {
-        print("It worked!");
-        
         package.game = game;
         
         overlay();

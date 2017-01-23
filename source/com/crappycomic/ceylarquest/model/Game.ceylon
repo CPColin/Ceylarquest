@@ -22,7 +22,7 @@ shared serializable class Game {
     
     shared MutableMap<Ownable, Player> ownedNodes = HashMap<Ownable, Player>();
     
-    MutableSet<FuelStationable> placedFuelStations = HashSet<FuelStationable>();
+    shared MutableSet<FuelStationable> placedFuelStations = HashSet<FuelStationable>();
     
     MutableMap<Player, Integer> playerCash = HashMap<Player, Integer>();
     
@@ -36,7 +36,7 @@ shared serializable class Game {
     
     shared new(Board board, {<Player -> String>*} playerNames, {Player*}? activePlayers = null,
             {<Player -> Node>*}? playerLocations = null,
-            {<Node -> Player>*}? ownedNodes = null) {
+            {<Node -> Player>*}? ownedNodes = null, {Node*}? placedFuelStations = null) {
         this.board = board;
         this.playerNames = map(playerNames);
         
@@ -61,6 +61,14 @@ shared serializable class Game {
                         this.ownedNodes.put(node, player);
                     }
                 });
+        }
+        
+        if (exists placedFuelStations) {
+            placedFuelStations.each((node) {
+                if (is FuelStationable node) {
+                    this.placedFuelStations.add(node);
+                }
+            });
         }
     }
     

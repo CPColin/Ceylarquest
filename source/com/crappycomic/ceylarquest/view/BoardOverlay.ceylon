@@ -14,16 +14,23 @@ import com.crappycomic.ceylarquest.model {
 
 "A visual representation of a [[Game]] state. Does not include the background of the [[Board]]."
 shared class BoardOverlay(Game game, GraphicsContext g) {
-    // TODO: be nice to define this in terms of the board image size
+    Color fuelStationColor = Color(192, 192, 192);
+    
+    // TODO: It would be nice to define all of these dimensions in terms of the board image size.
+    
     Integer nodeRadius = 20;
     
-    // TODO: this too
-    Integer playerRadius = 10;
+    Integer fuelStationStroke = nodeRadius / 5;
     
-    // TODO: this too
-    Integer playerStroke = 2;
+    Integer highlightRadius = nodeRadius + fuelStationStroke;
     
-    "Draws every [[game.activePlayers|active player]] at their current locations."
+    Integer highlightStroke = highlightRadius / 4;
+    
+    Integer playerRadius = nodeRadius / 2;
+    
+    Integer playerStroke = playerRadius / 5;
+    
+    "Draws every [[active player|Game.activePlayers]] at their current locations."
     shared void drawActivePlayers() {
         value locations = game.activePlayers.group((player) => game.playerLocation(player));
         
@@ -39,14 +46,30 @@ shared class BoardOverlay(Game game, GraphicsContext g) {
         }
     }
     
-    "Colors every [[game.ownedNodes|owned node]] accoding to the player who owned it."
+    "Draws every fuel station that has been placed on the board."
+    shared void drawPlacedFuelStations() {
+        for (node in game.placedFuelStations) {
+            g.drawCircle(node.location, fuelStationColor, nodeRadius, fuelStationStroke);
+        }
+    }
+    
+    "Colors every [[owned node|Game.ownedNodes]] according to the player who owned it."
     shared void drawOwnedNodes() {
         for (node -> player in game.ownedNodes) {
-            print("node: ``node`` -> player: ``player``");
             g.fillCircle(node.location, player.color.withAlpha(128), nodeRadius);
         }
     }
     
+    // TODO
+    shared void highlightNodes() {
+        for (node in game.board.nodes.keys) {
+            g.drawCircle(node.location, white, highlightRadius, highlightStroke);
+        }
+    }
+    
+    "Returns the location of the given [[player]], given how many [[players]] are currently at the
+     same node. The players will be arranged such that no space exists between them and they are all
+     equidistant from the [[center of the given node|nodeCenter]]."
     Location playerCenter(Location nodeCenter, Integer player, Integer players) {
         if (players == 1) {
             return nodeCenter;
@@ -61,7 +84,7 @@ shared class BoardOverlay(Game game, GraphicsContext g) {
     }
     
     // Temporary, for debugging
-    shared void highlightNodes(Integer width = 20) {
+    shared void colorNodes(Integer width = 20) {
         value nodes = game.board.nodes.keys;
         
         for (node in nodes) {

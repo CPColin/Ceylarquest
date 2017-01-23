@@ -1,5 +1,6 @@
 import ceylon.collection {
-    LinkedList
+    LinkedList,
+    MutableList
 }
 
 shared alias Path => [Node+];
@@ -49,7 +50,7 @@ shared abstract class Board() {
      returned contains the full [[Path]] from the [[origin]] to a node that is, at most, [[distance]] spaces away. This
      method can return an empty sequence, which means no moves are valid for the given parameters."
     shared [Path*] getAllowedMoves(Node origin, Integer distance) {
-        variable value paths = LinkedList<LinkedList<Node>>();
+        variable value paths = LinkedList<MutableList<Node>>();
         
         iterateAllowedMoves(paths, [origin], distance);
         
@@ -103,7 +104,7 @@ shared abstract class Board() {
     }
     
     "Performs a depth-first search from the end of the current path over the given distance."
-    void iterateAllowedMoves(LinkedList<LinkedList<Node>> paths, Path currentPath, Integer distance) {
+    void iterateAllowedMoves(MutableList<MutableList<Node>> paths, Path currentPath, Integer distance) {
         if (distance == 0) {
             paths.add(LinkedList<Node>(currentPath));
         }
@@ -114,7 +115,7 @@ shared abstract class Board() {
         }
     }
     
-    Integer findBranchNodeIndex(List<Node> path1, List<Node> path2) {
+    Integer findBranchNodeIndex({Node*} path1, {Node*} path2) {
         value iterator1 = path1.iterator();
         value iterator2 = path2.iterator();
         variable value index = 0;
@@ -140,9 +141,9 @@ shared abstract class Board() {
         return ((x1 - x0) ^ 2 + (y1 - y0) ^ 2);
     }
     
-    Boolean containsWellOrbit(List<Node> path, Integer fromIndex) {
+    Boolean containsWellOrbit({Node*} path, Integer fromIndex) {
         return path
-            .sublistFrom(fromIndex)
+            .skip(fromIndex)
             .any((node) => node is WellOrbit);
     }
 }

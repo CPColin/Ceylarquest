@@ -134,9 +134,9 @@ shared void drawActivePlayers() {
     boardOverlay.drawActivePlayers();
 }
 
-shared void highlightNodes() {
+shared void colorNodes() {
     clear();
-    boardOverlay.highlightNodes(getRadius());
+    boardOverlay.colorNodes(getRadius());
 }
 
 variable Integer nodeAreaX = 0;
