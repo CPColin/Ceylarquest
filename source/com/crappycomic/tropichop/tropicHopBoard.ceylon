@@ -326,5 +326,7 @@ shared object tropicHopBoard extends Board() {
     
     shared Ownable testOwnablePort = westB;
     
+    shared Node testNotFuelStationable = westResort;
+    
     shared Node testUnownablePort = eastFreeport;
 }
