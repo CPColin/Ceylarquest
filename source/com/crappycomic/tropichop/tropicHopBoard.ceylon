@@ -321,4 +321,8 @@ shared object tropicHopBoard extends Board() {
         Card("You WIN a dispute with the Company", WinDisputeWithLeague()),
         Card("You WIN a dispute with any player of your choice", WinDisputeWithPlayer())
     ];
+    
+    shared Node testOwnablePort = westB;
+    
+    shared Node testUnownablePort = eastFreeport;
 }
