@@ -21,25 +21,25 @@ import com.crappycomic.ceylarquest.model {
     WinDisputeWithPlayer
 }
 
+interface Port
+        satisfies Node & CostsFuelToLeave {}
+
+interface Distillery
+        satisfies Port & Ownable & FuelSalable {}
+
+interface FreePort
+        satisfies Port & Administration & ActionTrigger {}
+
+interface OpenWater
+        satisfies WellOrbit {}
+
+interface OwnablePort
+        satisfies Port & Ownable & FuelSalable & FuelStationable {}
+
+interface Resort
+        satisfies Port & Ownable {}
+
 shared object tropicHopBoard extends Board() {
-    interface Port
-            satisfies Node & CostsFuelToLeave {}
-    
-    interface Distillery
-            satisfies Port & Ownable & FuelSalable {}
-    
-    interface FreePort
-            satisfies Port & Administration & ActionTrigger {}
-    
-    interface OpenWater
-            satisfies WellOrbit {}
-    
-    interface OwnablePort
-            satisfies Port & Ownable & FuelSalable & FuelStationable {}
-    
-    interface Resort
-            satisfies Port & Ownable {}
-    
     value westIsland = DeedGroup(Color(255, 255, 0));
     value eastIsland = DeedGroup(Color(192, 92, 0));
     value distilleries = DeedGroup(Color(192, 192, 192));
@@ -322,7 +322,9 @@ shared object tropicHopBoard extends Board() {
         Card("You WIN a dispute with any player of your choice", WinDisputeWithPlayer())
     ];
     
-    shared Node testOwnablePort = westB;
+    shared Node testFuelStationable = eastD;
+    
+    shared Ownable testOwnablePort = westB;
     
     shared Node testUnownablePort = eastFreeport;
 }

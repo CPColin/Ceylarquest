@@ -5,6 +5,11 @@ import ceylon.random {
     randomize
 }
 
+// TODO: RuleSet class
+Integer defaultPlayerCash = 1995;
+
+Integer defaultPlayerFuelStationCount = 3;
+
 // TODO: should be immutable and BoardOverlay should not hold a copy
 shared class Game {
     // So we can either create State classes that encapsulate stuff, like
@@ -24,7 +29,7 @@ shared class Game {
     
     shared Map<Player, Integer> playerFuels = HashMap<Player, Integer>();
     
-    shared Map<Player, Integer> playerFuelStationCounts = emptyMap;
+    shared Map<Player, Integer> playerFuelStationCounts;
     
     Map<Player, Node> playerLocations;
     
@@ -33,7 +38,8 @@ shared class Game {
     shared new(Board board, {<Player -> String>*} playerNames, {Player*}? activePlayers = null,
             {<Player -> Node>*}? playerLocations = null,
             {<Node -> Player>*}? ownedNodes = null, {Node*}? placedFuelStations = null,
-            {<Player -> Integer>*}? playerCashes = null) {
+            {<Player -> Integer>*}? playerCashes = null,
+            {<Player -> Integer>*}? playerFuelStationCounts = null) {
         this.board = board;
         this.playerNames = map(playerNames);
         
@@ -85,6 +91,16 @@ shared class Game {
         else {
             this.playerCashes = emptyMap;
         }
+        
+        if (exists playerFuelStationCounts) {
+            this.playerFuelStationCounts = map {
+                playerFuelStationCounts.filter((player -> fuelStationCount)
+                    => this.activePlayers.contains(player) && fuelStationCount >= 0);
+            };
+        }
+        else {
+            this.playerFuelStationCounts = emptyMap;
+        }
     }
     
     "Returns the index that should be used when calculating
@@ -129,6 +145,12 @@ shared class Game {
     
     shared Player? owner(Node node) => ownedNodes.get(node);
     
+    shared Integer playerCash(Player player)
+        => playerCashes.getOrDefault(player, defaultPlayerCash);
+    
+    shared Integer playerFuelStationCount(Player player)
+        => playerFuelStationCounts.getOrDefault(player, defaultPlayerFuelStationCount);
+    
     shared Node playerLocation(Player player) => playerLocations.getOrDefault(player, board.start);
     
     shared String playerName(Player player) => playerNames.get(player) else nothing;
@@ -165,6 +187,7 @@ shared class Game {
             this.playerLocations,
             ownedNodes else this.ownedNodes,
             placedFuelStations else this.placedFuelStations,
-            playerCashes else this.playerCashes);
+            playerCashes else this.playerCashes,
+            playerFuelStationCounts else this.playerFuelStationCounts);
     }
 }

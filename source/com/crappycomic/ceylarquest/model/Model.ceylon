@@ -5,11 +5,6 @@ shared alias Result => Game|InvalidMove;
 // TODO: mutators for Game objects
 // TODO: state checks
 
-// TODO: RuleSet class?
-Integer defaultFuelStationCount = 3;
-
-Integer defaultCash = 1995;
-
 // TODO: add tests
 shared Result placeFuelStation(Game game, Player player, Node node) {
     if (!is FuelStationable node) {
@@ -23,8 +18,7 @@ shared Result placeFuelStation(Game game, Player player, Node node) {
     }
     
     value playerFuelStationCounts  = game.playerFuelStationCounts;
-    value playerFuelStationCount
-        = playerFuelStationCounts.getOrDefault(player, defaultFuelStationCount);
+    value playerFuelStationCount = game.playerFuelStationCount(player);
     value playerName => game.playerName(player);
     
     if (playerFuelStationCount < 1) {
@@ -63,7 +57,7 @@ shared Result purchaseNode(Game game, Player player, Node node) {
     }
     
     value playerCashes = game.playerCashes;
-    value playerCash = playerCashes.getOrDefault(player, defaultCash);
+    value playerCash = game.playerCash(player);
     value nodePrice = node.price;
     
     if (playerCash < nodePrice) {
