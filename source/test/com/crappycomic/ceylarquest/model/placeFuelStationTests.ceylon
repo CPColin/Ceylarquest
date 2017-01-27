@@ -20,8 +20,8 @@ shared void testPlaceFuelStationAlreadyPlaced() {
     value node = tropicHopBoard.testFuelStationable;
     value player = testPlayers.first.key;
     value game = testGame.with {
-        ownedNodes = {node -> player};
-        placedFuelStations = {node};
+        ownedNodes = { node -> player };
+        placedFuelStations = { node };
     };
     
     assertTrue(game.ownedNodes.defines(node), "Node is unexpectedly not owned.");
@@ -42,8 +42,8 @@ shared void testPlaceFuelStationInsufficient() {
     value node = tropicHopBoard.testFuelStationable;
     value player = testPlayers.first.key;
     value game = testGame.with {
-        ownedNodes = {node -> player};
-        playerFuelStationCounts = {player -> 0};
+        ownedNodes = { node -> player };
+        playerFuelStationCounts = { player -> 0 };
     };
     
     assertTrue(game.ownedNodes.defines(node), "Node is unexpectedly not owned.");
@@ -65,7 +65,7 @@ shared void testPlaceFuelStationInvalidNode() {
     value node = tropicHopBoard.testNotFuelStationable;
     value player = testPlayers.first.key;
     value game = testGame.with {
-        ownedNodes = {node -> player};
+        ownedNodes = { node -> player };
     };
     
     assertTrue(game.ownedNodes.defines(node), "Node is unexpectedly not owned.");
@@ -85,7 +85,7 @@ shared void testPlaceFuelStationSuccess() {
     value node = tropicHopBoard.testFuelStationable;
     value player = testPlayers.first.key;
     value game = testGame.with {
-        ownedNodes = {node -> player};
+        ownedNodes = { node -> player };
     };
     value fuelStationCount = game.playerFuelStationCount(player);
     
@@ -128,7 +128,7 @@ shared void testPlaceFuelStationWrongOwner() {
     value player1 = testPlayers.first.key;
     value player2 = testPlayers.last.key;
     value game = testGame.with {
-        ownedNodes = {node -> player2};
+        ownedNodes = { node -> player2 };
     };
     
     assertTrue(game.ownedNodes.defines(node), "Node is unexpectedly not owned.");

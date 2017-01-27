@@ -19,11 +19,18 @@ shared Game|InvalidSave loadGame(String json) {
         value board = loadBoard(jsonObject);
         value players = loadPlayers(jsonObject);
         value activePlayers = loadActivePlayers(jsonObject);
-        value playerLocations = loadPlayerLocations(jsonObject, board);
         value ownedNodes = loadOwnedNodes(jsonObject, board);
         value placedFuelStations = loadPlacedFuelStations(jsonObject, board);
+        value playerLocations = loadPlayerLocations(jsonObject, board);
         
-        return Game(board, players, activePlayers, playerLocations, ownedNodes, placedFuelStations);
+        return Game {
+            board = board;
+            playerNames = players;
+            activePlayers = activePlayers;
+            ownedNodes = ownedNodes;
+            placedFuelStations = placedFuelStations;
+            playerLocations = playerLocations;
+        };
     }
     catch (AssertionError | InvalidTypeException e) {
         return InvalidSave(e.message);

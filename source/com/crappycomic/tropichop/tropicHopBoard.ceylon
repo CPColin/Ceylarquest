@@ -322,6 +322,8 @@ shared object tropicHopBoard extends Board() {
         Card("You WIN a dispute with any player of your choice", WinDisputeWithPlayer())
     ];
     
+    shared Ownable & FuelSalable testFuelSalable = westRum;
+    
     shared Node testFuelStationable = eastD;
     
     shared Ownable testOwnablePort = westB;

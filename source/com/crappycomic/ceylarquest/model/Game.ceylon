@@ -1,14 +1,17 @@
-import ceylon.collection {
-    HashMap
-}
 import ceylon.random {
     randomize
 }
 
 // TODO: RuleSet class
+Integer defaultFuelStationsRemaining = 46;
+
+Integer defaultInitialFuelStations = 3;
+
 Integer defaultPlayerCash = 1995;
 
 Integer defaultPlayerFuelStationCount = 3;
+
+shared Integer maximumFuel = 25;
 
 // TODO: should be immutable and BoardOverlay should not hold a copy
 shared class Game {
@@ -21,13 +24,15 @@ shared class Game {
     
     shared Board board;
     
+    shared Integer fuelStationsRemaining;
+    
     shared Map<Ownable, Player> ownedNodes;
     
     shared Set<FuelStationable> placedFuelStations;
     
     shared Map<Player, Integer> playerCashes;
     
-    shared Map<Player, Integer> playerFuels = HashMap<Player, Integer>();
+    shared Map<Player, Integer> playerFuels;
     
     shared Map<Player, Integer> playerFuelStationCounts;
     
@@ -35,11 +40,15 @@ shared class Game {
     
     Map<Player, String> playerNames;
     
-    shared new(Board board, {<Player -> String>*} playerNames, {Player*}? activePlayers = null,
-            {<Player -> Node>*}? playerLocations = null,
-            {<Node -> Player>*}? ownedNodes = null, {Node*}? placedFuelStations = null,
+    shared new(Board board, {<Player -> String>*} playerNames,
+            {Player*}? activePlayers = null,
+            Integer? fuelStationsRemaining = null,
+            {<Node -> Player>*}? ownedNodes = null,
+            {Node*}? placedFuelStations = null,
             {<Player -> Integer>*}? playerCashes = null,
-            {<Player -> Integer>*}? playerFuelStationCounts = null) {
+            {<Player -> Integer>*}? playerFuels = null,
+            {<Player -> Integer>*}? playerFuelStationCounts = null,
+            {<Player -> Node>*}? playerLocations = null) {
         this.board = board;
         this.playerNames = map(playerNames);
         
@@ -51,13 +60,12 @@ shared class Game {
             this.activePlayers = randomize(this.playerNames.keys);
         }
         
-        if (exists playerLocations) {
-            this.playerLocations = map {
-                playerLocations.filter((player -> _) => this.activePlayers.contains(player));
-            };
+        if (exists fuelStationsRemaining) {
+            this.fuelStationsRemaining = largest(fuelStationsRemaining, 0);
         }
         else {
-            this.playerLocations = emptyMap;
+            this.fuelStationsRemaining
+                = defaultFuelStationsRemaining - defaultInitialFuelStations * this.playerNames.size;
         }
         
         if (exists ownedNodes) {
@@ -92,6 +100,16 @@ shared class Game {
             this.playerCashes = emptyMap;
         }
         
+        if (exists playerFuels) {
+            this.playerFuels = map {
+                playerFuels.filter((player -> fuel)
+                    => this.activePlayers.contains(player) && fuel >= 0);
+            };
+        }
+        else {
+            this.playerFuels = emptyMap;
+        }
+        
         if (exists playerFuelStationCounts) {
             this.playerFuelStationCounts = map {
                 playerFuelStationCounts.filter((player -> fuelStationCount)
@@ -101,52 +119,23 @@ shared class Game {
         else {
             this.playerFuelStationCounts = emptyMap;
         }
-    }
-    
-    "Returns the index that should be used when calculating
-     [[rent|Ownable.rents]] and [[fuel|FuelSalable.fuels]] fees. The index
-     corresponds to the number of properties in the given [[group|deedGroup]]
-     that are owned by the given [[player]], minus one."
-    shared Integer feeIndex(Player player, DeedGroup deedGroup) {
-        return ownedNodes.count((Ownable node -> Player owner)
-            => node.deedGroup == deedGroup && owner == player) - 1;
-    }
-    
-    "Returns `true` if fuel is available at the given [[node]]."
-    shared Boolean fuelAvailable(Node node) {
-        return node is FuelSalable
-                && (placedFuelStations.contains(node) || !(node is FuelStationable));
-    }
-    
-    "Returns the fee that must be paid in order for the given [[player]] to
-     purchase fuel at the given [[node]]. This method assumes
-     [[fuel is available|fuelAvailable]] at the given node."
-    shared Integer fuelFee(FuelSalable node, Player player) {
-        if (is Ownable node) {
-            value owner = this.owner(node);
-            
-            if (exists owner) {
-                if (owner == player) {
-                    return 0;
-                }
-                else {
-                    value fuelFee = node.fuels[feeIndex(player, node.deedGroup)];
-                    
-                    assert (exists fuelFee);
-                    
-                    return fuelFee;
-                }
-            }
-        }
         
-        // Unowned nodes always use the lowest available price.
-        return node.fuels[0];
+        if (exists playerLocations) {
+            this.playerLocations = map {
+                playerLocations.filter((player -> _) => this.activePlayers.contains(player));
+            };
+        }
+        else {
+            this.playerLocations = emptyMap;
+        }
     }
     
     shared Player? owner(Node node) => ownedNodes.get(node);
     
     shared Integer playerCash(Player player)
         => playerCashes.getOrDefault(player, defaultPlayerCash);
+    
+    shared Integer playerFuel(Player player) => playerFuels.getOrDefault(player, maximumFuel);
     
     shared Integer playerFuelStationCount(Player player)
         => playerFuelStationCounts.getOrDefault(player, defaultPlayerFuelStationCount);
@@ -155,39 +144,28 @@ shared class Game {
     
     shared String playerName(Player player) => playerNames.get(player) else nothing;
     
-    shared Integer rentFee(Node node, Player player) {
-        if (is Ownable node) {
-            value owner = this.owner(node);
-            
-            if (exists owner) {
-                if (owner == player) {
-                    return 0;
-                }
-                else {
-                    value rent = node.rents[feeIndex(player, node.deedGroup)];
-                    
-                    assert (exists rent);
-                    
-                    return rent;
-                }
-            }
-        }
-        
-        return 0;
+    "Returns a copy of this object that includes the given changes."
+    shared Game with(
+            Integer? fuelStationsRemaining = null,
+            {<Node -> Player>*}? ownedNodes = null,
+            {Node*}? placedFuelStations = null,
+            {<Player -> Integer>*}? playerCashes = null,
+            {<Player -> Integer>*}? playerFuelStationCounts = null,
+            {<Player -> Integer>*}? playerFuels = null,
+            {<Player -> Node>*}? playerLocations = null) {
+        return Game {
+            board = this.board;
+            playerNames = this.playerNames;
+            activePlayers = this.activePlayers;
+            fuelStationsRemaining = fuelStationsRemaining else this.fuelStationsRemaining;
+            ownedNodes = ownedNodes else this.ownedNodes;
+            placedFuelStations = placedFuelStations else this.placedFuelStations;
+            playerCashes = playerCashes else this.playerCashes;
+            playerFuels = playerFuels else this.playerFuels;
+            playerFuelStationCounts = playerFuelStationCounts else this.playerFuelStationCounts;
+            playerLocations = playerLocations else this.playerLocations;
+        };
     }
     
-    "Returns a copy of this object that includes the given changes."
-    shared Game with({<Node -> Player>*}? ownedNodes = null,
-            {<Player -> Integer>*}? playerFuelStationCounts = null,
-            {Node*}? placedFuelStations = null,
-            {<Player -> Integer>*}? playerCashes = null) {
-        return Game(this.board,
-            this.playerNames,
-            this.activePlayers,
-            this.playerLocations,
-            ownedNodes else this.ownedNodes,
-            placedFuelStations else this.placedFuelStations,
-            playerCashes else this.playerCashes,
-            playerFuelStationCounts else this.playerFuelStationCounts);
-    }
+    // TODO: shared Game without(Player player) {}
 }

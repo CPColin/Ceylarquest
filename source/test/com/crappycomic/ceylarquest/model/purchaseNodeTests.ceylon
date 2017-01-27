@@ -20,7 +20,7 @@ shared void testPurchaseOwnedNode() {
     value node = tropicHopBoard.testOwnablePort;
     value player = testPlayers.first.key;
     value game = testGame.with {
-        ownedNodes = {node -> player};
+        ownedNodes = { node -> player };
     };
     
     assertTrue(game.ownedNodes.defines(node), "Node is unexpectedly not owned.");
@@ -80,7 +80,7 @@ shared void testPurchaseWithInsufficientFunds() {
     value node = tropicHopBoard.testOwnablePort;
     value player = testPlayers.first.key;
     value game = testGame.with {
-        playerCashes = {player -> 0};
+        playerCashes = { player -> 0 };
     };
     
     assertFalse(game.ownedNodes.defines(node), "Node is unexpectedly owned.");
