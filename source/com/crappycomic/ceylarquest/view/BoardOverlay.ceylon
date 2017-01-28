@@ -9,7 +9,8 @@ import com.crappycomic.ceylarquest.model {
     Color,
     Game,
     Location,
-    Ownable
+    Ownable,
+    Player
 }
 
 "A visual representation of a [[Game]] state. Does not include the background of the [[Board]]."
@@ -53,10 +54,12 @@ shared class BoardOverlay(Game game, GraphicsContext g) {
         }
     }
     
-    "Colors every [[owned node|Game.ownedNodes]] according to the player who owned it."
+    "Colors every [[owned node|Game.owners]] according to the player who owned it."
     shared void drawOwnedNodes() {
-        for (node -> player in game.ownedNodes) {
-            g.fillCircle(node.location, player.color.withAlpha(128), nodeRadius);
+        for (node -> owner in game.owners) {
+            if (is Player owner) {
+                g.fillCircle(node.location, owner.color.withAlpha(128), nodeRadius);
+            }
         }
     }
     

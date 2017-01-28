@@ -13,6 +13,12 @@ Integer defaultPlayerFuelStationCount = 3;
 
 shared Integer maximumFuel = 25;
 
+shared abstract class Unowned() of unowned {}
+
+shared object unowned extends Unowned() {}
+
+shared alias Owner => Player|Unowned;
+
 // TODO: should be immutable and BoardOverlay should not hold a copy
 shared class Game {
     // So we can either create State classes that encapsulate stuff, like
@@ -26,7 +32,7 @@ shared class Game {
     
     shared Integer fuelStationsRemaining;
     
-    shared Map<Ownable, Player> ownedNodes;
+    shared Map<Ownable, Owner> owners;
     
     shared Set<FuelStationable> placedFuelStations;
     
@@ -43,7 +49,7 @@ shared class Game {
     shared new(Board board, {<Player -> String>*} playerNames,
             {Player*}? activePlayers = null,
             Integer? fuelStationsRemaining = null,
-            {<Node -> Player>*}? ownedNodes = null,
+            {<Node -> Owner>*}? owners = null,
             {Node*}? placedFuelStations = null,
             {<Player -> Integer>*}? playerCashes = null,
             {<Player -> Integer>*}? playerFuels = null,
@@ -68,19 +74,20 @@ shared class Game {
                 = defaultFuelStationsRemaining - defaultInitialFuelStations * this.playerNames.size;
         }
         
-        if (exists ownedNodes) {
-            this.ownedNodes = map {
-                ownedNodes.filter((_ -> player) => this.activePlayers.contains(player))
+        if (exists owners) {
+            this.owners = map {
+                owners
+                    .filter((_ -> owner) => owner is Unowned || this.activePlayers.contains(owner))
                     .filter((node -> _) => node is Ownable)
-                    .map((node -> player) {
+                    .map((node -> owner) {
                         assert(is Ownable node);
                         
-                        return (node -> player);
+                        return (node -> owner);
                     });
             };
         }
         else {
-            this.ownedNodes = emptyMap;
+            this.owners = emptyMap;
         }
         
         if (exists placedFuelStations) {
@@ -130,7 +137,7 @@ shared class Game {
         }
     }
     
-    shared Player? owner(Node node) => ownedNodes.get(node);
+    shared Owner owner(Node node) => owners.getOrDefault(node, unowned);
     
     shared Integer playerCash(Player player)
         => playerCashes.getOrDefault(player, defaultPlayerCash);
@@ -147,23 +154,26 @@ shared class Game {
     "Returns a copy of this object that includes the given changes."
     shared Game with(
             Integer? fuelStationsRemaining = null,
-            {<Node -> Player>*}? ownedNodes = null,
+            {<Node -> Owner>*}? owners = null,
             {Node*}? placedFuelStations = null,
             {<Player -> Integer>*}? playerCashes = null,
-            {<Player -> Integer>*}? playerFuelStationCounts = null,
             {<Player -> Integer>*}? playerFuels = null,
+            {<Player -> Integer>*}? playerFuelStationCounts = null,
             {<Player -> Node>*}? playerLocations = null) {
         return Game {
             board = this.board;
             playerNames = this.playerNames;
             activePlayers = this.activePlayers;
             fuelStationsRemaining = fuelStationsRemaining else this.fuelStationsRemaining;
-            ownedNodes = ownedNodes else this.ownedNodes;
-            placedFuelStations = placedFuelStations else this.placedFuelStations;
-            playerCashes = playerCashes else this.playerCashes;
-            playerFuels = playerFuels else this.playerFuels;
-            playerFuelStationCounts = playerFuelStationCounts else this.playerFuelStationCounts;
-            playerLocations = playerLocations else this.playerLocations;
+            owners = owners?.chain(this.owners) else this.owners;
+            placedFuelStations = placedFuelStations?.chain(this.placedFuelStations)
+                else this.placedFuelStations;
+            playerCashes = playerCashes?.chain(this.playerCashes) else this.playerCashes;
+            playerFuels = playerFuels?.chain(this.playerFuels) else this.playerFuels;
+            playerFuelStationCounts = playerFuelStationCounts?.chain(this.playerFuelStationCounts)
+                else this.playerFuelStationCounts;
+            playerLocations = playerLocations?.chain(this.playerLocations)
+                else this.playerLocations;
         };
     }
     

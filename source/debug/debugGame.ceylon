@@ -29,7 +29,7 @@ shared String debugGameJson => JsonObject {
         "magenta" -> "eastFreeport",
         "green" -> "westB"
     },
-    "ownedNodes" -> JsonObject {
+    "owners" -> JsonObject {
         "westC" -> "green",
         "eastFreePort" -> "red", // Invalid because it's not Ownable
         "westRum" -> "cyan", // Invalid because Cyan is not active

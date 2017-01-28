@@ -11,7 +11,7 @@ shared Integer defaultFuelStationPrice = 500;
  [[fuel|FuelSalable.fuels]] fees. The index corresponds to the number of properties in the given
  [[group|deedGroup]] that are owned by the given [[player]], minus one."
 shared Integer feeIndex(Game game, Player player, DeedGroup deedGroup) {
-    return game.ownedNodes.count((Ownable node -> Player owner)
+    return game.owners.count((node -> owner)
         => node.deedGroup == deedGroup && owner == player) - 1;
 }
 
@@ -27,17 +27,15 @@ shared Integer fuelFee(Game game, Player player, FuelSalable node) {
     if (is Ownable node) {
         value owner = game.owner(node);
         
-        if (exists owner) {
-            if (owner == player) {
-                return 0;
-            }
-            else {
-                value fuelFee = node.fuels[feeIndex(game, player, node.deedGroup)];
-                
-                assert (exists fuelFee);
-                
-                return fuelFee;
-            }
+        if (owner == player) {
+            return 0;
+        }
+        else if (is Player owner) {
+            value fuelFee = node.fuels[feeIndex(game, player, node.deedGroup)];
+            
+            assert (exists fuelFee);
+            
+            return fuelFee;
         }
     }
     
@@ -53,6 +51,16 @@ shared Integer maximumPurchaseableFuel(Game game, Player player, FuelSalable nod
     value unitCost = fuelFee(game, player, node);
     
     return if (unitCost == 0) then fuelTankSpace else game.playerCash(player) / unitCost;
+}
+
+"Returns the price of the given node, adding the price of a fuel station, if present."
+shared Integer nodePrice(Game game, Ownable node) {
+    if (node is FuelStationable && game.placedFuelStations.contains(node)) {
+        return defaultFuelStationPrice + node.price;
+    }
+    else {
+        return node.price;
+    }
 }
 
 shared Result placeFuelStation(Game game, Player player, Node node) {
@@ -75,21 +83,16 @@ shared Result placeFuelStation(Game game, Player player, Node node) {
         return InvalidMove("``playerName`` does not have a fuel station to place.");
     }
     
-    value owner = game.ownedNodes.get(node);
+    value owner = game.owner(node);
     
-    if (!exists owner) {
-        return InvalidMove(
-            "``node.name`` isn't owned by anybody and can't have a fuel station placed on it.");
-    }
-    else if (owner != player) {
+    if (owner != player) {
         return InvalidMove(
             "``playerName`` doesn't own ``node.name`` and can't place a fuel station on it.");
     }
     
     return game.with {
-        playerFuelStationCounts
-            = { player -> playerFuelStationCount - 1, *game.playerFuelStationCounts };
-        placedFuelStations = { node, *placedFuelStations };
+        playerFuelStationCounts = { player -> playerFuelStationCount - 1 };
+        placedFuelStations = { node };
     };
 }
 
@@ -121,14 +124,14 @@ shared Result purchaseFuel(Game game, Player player, Integer fuel) {
         
         playerCashes = playerCashes.follow(player -> game.playerCash(player) - totalCost);
         
-        if (exists owner) {
+        if (is Player owner) {
             playerCashes = playerCashes.follow(owner -> game.playerCash(owner) + totalCost);
         }
     }
     
     return game.with {
         playerCashes = playerCashes;
-        playerFuels = { player -> game.playerFuel(player) + clampedFuel, *game.playerFuels };
+        playerFuels = { player -> game.playerFuel(player) + clampedFuel };
     };
 }
 
@@ -143,10 +146,8 @@ shared Result purchaseFuelStation(Game game, Player player) {
     
     return game.with {
         fuelStationsRemaining = game.fuelStationsRemaining - 1;
-        playerCashes
-            = { player -> game.playerCash(player) - defaultFuelStationPrice, *game.playerCashes };
-        playerFuelStationCounts
-            = { player -> game.playerFuelStationCount(player) + 1, *game.playerFuelStationCounts };
+        playerCashes = { player -> game.playerCash(player) - defaultFuelStationPrice };
+        playerFuelStationCounts = { player -> game.playerFuelStationCount(player) + 1 };
     };
 }
 
@@ -156,15 +157,12 @@ shared Result purchaseNode(Game game, Player player, Node node) {
         return InvalidMove("``node.name`` may not be purchased.");
     }
     
-    value ownedNodes = game.ownedNodes;
-    
-    if (ownedNodes.defines(node)) {
+    if (game.owner(node) is Player) {
         return InvalidMove("``node.name`` is already owned.");
     }
     
-    value playerCashes = game.playerCashes;
     value playerCash = game.playerCash(player);
-    value nodePrice = node.price; // TODO: plus cost of fuel station, if present
+    value nodePrice = package.nodePrice(game, node);
     
     if (playerCash < nodePrice) {
         return InvalidMove(
@@ -172,8 +170,31 @@ shared Result purchaseNode(Game game, Player player, Node node) {
     }
     
     return game.with {
-        ownedNodes = { node -> player, *ownedNodes };
-        playerCashes = { player -> playerCash - nodePrice, *playerCashes };
+        owners = { node -> player };
+        playerCashes = { player -> playerCash - nodePrice };
+    };
+}
+
+"Relinquishes ownership of the given [[node]], with [[optional compensation|compensateOwner]] to the
+ given [[player]], who must be the current owner of the node."
+shared Result relinquishNode(Game game, Player player, Node node, Boolean compensateOwner) {
+    if (!is Ownable node) {
+        return InvalidMove("``node.name`` may not be purchased or relinquished.");
+    }
+    
+    value owner = game.owner(node);
+    
+    if (owner != player) {
+        return InvalidMove("``game.playerName(player)`` does not own ``node.name``.");
+    }
+    
+    value playerCash = game.playerCash(player);
+    value nodePrice = package.nodePrice(game, node);
+    value playerCashes = if (compensateOwner) then { player -> playerCash + nodePrice } else null;
+    
+    return game.with {
+        owners = { node -> unowned };
+        playerCashes = playerCashes;
     };
 }
 
@@ -182,17 +203,15 @@ shared Integer rentFee(Game game, Player player, Node node) {
     if (is Ownable node) {
         value owner = game.owner(node);
         
-        if (exists owner) {
-            if (owner == player) {
-                return 0;
-            }
-            else {
-                value rent = node.rents[feeIndex(game, player, node.deedGroup)];
-                
-                assert (exists rent);
-                
-                return rent;
-            }
+        if (owner == player) {
+            return 0;
+        }
+        else if (is Player owner) {
+            value rent = node.rents[feeIndex(game, player, node.deedGroup)];
+            
+            assert (exists rent);
+            
+            return rent;
         }
     }
     

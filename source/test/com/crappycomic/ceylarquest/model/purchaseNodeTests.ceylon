@@ -8,6 +8,7 @@ import ceylon.test {
 
 import com.crappycomic.ceylarquest.model {
     Game,
+    Player,
     purchaseNode,
     testPlayers
 }
@@ -20,10 +21,10 @@ shared void testPurchaseOwnedNode() {
     value node = tropicHopBoard.testOwnablePort;
     value player = testPlayers.first.key;
     value game = testGame.with {
-        ownedNodes = { node -> player };
+        owners = { node -> player };
     };
     
-    assertTrue(game.ownedNodes.defines(node), "Node is unexpectedly not owned.");
+    assertTrue(game.owner(node) is Player, "Node is unexpectedly not owned.");
     
     value result = purchaseNode(game, player, node);
     
@@ -38,7 +39,7 @@ shared void testPurchaseUnownableNode() {
     value player = testPlayers.first.key;
     value game = testGame;
     
-    assertFalse(game.ownedNodes.defines(node), "Node is unexpectedly owned.");
+    assertFalse(game.owner(node) is Player, "Node is unexpectedly owned.");
     
     value result = purchaseNode(game, player, node);
     
@@ -54,12 +55,12 @@ shared void testPurchaseUnownedNode() {
     value game = testGame;
     value playerCash = game.playerCash(player);
     
-    assertFalse(game.ownedNodes.defines(node), "Node is unexpectedly owned.");
+    assertFalse(game.owner(node) is Player, "Node is unexpectedly owned.");
     
     value result = purchaseNode(game, player, node);
     
     if (is Game result) {
-        value owner = result.ownedNodes.get(node);
+        value owner = result.owners.get(node);
         
         assertTrue(owner exists);
         
@@ -83,7 +84,7 @@ shared void testPurchaseWithInsufficientFunds() {
         playerCashes = { player -> 0 };
     };
     
-    assertFalse(game.ownedNodes.defines(node), "Node is unexpectedly owned.");
+    assertFalse(game.owner(node) is Player, "Node is unexpectedly owned.");
     
     value result = purchaseNode(game, player, node);
     
