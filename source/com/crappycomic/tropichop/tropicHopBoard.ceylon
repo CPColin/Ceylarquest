@@ -18,7 +18,8 @@ import com.crappycomic.ceylarquest.model {
     UseFuel,
     WellOrbit,
     WinDisputeWithLeague,
-    WinDisputeWithPlayer
+    WinDisputeWithPlayer,
+    mapNodes
 }
 
 interface Port
@@ -272,7 +273,7 @@ shared object tropicHopBoard extends Board() {
         location = [478, 559];
     }
     
-    nodes = map {
+    nodes = mapNodes {
         companyHQ -> westA,
         westA -> westFreeport,
         westFreeport -> westB,

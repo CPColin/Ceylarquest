@@ -9,7 +9,7 @@ shared alias Path => [Node+];
 "The game board, a layout of [[Node]]s and their connections to each other."
 shared abstract class Board() {
     "Maps [[Node]]s to their one or more destinations, in the order they should be tried."
-    shared formal Map<Node, Node|[Node, Node]> nodes;
+    shared formal Map<Node, [Node+]> nodes;
     
     "The [[Node]] that players start on."
     shared formal Node start;
@@ -38,12 +38,7 @@ shared abstract class Board() {
         
         assert(exists destinations);
         
-        if (is Node destinations) {
-            return [destinations];
-        }
-        else {
-            return destinations;
-        }
+        return destinations;
     }
     
     "Computes and returns each allowed move from the given [[origin]] node over the given [[distance]]. Each value
@@ -146,4 +141,9 @@ shared abstract class Board() {
             .skip(fromIndex)
             .any((node) => node is WellOrbit);
     }
+}
+
+shared Map<Node, [Node+]> mapNodes({<Node -> Node|[Node+]>+} nodes) {
+    return map(nodes.map((node -> destinations)
+        => if (is Node destinations) then node -> [destinations] else node -> destinations));
 }
