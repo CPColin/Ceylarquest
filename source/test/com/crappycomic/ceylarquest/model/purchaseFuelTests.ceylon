@@ -7,6 +7,8 @@ import ceylon.test {
 }
 
 import com.crappycomic.ceylarquest.model {
+    FuelSalable,
+    FuelStationable,
     Game,
     fuelFee,
     maximumFuel,
@@ -17,21 +19,35 @@ import com.crappycomic.tropichop {
     tropicHopBoard
 }
 
-/* TODO:
- purchase fuel from an owned node that doesn't need a fuel station
- purchase fuel from an owned node that has a fuel station
-   same with owner having multiple properties in the group
- purchase fuel from node owned by same player
- purchase fuel from unowned node
- attempt purchase when node can't ever sell fuel
- attempt when node has no fuel station
- attempt to overfill tank
- */
+test
+suppressWarnings("redundantNarrowing") // Making sure our test data has the right type.
+shared void purchaseFuelNoFuelStation() {
+    value player = testPlayers.first.key;
+    value node = tropicHopBoard.testFuelStationable;
+    
+    assertTrue(node is FuelStationable, "Node must be FuelStationable for this test.");
+    
+    value game = testGame.with {
+        playerFuels = { player -> 0 };
+        playerLocations = { player -> node };
+    };
+    
+    assertFalse(game.placedFuelStations.contains(node), "Fuel station was unexpectedly present.");
+    
+    value result = purchaseFuel(game, player, 1);
+    
+    if (is Game result) {
+        fail("Attempt to purchase fuel with no fuel station present should have failed.");
+    }
+    else {
+        print(result.message);
+    }
+}
 
 test
 shared void purchaseFuelNoMoney() {
     value player = testPlayers.first.key;
-    value node = tropicHopBoard.testFuelSalable;
+    value node = tropicHopBoard.testFuelSalableNotStationable;
     value game = testGame.with {
         playerCashes = { player -> 0 };
         playerFuels = { player -> 0 };
@@ -54,11 +70,32 @@ shared void purchaseFuelNoMoney() {
     }
 }
 
+test
+shared void purchaseFuelNotFuelSalable() {
+    value player = testPlayers.first.key;
+    value node = tropicHopBoard.testNotFuelSalableOrStationable;
+    
+    assertFalse(node is FuelSalable, "Node can't be FuelSalable for this test.");
+    
+    value game = testGame.with {
+        playerFuels = { player -> 0 };
+        playerLocations = { player -> node };
+    };
+    value result = purchaseFuel(game, player, 1);
+    
+    if (is Game result) {
+        fail("Purchasing fuel when node isn't FuelSalable should have failed.");
+    }
+    else {
+        print(result.message);
+    }
+}
+
 "Attempts to purchase two units of fuel when the player has only enough cash to purchase one unit."
 test
 shared void purchaseFuelSomeMoney() {
     value player = testPlayers.first.key;
-    value node = tropicHopBoard.testFuelSalable;
+    value node = tropicHopBoard.testFuelSalableNotStationable;
     value fuelUnitFee = fuelFee(testGame, player, node);
     
     assertTrue(fuelUnitFee > 0, "Fuel needs to cost something for this test.");
@@ -89,7 +126,7 @@ shared void purchaseFuelSomeMoney() {
 test
 shared void purchaseFuelWithFullTank() {
     value player = testPlayers.first.key;
-    value node = tropicHopBoard.testFuelSalable;
+    value node = tropicHopBoard.testFuelSalableNotStationable;
     value game = testGame.with {
         playerCashes = { player -> runtime.maxIntegerValue };
         playerFuels = { player -> maximumFuel };

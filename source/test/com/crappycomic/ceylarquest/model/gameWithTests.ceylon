@@ -170,7 +170,7 @@ test
 shared void gameWithPlayerLocations() {
     value player = testPlayers.first.key;
     value node1 = tropicHopBoard.testOwnablePort;
-    value node2 = tropicHopBoard.testNotFuelStationable;
+    value node2 = tropicHopBoard.testNotFuelSalableOrStationable;
     value gameStart = Game {
         board = tropicHopBoard;
         playerNames = testPlayers;

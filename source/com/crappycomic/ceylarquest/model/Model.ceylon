@@ -9,7 +9,9 @@ shared Integer defaultFuelStationPrice = 500;
 
 "Returns the index that should be used when calculating [[rent|Ownable.rents]] and
  [[fuel|FuelSalable.fuels]] fees. The index corresponds to the number of properties in the given
- [[group|deedGroup]] that are owned by the given [[player]], minus one."
+ [[group|deedGroup]] that are owned by the given [[player]], minus one. It does not make sense to
+ check the fee index for a deed group where no node is owned. (Thus, it also does not make sense to
+ check the fee index associated with a node that is not owned.)"
 shared Integer feeIndex(Game game, Player player, DeedGroup deedGroup) {
     return game.owners.count((node -> owner)
         => node.deedGroup == deedGroup && owner == player) - 1;
@@ -31,7 +33,7 @@ shared Integer fuelFee(Game game, Player player, FuelSalable node) {
             return 0;
         }
         else if (is Player owner) {
-            value fuelFee = node.fuels[feeIndex(game, player, node.deedGroup)];
+            value fuelFee = node.fuels[feeIndex(game, owner, node.deedGroup)];
             
             assert (exists fuelFee);
             
@@ -207,7 +209,7 @@ shared Integer rentFee(Game game, Player player, Node node) {
             return 0;
         }
         else if (is Player owner) {
-            value rent = node.rents[feeIndex(game, player, node.deedGroup)];
+            value rent = node.rents[feeIndex(game, owner, node.deedGroup)];
             
             assert (exists rent);
             

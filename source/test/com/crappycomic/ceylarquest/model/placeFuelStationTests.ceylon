@@ -63,7 +63,7 @@ shared void testPlaceFuelStationInsufficient() {
 
 test
 shared void testPlaceFuelStationInvalidNode() {
-    value node = tropicHopBoard.testNotFuelStationable;
+    value node = tropicHopBoard.testNotFuelSalableOrStationable;
     value player = testPlayers.first.key;
     value game = testGame.with {
         owners = { node -> player };

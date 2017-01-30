@@ -323,13 +323,13 @@ shared object tropicHopBoard extends Board() {
         Card("You WIN a dispute with any player of your choice", WinDisputeWithPlayer())
     ];
     
-    shared Ownable & FuelSalable testFuelSalable = westRum;
+    shared Ownable & FuelSalable testFuelSalableNotStationable = westRum;
     
     shared Ownable & FuelStationable testFuelStationable = eastD;
     
     shared Ownable testOwnablePort = westB;
     
-    shared Node testNotFuelStationable = westResort;
+    shared Node testNotFuelSalableOrStationable = westResort;
     
     shared Node testUnownablePort = eastFreeport;
 }

@@ -149,6 +149,7 @@ shared class Game {
     
     shared Node playerLocation(Player player) => playerLocations.getOrDefault(player, board.start);
     
+    suppressWarnings("expressionTypeNothing") // Shouldn't happen in normal operation.
     shared String playerName(Player player) => playerNames.get(player) else nothing;
     
     "Returns a copy of this object that includes the given changes."
