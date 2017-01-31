@@ -9,8 +9,11 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     Game,
     Player,
+    incorrectPhase,
+    postRoll,
     purchaseNode,
-    testPlayers
+    testPlayers,
+    preRoll
 }
 import com.crappycomic.tropichop {
     tropicHopBoard
@@ -22,6 +25,7 @@ shared void testPurchaseOwnedNode() {
     value player = testPlayers.first.key;
     value game = testGame.with {
         owners = { node -> player };
+        phase = postRoll;
     };
     
     assertTrue(game.owner(node) is Player, "Node is unexpectedly not owned.");
@@ -31,13 +35,21 @@ shared void testPurchaseOwnedNode() {
     if (is Game result) {
         fail("Purchase of node that was already owned should have failed.");
     }
+    else if (result == incorrectPhase) {
+        fail(result.message);
+    }
+    else {
+        print(result.message);
+    }
 }
 
 test
 shared void testPurchaseUnownableNode() {
     value node = tropicHopBoard.testUnownablePort;
     value player = testPlayers.first.key;
-    value game = testGame;
+    value game = testGame.with {
+        phase = postRoll;
+    };
     
     assertFalse(game.owner(node) is Player, "Node is unexpectedly owned.");
     
@@ -46,13 +58,21 @@ shared void testPurchaseUnownableNode() {
     if (is Game result) {
         fail("Purchase of node that was not able to be owned should have failed.");
     }
+    else if (result == incorrectPhase) {
+        fail(result.message);
+    }
+    else {
+        print(result.message);
+    }
 }
 
 test
 shared void testPurchaseUnownedNode() {
     value node = tropicHopBoard.testOwnablePort;
     value player = testPlayers.first.key;
-    value game = testGame;
+    value game = testGame.with {
+        phase = postRoll;
+    };
     value playerCash = game.playerCash(player);
     
     assertFalse(game.owner(node) is Player, "Node is unexpectedly owned.");
@@ -81,6 +101,7 @@ shared void testPurchaseWithInsufficientFunds() {
     value node = tropicHopBoard.testOwnablePort;
     value player = testPlayers.first.key;
     value game = testGame.with {
+        phase = postRoll;
         playerCashes = { player -> 0 };
     };
     
@@ -90,5 +111,11 @@ shared void testPurchaseWithInsufficientFunds() {
     
     if (is Game result) {
         fail("Purchase of node with insufficient funds should have failed.");
+    }
+    else if (result == incorrectPhase) {
+        fail(result.message);
+    }
+    else {
+        print(result.message);
     }
 }

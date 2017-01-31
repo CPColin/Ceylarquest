@@ -9,7 +9,9 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     Game,
     Player,
+    incorrectPhase,
     placeFuelStation,
+    preRoll,
     testPlayers
 }
 import com.crappycomic.tropichop {
@@ -22,6 +24,7 @@ shared void testPlaceFuelStationAlreadyPlaced() {
     value player = testPlayers.first.key;
     value game = testGame.with {
         owners = { node -> player };
+        phase = preRoll;
         placedFuelStations = { node };
     };
     
@@ -32,6 +35,9 @@ shared void testPlaceFuelStationAlreadyPlaced() {
     
     if (is Game result) {
         fail("Placing fuel station where one was already placed should have failed.");
+    }
+    else if (result == incorrectPhase) {
+        fail(result.message);
     }
     else {
         print(result.message);
@@ -44,6 +50,7 @@ shared void testPlaceFuelStationInsufficient() {
     value player = testPlayers.first.key;
     value game = testGame.with {
         owners = { node -> player };
+        phase = preRoll;
         playerFuelStationCounts = { player -> 0 };
     };
     
@@ -56,6 +63,9 @@ shared void testPlaceFuelStationInsufficient() {
     if (is Game result) {
         fail("Player had no fuel stations and should not have been able to place one.");
     }
+    else if (result == incorrectPhase) {
+        fail(result.message);
+    }
     else {
         print(result.message);
     }
@@ -67,6 +77,7 @@ shared void testPlaceFuelStationInvalidNode() {
     value player = testPlayers.first.key;
     value game = testGame.with {
         owners = { node -> player };
+        phase = preRoll;
     };
     
     assertTrue(game.owner(node) is Player, "Node is unexpectedly not owned.");
@@ -75,6 +86,9 @@ shared void testPlaceFuelStationInvalidNode() {
     
     if (is Game result) {
         fail("Placing fuel station on non-FuelStationable node should have failed.");
+    }
+    else if (result == incorrectPhase) {
+        fail(result.message);
     }
     else {
         print(result.message);
@@ -87,6 +101,7 @@ shared void testPlaceFuelStationSuccess() {
     value player = testPlayers.first.key;
     value game = testGame.with {
         owners = { node -> player };
+        phase = preRoll;
     };
     value fuelStationCount = game.playerFuelStationCount(player);
     
@@ -109,7 +124,9 @@ test
 shared void testPlaceFuelStationUnowned() {
     value node = tropicHopBoard.testOwnablePort;
     value player = testPlayers.first.key;
-    value game = testGame;
+    value game = testGame.with {
+        phase = preRoll;
+    };
     
     assertFalse(game.owner(node) is Player, "Node is unexpectedly owned.");
     
@@ -117,6 +134,9 @@ shared void testPlaceFuelStationUnowned() {
     
     if (is Game result) {
         fail("Placing fuel station on unowned node should have failed.");
+    }
+    else if (result == incorrectPhase) {
+        fail(result.message);
     }
     else {
         print(result.message);
@@ -130,6 +150,7 @@ shared void testPlaceFuelStationWrongOwner() {
     value player2 = testPlayers.last.key;
     value game = testGame.with {
         owners = { node -> player2 };
+        phase = preRoll;
     };
     
     assertTrue(game.owner(node) is Player, "Node is unexpectedly not owned.");
@@ -138,6 +159,9 @@ shared void testPlaceFuelStationWrongOwner() {
     
     if (is Game result) {
         fail("Placing fuel station on node owned by somebody else should have failed.");
+    }
+    else if (result == incorrectPhase) {
+        fail(result.message);
     }
     else {
         print(result.message);

@@ -6,6 +6,7 @@ import ceylon.test {
 }
 
 import com.crappycomic.ceylarquest.model {
+    Debt,
     FuelStationable,
     Game,
     Ownable,
@@ -19,6 +20,30 @@ import com.crappycomic.tropichop {
 
 // These tests aim to make sure Game.with makes only the changes that are passed to it, without
 // affecting other players or and nodes.
+
+test
+shared void gameWithDebts() {
+    value debtor = testPlayers.first.key;
+    value creditor = testPlayers.last.key;
+    value debt1 = Debt(debtor, 100, creditor);
+    value gameStart = Game {
+        board = tropicHopBoard;
+        playerNames = testPlayers;
+        debts = { debt1 };
+    };
+    
+    assertEquals(gameStart.debts.size, 1, "Starting number of debts is wrong.");
+    
+    value debt2 = Debt(debtor, 200, creditor);
+    value gameEnd = gameStart.with {
+        debts = { debt2 };
+    };
+    value debts = gameEnd.debts;
+    
+    assertEquals(debts.size, 2, "Ending number of debts is wrong.");
+    assertTrue(debts.contains(debt1) && debts.contains(debt2),
+        "Didn't find both Debt objects in the Game object.");
+}
 
 test
 shared void gameWithFuelStationsRemaining() {

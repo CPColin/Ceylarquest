@@ -2,6 +2,8 @@ shared class InvalidMove(shared String message) {}
 
 shared alias Result => Game|InvalidMove;
 
+shared object incorrectPhase extends InvalidMove("Incorrect game phase for requested action.") {}
+
 // TODO: mutators for Game objects
 // TODO: state checks
 
@@ -65,7 +67,31 @@ shared Integer nodePrice(Game game, Ownable node) {
     }
 }
 
+shared Game payRent(Game game, Player player) {
+    value node = game.playerLocation(player);
+    value rent = rentFee(game, player, node);
+    value owner = game.owner(node);
+    
+    if (rent == 0) {
+        return game;
+    }
+    
+    if (is Player owner) {
+        return game.with {
+            debts = { Debt(player, rent, owner) };
+        };
+    }
+    else {
+        // It's not likely an unowned node will cost the player rent.
+        return game;
+    }
+}
+
 shared Result placeFuelStation(Game game, Player player, Node node) {
+    if (game.phase != preRoll && game.phase != postRoll) {
+        return incorrectPhase;
+    }
+    
     if (!is FuelStationable node) {
         return InvalidMove("``node.name`` may not have a fuel station.");
     }
@@ -80,8 +106,6 @@ shared Result placeFuelStation(Game game, Player player, Node node) {
     value playerName => game.playerName(player);
     
     if (playerFuelStationCount < 1) {
-        // TODO: use a name for stations appropriate for the current game?
-        // or forget it because the UI has to be evaded do see these errors?
         return InvalidMove("``playerName`` does not have a fuel station to place.");
     }
     
@@ -153,8 +177,11 @@ shared Result purchaseFuelStation(Game game, Player player) {
     };
 }
 
-// TODO: docs
 shared Result purchaseNode(Game game, Player player, Node node) {
+    if (game.phase != postRoll) {
+        return incorrectPhase;
+    }
+    
     if (!is Ownable node) {
         return InvalidMove("``node.name`` may not be purchased.");
     }

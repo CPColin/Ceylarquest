@@ -19,7 +19,6 @@ shared object unowned extends Unowned() {}
 
 shared alias Owner => Player|Unowned;
 
-// TODO: should be immutable and BoardOverlay should not hold a copy
 shared class Game {
     // So we can either create State classes that encapsulate stuff, like
     // NodeState would track the owner and the presence of a fuel station,
@@ -30,9 +29,13 @@ shared class Game {
     
     shared Board board;
     
+    shared {Debt*} debts;
+    
     shared Integer fuelStationsRemaining;
     
     shared Map<Ownable, Owner> owners;
+    
+    shared Phase phase;
     
     shared Set<FuelStationable> placedFuelStations;
     
@@ -48,8 +51,10 @@ shared class Game {
     
     shared new(Board board, {<Player -> String>*} playerNames,
             {Player*}? activePlayers = null,
+            {Debt*}? debts = null,
             Integer? fuelStationsRemaining = null,
             {<Node -> Owner>*}? owners = null,
+            Phase? phase = null,
             {Node*}? placedFuelStations = null,
             {<Player -> Integer>*}? playerCashes = null,
             {<Player -> Integer>*}? playerFuels = null,
@@ -64,6 +69,16 @@ shared class Game {
         }
         else {
             this.activePlayers = randomize(this.playerNames.keys);
+        }
+        
+        if (exists debts) {
+            this.debts = debts.filter((debt)
+                => this.activePlayers.contains(debt.creditor)
+                    && this.activePlayers.contains(debt.debtor)
+                    && debt.amount > 0);
+        }
+        else {
+            this.debts = {};
         }
         
         if (exists fuelStationsRemaining) {
@@ -89,6 +104,8 @@ shared class Game {
         else {
             this.owners = emptyMap;
         }
+        
+        this.phase = phase else preRoll;
         
         if (exists placedFuelStations) {
             this.placedFuelStations = set(placedFuelStations.narrow<FuelStationable>());
@@ -154,8 +171,10 @@ shared class Game {
     
     "Returns a copy of this object that includes the given changes."
     shared Game with(
+            {Debt*}? debts = null,
             Integer? fuelStationsRemaining = null,
             {<Node -> Owner>*}? owners = null,
+            Phase? phase = null,
             {Node*}? placedFuelStations = null,
             {<Player -> Integer>*}? playerCashes = null,
             {<Player -> Integer>*}? playerFuels = null,
@@ -165,8 +184,10 @@ shared class Game {
             board = this.board;
             playerNames = this.playerNames;
             activePlayers = this.activePlayers;
+            debts = debts?.chain(this.debts) else this.debts;
             fuelStationsRemaining = fuelStationsRemaining else this.fuelStationsRemaining;
             owners = owners?.chain(this.owners) else this.owners;
+            phase = phase else this.phase;
             placedFuelStations = placedFuelStations?.chain(this.placedFuelStations)
                 else this.placedFuelStations;
             playerCashes = playerCashes?.chain(this.playerCashes) else this.playerCashes;

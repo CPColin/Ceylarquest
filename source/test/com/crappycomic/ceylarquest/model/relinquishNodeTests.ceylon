@@ -10,6 +10,7 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Ownable,
     Player,
+    incorrectPhase,
     nodePrice,
     relinquishNode,
     testPlayers
@@ -32,7 +33,6 @@ shared void relinquishNodeSuccess() {
     value result = relinquishNode(game, player, node, false);
     
     if (is Game result) {
-        print(result.owners);
         assertFalse(result.owner(node) is Player, "Node is still owned by somebody.");
         assertEquals(result.playerCash(player), playerCash, "Player's cash changed unexpectedly.");
     }
@@ -57,6 +57,9 @@ shared void relinquishNodeWrongOwner() {
     if (is Game result) {
         fail("Relinquishing node owned by somebody else should not have worked.");
     }
+    else if (result == incorrectPhase) {
+        fail(result.message);
+    }
     else {
         print(result.message);
     }
@@ -73,6 +76,9 @@ shared void relinquishUnownableNode() {
     
     if (is Game result) {
         fail("Relinquishing unownable node should not have worked.");
+    }
+    else if (result == incorrectPhase) {
+        fail(result.message);
     }
     else {
         print(result.message);
@@ -91,6 +97,9 @@ shared void relinquishUnownedNode() {
     
     if (is Game result) {
         fail("Relinquishing unowned node should not have worked.");
+    }
+    else if (result == incorrectPhase) {
+        fail(result.message);
     }
     else {
         print(result.message);

@@ -17,6 +17,7 @@ shared abstract class Board() {
     "The [[Card]]s that players can draw."
     shared formal [Card+] cards;
     
+    // TODO: this doesn't belong here
     shared Node calculateClosestNode(Integer x, Integer y) {
         value closestNode
                 = nodes.keys

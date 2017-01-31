@@ -11,6 +11,7 @@ import com.crappycomic.ceylarquest.model {
     FuelStationable,
     Game,
     fuelFee,
+    incorrectPhase,
     maximumFuel,
     purchaseFuel,
     testPlayers
@@ -38,6 +39,9 @@ shared void purchaseFuelNoFuelStation() {
     
     if (is Game result) {
         fail("Attempt to purchase fuel with no fuel station present should have failed.");
+    }
+    else if (result == incorrectPhase) {
+        fail(result.message);
     }
     else {
         print(result.message);
@@ -85,6 +89,9 @@ shared void purchaseFuelNotFuelSalable() {
     
     if (is Game result) {
         fail("Purchasing fuel when node isn't FuelSalable should have failed.");
+    }
+    else if (result == incorrectPhase) {
+        fail(result.message);
     }
     else {
         print(result.message);

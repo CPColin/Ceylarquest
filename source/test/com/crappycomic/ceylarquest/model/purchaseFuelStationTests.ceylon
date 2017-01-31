@@ -8,6 +8,7 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     Game,
     defaultFuelStationPrice,
+    incorrectPhase,
     purchaseFuelStation,
     testPlayers
 }
@@ -25,6 +26,9 @@ shared void purchaseFuelStationInsufficientFunds() {
     
     if (is Game result) {
         fail("Player was able to purchase fuel station with no money.");
+    }
+    else if (result == incorrectPhase) {
+        fail(result.message);
     }
     else {
         print(result.message);
@@ -44,6 +48,9 @@ shared void purchaseFuelStationNoneRemain() {
     
     if (is Game result) {
         fail("Purchasing a fuel station when none remained should have failed.");
+    }
+    else if (result == incorrectPhase) {
+        fail(result.message);
     }
     else {
         print(result.message);
