@@ -13,18 +13,23 @@ Integer defaultPlayerFuelStationCount = 3;
 
 shared Integer maximumFuel = 25;
 
+// TODO: maybe move elsewhere
 shared abstract class Unowned() of unowned {}
 
 shared object unowned extends Unowned() {}
 
 shared alias Owner => Player|Unowned;
 
+"Encapsulates the validated, immutable state of a game. This class does not concern itself with
+ enforcing game logic beyond the minimal checks necessary to prevent instances from representing
+ obviously invalid states. For example, this class verifies that no player has negative fuel, but
+ makes no checks for, say, players who have thousands of units of fuel.
+ 
+ The code in `Model.ceylon` handles game logic.
+ 
+ Since instances of this class are immutable, use [[Game.with]] to create new instances that include
+ requested updates."
 shared class Game {
-    // So we can either create State classes that encapsulate stuff, like
-    // NodeState would track the owner and the presence of a fuel station,
-    // PlayerState would track current position, cash, fuel, etc.,
-    // or the game encapsulates all the state directly
-    
     shared List<Player> activePlayers;
     
     shared Board board;
@@ -146,7 +151,8 @@ shared class Game {
         
         if (exists playerLocations) {
             this.playerLocations = map {
-                playerLocations.filter((player -> _) => this.activePlayers.contains(player));
+                playerLocations.filter((player -> node)
+                    => this.activePlayers.contains(player) && !node is Well);
             };
         }
         else {
