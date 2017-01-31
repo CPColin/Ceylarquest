@@ -4,6 +4,7 @@ import ceylon.numeric.float {
 
 import com.crappycomic.ceylarquest.model {
     Color,
+    Game,
     InvalidSave,
     Location,
     loadGame
@@ -105,9 +106,9 @@ object g satisfies GraphicsContext {
         => "rgba(``color.red``, ``color.green``, ``color.blue``, ``color.alpha.float / 255``)";
 }
 
-BoardOverlay boardOverlay = createBoardOverlay();
+Game game = createGame();
 
-BoardOverlay createBoardOverlay() {
+Game createGame() {
     /*
      TODO File a bug report for this:
      The com.crappycomic.tropichop module is loaded via the debug module in Java mode, but the
@@ -121,9 +122,11 @@ BoardOverlay createBoardOverlay() {
         throw Exception(game.string);
     }
     else {
-        return BoardOverlay(game, g);
+        return game;
     }
 }
+
+BoardOverlay boardOverlay = BoardOverlay(g);
 
 shared void clear() {
     g.clear();
@@ -131,12 +134,12 @@ shared void clear() {
 
 shared void drawActivePlayers() {
     clear();
-    boardOverlay.drawActivePlayers();
+    boardOverlay.drawActivePlayers(game);
 }
 
 shared void colorNodes() {
     clear();
-    boardOverlay.colorNodes(getRadius());
+    boardOverlay.colorNodes(game, getRadius());
 }
 
 variable Integer nodeAreaX = 0;
@@ -156,7 +159,7 @@ shared void drawNodeAreas() {
 }
 
 void calculateNodeAreas(JsContext context, Integer width, Integer height) {
-    boardOverlay.drawClosestNode(nodeAreaX, nodeAreaY, nodeAreaRadius, nodeAreaRadius);
+    boardOverlay.drawClosestNode(game, nodeAreaX, nodeAreaY, nodeAreaRadius, nodeAreaRadius);
     
     nodeAreaX += nodeAreaRadius;
     
