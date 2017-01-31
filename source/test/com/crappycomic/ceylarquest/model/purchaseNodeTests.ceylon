@@ -12,15 +12,14 @@ import com.crappycomic.ceylarquest.model {
     incorrectPhase,
     postRoll,
     purchaseNode,
-    testPlayers,
-    preRoll
+    testPlayers
 }
 import com.crappycomic.tropichop {
     tropicHopBoard
 }
 
 test
-shared void testPurchaseOwnedNode() {
+shared void purchaseOwnedNode() {
     value node = tropicHopBoard.testOwnablePort;
     value player = testPlayers.first.key;
     value game = testGame.with {
@@ -44,7 +43,7 @@ shared void testPurchaseOwnedNode() {
 }
 
 test
-shared void testPurchaseUnownableNode() {
+shared void purchaseUnownableNode() {
     value node = tropicHopBoard.testUnownablePort;
     value player = testPlayers.first.key;
     value game = testGame.with {
@@ -67,7 +66,7 @@ shared void testPurchaseUnownableNode() {
 }
 
 test
-shared void testPurchaseUnownedNode() {
+shared void purchaseUnownedNode() {
     value node = tropicHopBoard.testOwnablePort;
     value player = testPlayers.first.key;
     value game = testGame.with {
@@ -97,7 +96,7 @@ shared void testPurchaseUnownedNode() {
 }
 
 test
-shared void testPurchaseWithInsufficientFunds() {
+shared void purchaseWithInsufficientFunds() {
     value node = tropicHopBoard.testOwnablePort;
     value player = testPlayers.first.key;
     value game = testGame.with {
@@ -118,4 +117,12 @@ shared void testPurchaseWithInsufficientFunds() {
     else {
         print(result.message);
     }
+}
+
+test
+shared void purchaseNodeWrongPhase() {
+    value player = testPlayers.first.key;
+    value node = tropicHopBoard.testOwnablePort;
+    
+    wrongPhaseTest((game) => purchaseNode(game, player, node), postRoll);
 }

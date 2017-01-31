@@ -124,6 +124,10 @@ shared Result placeFuelStation(Game game, Player player, Node node) {
 
 // TODO: should all these bad cases continue to fail silently or return InvalidMove?
 shared Result purchaseFuel(Game game, Player player, Integer fuel) {
+    if (game.phase != preRoll && game.phase != postRoll) {
+        return incorrectPhase;
+    }
+    
     value node = game.playerLocation(player);
     
     if (!is FuelSalable node) {
@@ -162,6 +166,10 @@ shared Result purchaseFuel(Game game, Player player, Integer fuel) {
 }
 
 shared Result purchaseFuelStation(Game game, Player player) {
+    if (game.phase != preRoll && game.phase != postRoll) {
+        return incorrectPhase;
+    }
+    
     if (game.fuelStationsRemaining <= 0) {
         return InvalidMove("No fuel stations remain for purchase.");
     }

@@ -9,6 +9,8 @@ import com.crappycomic.ceylarquest.model {
     Game,
     defaultFuelStationPrice,
     incorrectPhase,
+    postRoll,
+    preRoll,
     purchaseFuelStation,
     testPlayers
 }
@@ -17,6 +19,7 @@ test
 shared void purchaseFuelStationInsufficientFunds() {
     value player = testPlayers.first.key;
     value game = testGame.with {
+        phase = preRoll;
         playerCashes = { player -> 0 };
     };
     
@@ -40,6 +43,7 @@ shared void purchaseFuelStationNoneRemain() {
     value player = testPlayers.first.key;
     value game = testGame.with {
         fuelStationsRemaining = 0;
+        phase = preRoll;
     };
     
     assertEquals(game.fuelStationsRemaining, 0, "Fuel stations didn't initialize to zero.");
@@ -60,7 +64,9 @@ shared void purchaseFuelStationNoneRemain() {
 test
 shared void purchaseFuelStationSuccess() {
     value player = testPlayers.first.key;
-    value game = testGame;
+    value game = testGame.with {
+        phase = preRoll;
+    };
     value fuelStationsRemaining = game.fuelStationsRemaining;
     value playerCash = game.playerCash(player);
     value playerFuelStationCount = game.playerFuelStationCount(player);
@@ -81,4 +87,11 @@ shared void purchaseFuelStationSuccess() {
     else {
         fail(result.message);
     }
+}
+
+test
+shared void purchaseFuelStationWrongPhase() {
+    value player = testPlayers.first.key;
+    
+    wrongPhaseTest((game) => purchaseFuelStation(game, player), preRoll, postRoll);
 }

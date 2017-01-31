@@ -13,6 +13,8 @@ import com.crappycomic.ceylarquest.model {
     fuelFee,
     incorrectPhase,
     maximumFuel,
+    postRoll,
+    preRoll,
     purchaseFuel,
     testPlayers
 }
@@ -29,6 +31,7 @@ shared void purchaseFuelNoFuelStation() {
     assertTrue(node is FuelStationable, "Node must be FuelStationable for this test.");
     
     value game = testGame.with {
+        phase = preRoll;
         playerFuels = { player -> 0 };
         playerLocations = { player -> node };
     };
@@ -53,6 +56,7 @@ shared void purchaseFuelNoMoney() {
     value player = testPlayers.first.key;
     value node = tropicHopBoard.testFuelSalableNotStationable;
     value game = testGame.with {
+        phase = preRoll;
         playerCashes = { player -> 0 };
         playerFuels = { player -> 0 };
     };
@@ -82,6 +86,7 @@ shared void purchaseFuelNotFuelSalable() {
     assertFalse(node is FuelSalable, "Node can't be FuelSalable for this test.");
     
     value game = testGame.with {
+        phase = preRoll;
         playerFuels = { player -> 0 };
         playerLocations = { player -> node };
     };
@@ -108,6 +113,7 @@ shared void purchaseFuelSomeMoney() {
     assertTrue(fuelUnitFee > 0, "Fuel needs to cost something for this test.");
     
     value game = testGame.with {
+        phase = preRoll;
         playerCashes = { player -> fuelUnitFee };
         playerFuels = { player -> 0 };
         playerLocations = { player -> node };
@@ -135,6 +141,7 @@ shared void purchaseFuelWithFullTank() {
     value player = testPlayers.first.key;
     value node = tropicHopBoard.testFuelSalableNotStationable;
     value game = testGame.with {
+        phase = preRoll;
         playerCashes = { player -> runtime.maxIntegerValue };
         playerFuels = { player -> maximumFuel };
     };
@@ -154,4 +161,11 @@ shared void purchaseFuelWithFullTank() {
     else {
         fail("Purchase with full tank should have failed silently: ``result.message``");
     }
+}
+
+test
+shared void purchaseFuelWrongPhase() {
+    value player = testPlayers.first.key;
+    
+    wrongPhaseTest((game) => purchaseFuel(game, player, 1), preRoll, postRoll);
 }

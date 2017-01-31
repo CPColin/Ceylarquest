@@ -11,6 +11,7 @@ import com.crappycomic.ceylarquest.model {
     Player,
     incorrectPhase,
     placeFuelStation,
+    postRoll,
     preRoll,
     testPlayers
 }
@@ -19,7 +20,7 @@ import com.crappycomic.tropichop {
 }
 
 test
-shared void testPlaceFuelStationAlreadyPlaced() {
+shared void placeFuelStationAlreadyPlaced() {
     value node = tropicHopBoard.testFuelStationable;
     value player = testPlayers.first.key;
     value game = testGame.with {
@@ -45,7 +46,7 @@ shared void testPlaceFuelStationAlreadyPlaced() {
 }
 
 test
-shared void testPlaceFuelStationInsufficient() {
+shared void placeFuelStationInsufficient() {
     value node = tropicHopBoard.testFuelStationable;
     value player = testPlayers.first.key;
     value game = testGame.with {
@@ -72,7 +73,7 @@ shared void testPlaceFuelStationInsufficient() {
 }
 
 test
-shared void testPlaceFuelStationInvalidNode() {
+shared void placeFuelStationInvalidNode() {
     value node = tropicHopBoard.testNotFuelSalableOrStationable;
     value player = testPlayers.first.key;
     value game = testGame.with {
@@ -96,7 +97,7 @@ shared void testPlaceFuelStationInvalidNode() {
 }
 
 test
-shared void testPlaceFuelStationSuccess() {
+shared void placeFuelStationSuccess() {
     value node = tropicHopBoard.testFuelStationable;
     value player = testPlayers.first.key;
     value game = testGame.with {
@@ -121,7 +122,7 @@ shared void testPlaceFuelStationSuccess() {
 }
 
 test
-shared void testPlaceFuelStationUnowned() {
+shared void placeFuelStationUnowned() {
     value node = tropicHopBoard.testOwnablePort;
     value player = testPlayers.first.key;
     value game = testGame.with {
@@ -144,7 +145,7 @@ shared void testPlaceFuelStationUnowned() {
 }
 
 test
-shared void testPlaceFuelStationWrongOwner() {
+shared void placeFuelStationWrongOwner() {
     value node = tropicHopBoard.testOwnablePort;
     value player1 = testPlayers.first.key;
     value player2 = testPlayers.last.key;
@@ -166,4 +167,12 @@ shared void testPlaceFuelStationWrongOwner() {
     else {
         print(result.message);
     }
+}
+
+test
+shared void placeFuelStationWrongPhase() {
+    value player = testPlayers.first.key;
+    value node = tropicHopBoard.testOwnablePort;
+    
+    wrongPhaseTest((game) => placeFuelStation(game, player, node), preRoll, postRoll);
 }
