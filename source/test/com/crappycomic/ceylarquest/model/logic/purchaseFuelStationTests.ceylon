@@ -11,8 +11,15 @@ import com.crappycomic.ceylarquest.model {
     incorrectPhase,
     postRoll,
     preRoll,
-    purchaseFuelStation,
     testPlayers
+}
+import com.crappycomic.ceylarquest.model.logic {
+    purchaseFuelStation
+}
+
+import test.com.crappycomic.ceylarquest.model {
+    testGame,
+    wrongPhaseTest
 }
 
 test

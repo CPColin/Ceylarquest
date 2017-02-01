@@ -2,6 +2,7 @@
 shared abstract class Action()
         of AdvanceToNode | LoseDisputeWithLeague | NodeAction | RollAgain | RollWithMultiplier
             | UseFuel | WinDisputeWithLeague | WinDisputeWithPlayer {
+    // TODO: make formal when everybody has refined this method
     shared default Result perform(Game game, Player player) { return game; }
 }
 

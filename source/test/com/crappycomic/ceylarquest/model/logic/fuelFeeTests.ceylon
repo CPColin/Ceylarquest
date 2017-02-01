@@ -5,12 +5,18 @@ import ceylon.test {
 }
 
 import com.crappycomic.ceylarquest.model {
-    fuelAvailable,
-    fuelFee,
     testPlayers
+}
+import com.crappycomic.ceylarquest.model.logic {
+    fuelAvailable,
+    fuelFee
 }
 import com.crappycomic.tropichop {
     tropicHopBoard
+}
+
+import test.com.crappycomic.ceylarquest.model {
+    testGame
 }
 
 "Verifies the [[fuel fee|fuelFee]] is non-zero when a different player owns the node."

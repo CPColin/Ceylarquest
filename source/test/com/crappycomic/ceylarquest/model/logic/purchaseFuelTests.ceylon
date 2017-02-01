@@ -10,16 +10,23 @@ import com.crappycomic.ceylarquest.model {
     FuelSalable,
     FuelStationable,
     Game,
-    fuelFee,
     incorrectPhase,
     maximumFuel,
     postRoll,
     preRoll,
-    purchaseFuel,
     testPlayers
+}
+import com.crappycomic.ceylarquest.model.logic {
+    fuelFee,
+    purchaseFuel
 }
 import com.crappycomic.tropichop {
     tropicHopBoard
+}
+
+import test.com.crappycomic.ceylarquest.model {
+    testGame,
+    wrongPhaseTest
 }
 
 test

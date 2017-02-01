@@ -11,12 +11,18 @@ import com.crappycomic.ceylarquest.model {
     Ownable,
     Player,
     incorrectPhase,
-    nodePrice,
-    relinquishNode,
     testPlayers
+}
+import com.crappycomic.ceylarquest.model.logic {
+    nodePrice,
+    relinquishNode
 }
 import com.crappycomic.tropichop {
     tropicHopBoard
+}
+
+import test.com.crappycomic.ceylarquest.model {
+    testGame
 }
 
 test

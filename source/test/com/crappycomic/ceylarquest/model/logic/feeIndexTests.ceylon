@@ -7,11 +7,17 @@ import com.crappycomic.ceylarquest.model {
     DeedGroup,
     Ownable,
     Player,
-    feeIndex,
     testPlayers
+}
+import com.crappycomic.ceylarquest.model.logic {
+    feeIndex
 }
 import com.crappycomic.tropichop {
     tropicHopBoard
+}
+
+import test.com.crappycomic.ceylarquest.model {
+    testGame
 }
 
 test

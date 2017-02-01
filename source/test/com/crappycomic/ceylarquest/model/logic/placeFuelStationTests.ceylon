@@ -10,13 +10,20 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Player,
     incorrectPhase,
-    placeFuelStation,
     postRoll,
     preRoll,
     testPlayers
 }
+import com.crappycomic.ceylarquest.model.logic {
+    placeFuelStation
+}
 import com.crappycomic.tropichop {
     tropicHopBoard
+}
+
+import test.com.crappycomic.ceylarquest.model {
+    testGame,
+    wrongPhaseTest
 }
 
 test

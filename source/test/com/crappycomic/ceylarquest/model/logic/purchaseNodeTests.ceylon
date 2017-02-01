@@ -11,11 +11,18 @@ import com.crappycomic.ceylarquest.model {
     Player,
     incorrectPhase,
     postRoll,
-    purchaseNode,
     testPlayers
+}
+import com.crappycomic.ceylarquest.model.logic {
+    purchaseNode
 }
 import com.crappycomic.tropichop {
     tropicHopBoard
+}
+
+import test.com.crappycomic.ceylarquest.model {
+    testGame,
+    wrongPhaseTest
 }
 
 test

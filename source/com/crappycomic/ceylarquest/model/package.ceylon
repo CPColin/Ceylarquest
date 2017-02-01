@@ -1,2 +1,2 @@
-"The game logic for Ceylarquest, including all state information and application of rules."
+"The data structures that represent the state of a game."
 shared package com.crappycomic.ceylarquest.model;

@@ -9,14 +9,21 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     CollectCash,
     Game,
+    defaultPassStartCash,
     incorrectPhase,
     preRoll,
-    testPlayers,
-    traversePath,
-    defaultPassStartCash
+    testPlayers
+}
+import com.crappycomic.ceylarquest.model.logic {
+    traversePath
 }
 import com.crappycomic.tropichop {
     tropicHopBoard
+}
+
+import test.com.crappycomic.ceylarquest.model {
+    testGame,
+    wrongPhaseTest
 }
 
 test

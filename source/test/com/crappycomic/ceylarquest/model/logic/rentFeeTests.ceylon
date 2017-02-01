@@ -5,12 +5,18 @@ import ceylon.test {
 }
 
 import com.crappycomic.ceylarquest.model {
-    rentFee,
     testPlayers,
     unowned
 }
+import com.crappycomic.ceylarquest.model.logic {
+    rentFee
+}
 import com.crappycomic.tropichop {
     tropicHopBoard
+}
+
+import test.com.crappycomic.ceylarquest.model {
+    testGame
 }
 
 "Verifies the [[rent fee|rentFee]] is non-zero when a different player owns the node."

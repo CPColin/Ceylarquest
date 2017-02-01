@@ -18,7 +18,7 @@ import com.crappycomic.ceylarquest.model {
  
  In this way, we can verify that the game logic code agrees with our unit tests, as far as expected
  phases are concerned."
-void wrongPhaseTest(Result(Game) action, Phase+ rightPhases) {
+shared void wrongPhaseTest(Result(Game) action, Phase+ rightPhases) {
     value wrongPhases = set {
         for (caseType in `class Phase`.caseTypes.narrow<OpenClassType>())
             if (exists objectValue = caseType.declaration.objectValue)
