@@ -42,11 +42,13 @@ test
 shared void purchaseFuelStationNoneRemain() {
     value player = testPlayers.first.key;
     value game = testGame.with {
-        fuelStationsRemaining = 0;
         phase = preRoll;
+        playerFuelStationCounts = {
+            player -> testGame.playerFuelStationCount(player) + testGame.fuelStationsRemaining
+        };
     };
     
-    assertEquals(game.fuelStationsRemaining, 0, "Fuel stations didn't initialize to zero.");
+    assertEquals(game.fuelStationsRemaining, 0, "Fuel stations remaining isn't zero.");
     
     value result = purchaseFuelStation(game, player);
     

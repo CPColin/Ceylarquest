@@ -9,6 +9,8 @@ shared object incorrectPhase extends InvalidMove("Incorrect game phase for reque
 
 shared Integer defaultFuelStationPrice = 500;
 
+shared Integer defaultPassStartCash = 500;
+
 "Returns the index that should be used when calculating [[rent|Ownable.rents]] and
  [[fuel|FuelSalable.fuels]] fees. The index corresponds to the number of properties in the given
  [[group|deedGroup]] that are owned by the given [[player]], minus one. It does not make sense to
@@ -179,7 +181,6 @@ shared Result purchaseFuelStation(Game game, Player player) {
     }
     
     return game.with {
-        fuelStationsRemaining = game.fuelStationsRemaining - 1;
         playerCashes = { player -> game.playerCash(player) - defaultFuelStationPrice };
         playerFuelStationCounts = { player -> game.playerFuelStationCount(player) + 1 };
     };
@@ -253,4 +254,31 @@ shared Integer rentFee(Game game, Player player, Node node) {
     }
     
     return 0;
+}
+
+shared Result traversePath(variable Game game, Player player, Path path) {
+    if (game.phase != preRoll) {
+        return incorrectPhase;
+    }
+    
+    value node = path.last;
+    
+    if (is Well node) {
+        return InvalidMove("It is not possible to end a path on ``node.name``.");
+    }
+    
+    if (is ActionTrigger node) {
+        if (path.size > 1) {
+            game = node.action.perform(game, player);
+        }
+    }
+    
+    value playerCashes = game.board.passesStart(path)
+        then { player -> game.playerCash(player) + defaultPassStartCash }
+        else null;
+    
+    return game.with {
+        playerCashes = playerCashes;
+        playerLocations = { player -> node };
+    };
 }

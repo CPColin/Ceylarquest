@@ -7,7 +7,7 @@ shared alias Location => Integer[2];
 "A node that triggers an [[Action]] when landed upon."
 shared interface ActionTrigger
         satisfies Node {
-    shared formal Action action;
+    shared formal NodeAction action;
 }
 
 "A node at which certain administrative tasks may be performed, such as buying fuel stations and
@@ -29,7 +29,8 @@ shared interface FuelStationable
 shared interface Node
         satisfies Identifiable {
     shared String id {
-        // TODO: something in here is breaking when run in a browser
+        // This value is null when run in a browser.
+        // See: https://github.com/ceylon/ceylon/issues/6881
         value objectValue = classDeclaration(this).objectValue;
         
         assert (exists objectValue);

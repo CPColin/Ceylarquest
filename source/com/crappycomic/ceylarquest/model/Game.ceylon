@@ -3,7 +3,7 @@ import ceylon.random {
 }
 
 // TODO: RuleSet class
-Integer defaultFuelStationsRemaining = 46;
+shared Integer defaultFuelStationsRemaining = 46;
 
 Integer defaultInitialFuelStations = 3;
 
@@ -36,8 +36,6 @@ shared class Game {
     
     shared {Debt*} debts;
     
-    shared Integer fuelStationsRemaining;
-    
     shared Map<Ownable, Owner> owners;
     
     shared Phase phase;
@@ -57,7 +55,6 @@ shared class Game {
     shared new(Board board, {<Player -> String>*} playerNames,
             {Player*}? activePlayers = null,
             {Debt*}? debts = null,
-            Integer? fuelStationsRemaining = null,
             {<Node -> Owner>*}? owners = null,
             Phase? phase = null,
             {Node*}? placedFuelStations = null,
@@ -84,14 +81,6 @@ shared class Game {
         }
         else {
             this.debts = {};
-        }
-        
-        if (exists fuelStationsRemaining) {
-            this.fuelStationsRemaining = largest(fuelStationsRemaining, 0);
-        }
-        else {
-            this.fuelStationsRemaining
-                = defaultFuelStationsRemaining - defaultInitialFuelStations * this.playerNames.size;
         }
         
         if (exists owners) {
@@ -160,6 +149,12 @@ shared class Game {
         }
     }
     
+    shared Integer fuelStationsRemaining {
+        return defaultFuelStationsRemaining
+            - placedFuelStations.size
+            - sum { 0, *{ for (player in activePlayers) playerFuelStationCount(player) } };
+    }
+    
     shared Owner owner(Node node) => owners.getOrDefault(node, unowned);
     
     shared Integer playerCash(Player player)
@@ -178,7 +173,6 @@ shared class Game {
     "Returns a copy of this object that includes the given changes."
     shared Game with(
             {Debt*}? debts = null,
-            Integer? fuelStationsRemaining = null,
             {<Node -> Owner>*}? owners = null,
             Phase? phase = null,
             {Node*}? placedFuelStations = null,
@@ -191,7 +185,6 @@ shared class Game {
             playerNames = this.playerNames;
             activePlayers = this.activePlayers;
             debts = debts?.chain(this.debts) else this.debts;
-            fuelStationsRemaining = fuelStationsRemaining else this.fuelStationsRemaining;
             owners = owners?.chain(this.owners) else this.owners;
             phase = phase else this.phase;
             placedFuelStations = placedFuelStations?.chain(this.placedFuelStations)

@@ -46,25 +46,6 @@ shared void gameWithDebts() {
 }
 
 test
-shared void gameWithFuelStationsRemaining() {
-    value gameStart = Game {
-        board = tropicHopBoard;
-        playerNames = testPlayers;
-        fuelStationsRemaining = 1;
-    };
-    
-    assertEquals(gameStart.fuelStationsRemaining, 1,
-        "Fuel stations remaining didn't initialize right.");
-    
-    value gameEnd = gameStart.with {
-        fuelStationsRemaining = 0;
-    };
-    
-    assertEquals(gameEnd.fuelStationsRemaining, 0,
-        "Fuel stations remaining didn't update right.");
-}
-
-test
 shared void gameWithOwnersDecreasing() {
     value nodes = tropicHopBoard.nodes.keys.narrow<Ownable>();
     value node1 = nodes.first;

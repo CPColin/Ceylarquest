@@ -50,7 +50,7 @@ shared object tropicHopBoard extends Board() {
         name = "Company HQ";
         location = [114, 787];
         fuels = [25];
-        action = RollAgain();
+        action = CollectFuelStation(1);
     }
     object westA satisfies OwnablePort {
         name = "West A";
@@ -316,12 +316,19 @@ shared object tropicHopBoard extends Board() {
         Card("Gale 2", UseFuel(2), RollWithMultiplier(2)),
         Card("Gale 3", UseFuel(3), RollWithMultiplier(3)),
         Card("Gale 4", UseFuel(4), RollWithMultiplier(4)),
+        Card("Bonus Contract", CollectCash(300), RollAgain()),
         Card("You LOSE a dispute with the Company", LoseDisputeWithLeague()),
         Card("You LOSE a dispute with the Company", LoseDisputeWithLeague()),
         Card("You WIN a dispute with the Company", WinDisputeWithLeague()),
         Card("You WIN a dispute with the Company", WinDisputeWithLeague()),
         Card("You WIN a dispute with any player of your choice", WinDisputeWithPlayer())
     ];
+    
+    shared ActionTrigger testActionTrigger = westFreeport;
+    
+    shared Node testAfterStart = westH;
+    
+    shared Node testBeforeStart = westA;
     
     shared Ownable & FuelSalable testFuelSalableNotStationable = westRum;
     
@@ -332,4 +339,6 @@ shared object tropicHopBoard extends Board() {
     shared Node testNotFuelSalableOrStationable = westResort;
     
     shared Node testUnownablePort = eastFreeport;
+    
+    shared Node testWell = eastToWest1;
 }
