@@ -344,15 +344,15 @@ shared object tropicHopBoard extends Board() {
 }
 
 shared object tropicHopRules extends Rules() {
-    shared actual Integer fuelStationPrice => 500;
+    fuelStationPrice = 500;
     
-    shared actual Integer initialCash => 1500;
+    initialCash = 1500;
     
-    shared actual Integer initialFuelStationCount => 3;
+    initialFuelStationCount = 3;
     
-    shared actual Integer maximumFuel => 25;
+    maximumFuel = 25;
     
-    shared actual Integer passStartCash => 500;
+    passStartCash = 500;
     
-    shared actual Integer totalFuelStationCount => 20;
+    totalFuelStationCount = 20;
 }

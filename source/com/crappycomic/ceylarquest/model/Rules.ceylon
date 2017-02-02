@@ -1,4 +1,8 @@
 shared abstract class Rules() {
+    shared default Integer dieCount = 2;
+    
+    shared default Integer diePips = 6;
+    
     shared formal Integer fuelStationPrice;
     
     shared formal Integer initialCash;
