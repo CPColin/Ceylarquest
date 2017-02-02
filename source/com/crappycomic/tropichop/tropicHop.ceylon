@@ -3,24 +3,23 @@ import com.crappycomic.ceylarquest.model {
     Administration,
     Board,
     Card,
-    CollectCash,
-    CollectFuelStation,
     Color,
     CostsFuelToLeave,
     DeedGroup,
     FuelSalable,
     FuelStationable,
-    LoseDisputeWithLeague,
     Node,
     Ownable,
-    RollAgain,
-    RollWithMultiplier,
     Rules,
-    UseFuel,
     WellOrbit,
-    WinDisputeWithLeague,
-    WinDisputeWithPlayer,
-    mapNodes
+    collectCash,
+    collectFuelStation,
+    loseDisputeWithLeague,
+    mapNodes,
+    rollAgain,
+    useFuel,
+    winDisputeWithLeague,
+    winDisputeWithPlayer
 }
 
 interface Port
@@ -51,7 +50,7 @@ shared object tropicHopBoard extends Board() {
         name = "Company HQ";
         location = [114, 787];
         fuels = [25];
-        action = CollectFuelStation(1);
+        action = collectFuelStation(1);
     }
     object westA satisfies OwnablePort {
         name = "West A";
@@ -64,7 +63,7 @@ shared object tropicHopBoard extends Board() {
     object westFreeport satisfies FreePort {
         name = "West Freeport";
         location = [144, 1078];
-        action = CollectCash(600);
+        action = collectCash(600);
     }
     object westB satisfies OwnablePort {
         name = "West B";
@@ -219,7 +218,7 @@ shared object tropicHopBoard extends Board() {
     object eastFreeport satisfies FreePort {
         name = "East Freeport";
         location = [793, 262];
-        action = CollectFuelStation(1);
+        action = collectFuelStation(1);
     }
     object eastH satisfies OwnablePort {
         name = "East H";
@@ -313,16 +312,16 @@ shared object tropicHopBoard extends Board() {
     start = companyHQ;
     
     cards = [
-        Card("Doldrums", UseFuel(3)),
-        Card("Gale 2", UseFuel(2), RollWithMultiplier(2)),
-        Card("Gale 3", UseFuel(3), RollWithMultiplier(3)),
-        Card("Gale 4", UseFuel(4), RollWithMultiplier(4)),
-        Card("Bonus Contract", CollectCash(300), RollAgain()),
-        Card("You LOSE a dispute with the Company", LoseDisputeWithLeague()),
-        Card("You LOSE a dispute with the Company", LoseDisputeWithLeague()),
-        Card("You WIN a dispute with the Company", WinDisputeWithLeague()),
-        Card("You WIN a dispute with the Company", WinDisputeWithLeague()),
-        Card("You WIN a dispute with any player of your choice", WinDisputeWithPlayer())
+        Card("Doldrums", useFuel(3)),
+        Card("Gale 2", useFuel(2), rollAgain(2)),
+        Card("Gale 3", useFuel(3), rollAgain(3)),
+        Card("Gale 4", useFuel(4), rollAgain(4)),
+        Card("Bonus Contract", collectCash(300), rollAgain(1)),
+        Card("You LOSE a dispute with the Company", loseDisputeWithLeague),
+        Card("You LOSE a dispute with the Company", loseDisputeWithLeague),
+        Card("You WIN a dispute with the Company", winDisputeWithLeague),
+        Card("You WIN a dispute with the Company", winDisputeWithLeague),
+        Card("You WIN a dispute with any player of your choice", winDisputeWithPlayer)
     ];
     
     shared ActionTrigger testActionTrigger = westFreeport;

@@ -23,7 +23,7 @@ shared Result traversePath(variable Game game, Player player, Path path) {
     
     if (is ActionTrigger node) {
         if (path.size > 1) {
-            game = node.action.perform(game, player);
+            game = node.action(game, player);
         }
     }
     

@@ -4,7 +4,7 @@ import ceylon.language.meta {
 
 shared alias Location => Integer[2];
 
-"A node that triggers an [[Action]] when landed upon."
+"A node that triggers a [[NodeAction]] when landed upon."
 shared interface ActionTrigger
         satisfies Node {
     shared formal NodeAction action;

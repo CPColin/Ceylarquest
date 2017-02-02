@@ -1,44 +1,42 @@
-"Something that can happen when a [[Card]] is drawn."
-shared abstract class Action()
-        of AdvanceToNode | LoseDisputeWithLeague | NodeAction | RollAgain | RollWithMultiplier
-            | UseFuel | WinDisputeWithLeague | WinDisputeWithPlayer {
-    // TODO: make formal when everybody has refined this method
-    shared default Result perform(Game game, Player player) { return game; }
-}
+"Something that can happen when a [[Card]] is drawn. These actions may not cause the
+ [[phase|Game.phase]] of the [[Game]] to change and could even cause the player to lose the game."
+shared alias CardAction => Result(Game, Player);
 
 "Something that can happen when a [[Node]] is landed on. These actions may not cause the
- [[phase|Game.phase]] of the [[Game]] to change. This includes actions like [[UseFuel]], which may
+ [[phase|Game.phase]] of the [[Game]] to change. This includes actions like uing fuel, which may
  knock a player out of the game."
-shared abstract class NodeAction()
-        of CollectCash | CollectFuelStation
-        extends Action() {
-    shared formal actual Game perform(Game game, Player player);
+shared alias NodeAction => Game(Game, Player);
+
+shared Result advanceToNode(Node node)(Game game, Player player) {
+    return game; // TODO
 }
 
-shared class AdvanceToNode(Node node) extends Action() {}
+shared Game collectCash(Integer amount)(Game game, Player player)
+    => game.with { playerCashes = { player -> game.playerCash(player) + amount }; };
 
-shared class CollectCash(Integer amount) extends NodeAction() {
-    shared actual Game perform(Game game, Player player)
-        => game.with { playerCashes = { player -> game.playerCash(player) + amount }; };
+shared Game collectFuelStation(Integer amount)(Game game, Player player)
+    => let (fuelStations = smallest(amount, game.fuelStationsRemaining)) if (fuelStations > 0)
+        then game.with {
+            playerFuelStationCounts = { player -> game.playerFuelStationCount(player) + fuelStations };
+        }
+        else game; // TODO: with message saying no fuel station was available
+
+shared Game loseDisputeWithLeague(Game game, Player player) {
+    return game; // TODO
 }
 
-shared class CollectFuelStation(Integer amount) extends NodeAction() {
-    shared actual Game perform(Game game, Player player)
-        => game.fuelStationsRemaining > 0
-            then game.with {
-                playerFuelStationCounts = { player -> game.playerFuelStationCount(player) + 1 };
-            }
-            else game;
+shared Game rollAgain(Integer multiplier)(Game game, Player player) {
+    return game; // TODO: separate "roll again" phase
 }
 
-shared class LoseDisputeWithLeague() extends Action() {}
+shared Game useFuel(Integer amount)(Game game, Player player) {
+    return game; // TODO
+}
 
-shared class RollAgain() extends Action() {}
+shared Game winDisputeWithLeague(Game game, Player player) {
+    return game; // TODO
+}
 
-shared class RollWithMultiplier(Integer multiplier) extends Action() {}
-
-shared class UseFuel(Integer amount) extends Action() {}
-
-shared class WinDisputeWithLeague() extends Action() {}
-
-shared class WinDisputeWithPlayer() extends Action() {}
+shared Game winDisputeWithPlayer(Game game, Player player) {
+    return game; // TODO
+}

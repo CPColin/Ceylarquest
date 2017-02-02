@@ -7,7 +7,6 @@ import ceylon.test {
 }
 
 import com.crappycomic.ceylarquest.model {
-    CollectCash,
     Game,
     incorrectPhase,
     preRoll,
@@ -56,12 +55,12 @@ shared void traversePathRemainAtActionTrigger() {
     value game = testGame.with {
         phase = preRoll;
     };
-    value node = tropicHopBoard.testActionTrigger;
-    value action = node.action;
-    
-    assertTrue(action is CollectCash, "Node action needs to be CollectCash for this test.");
-    
     value playerCash = game.playerCash(player);
+    value node = tropicHopBoard.testActionTrigger;
+    value actionGame = node.action(game, player);
+    
+    assertTrue(actionGame.playerCash(player) > playerCash, "Action didn't increase player's cash.");
+    
     value path = [node];
     value result = traversePath(game, player, path);
     
@@ -102,13 +101,10 @@ shared void traversePathToActionTrigger() {
     value game = testGame.with {
         phase = preRoll;
     };
+    value playerCash = game.playerCash(player);
     value node = tropicHopBoard.testActionTrigger;
     value action = node.action;
-    
-    assertTrue(action is CollectCash, "Node action needs to be CollectCash for this test.");
-    
-    value playerCash = game.playerCash(player);
-    value actionGame = action.perform(game, player);
+    value actionGame = action(game, player);
     
     assertTrue(actionGame.playerCash(player) > playerCash, "Action didn't increase player's cash.");
     
