@@ -19,9 +19,7 @@ shared Result placeFuelStation(Game game, Player player, Node node) {
         return InvalidMove("``node.name`` may not have a fuel station.");
     }
     
-    value placedFuelStations = game.placedFuelStations;
-    
-    if (placedFuelStations.contains(node)) {
+    if (game.placedFuelStation(node)) {
         return InvalidMove("``node.name`` already has a fuel station.");
     }
     

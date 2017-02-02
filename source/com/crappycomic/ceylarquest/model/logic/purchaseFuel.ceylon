@@ -1,6 +1,5 @@
 import com.crappycomic.ceylarquest.model {
     FuelSalable,
-    FuelStationable,
     Game,
     InvalidMove,
     Ownable,
@@ -19,13 +18,11 @@ shared Result purchaseFuel(Game game, Player player, Integer fuel) {
     
     value node = game.playerLocation(player);
     
-    if (!is FuelSalable node) {
+    if (!fuelAvailable(game, node)) {
         return InvalidMove("Fuel is not available for purchase at ``node.name``.");
     }
     
-    if (node is FuelStationable && !game.placedFuelStations.contains(node)) {
-        return InvalidMove("No fuel station is present on ``node.name``.");
-    }
+    assert(is FuelSalable node);
     
     value unitCost = fuelFee(game, player, node);
     value clampedFuel = largest(0, smallest(maximumPurchaseableFuel(game, player, node), fuel));
@@ -35,17 +32,28 @@ shared Result purchaseFuel(Game game, Player player, Integer fuel) {
     }
     
     value owner = if (is Ownable node) then game.owner(node) else null;
-    // TODO: Is there a better way to build up this parameter?
-    variable {<Player -> Integer>*} playerCashes = game.playerCashes;
+    {<Player -> Integer>*}? playerCashes;
     
     if (unitCost > 0) {
         value totalCost = unitCost * clampedFuel;
         
-        playerCashes = playerCashes.follow(player -> game.playerCash(player) - totalCost);
-        
-        if (is Player owner) {
-            playerCashes = playerCashes.follow(owner -> game.playerCash(owner) + totalCost);
+        // The second conditional should be enough, but using it alone is triggering this error:
+        // Ceylon backend error: incompatible types: com.crappycomic.ceylarquest.model.Unowned
+        // cannot be converted to com.crappycomic.ceylarquest.model.unowned_
+        if (exists owner, is Player owner) {
+            playerCashes = {
+                player -> game.playerCash(player) - totalCost,
+                owner -> game.playerCash(owner) + totalCost
+            };
         }
+        else {
+            playerCashes = {
+                player -> game.playerCash(player) - totalCost
+            };
+        }
+    }
+    else {
+        playerCashes = null;
     }
     
     return game.with {

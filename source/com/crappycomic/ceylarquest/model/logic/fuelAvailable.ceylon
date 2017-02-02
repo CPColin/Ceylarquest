@@ -8,5 +8,5 @@ import com.crappycomic.ceylarquest.model {
 "Returns `true` if fuel is available at the given [[node]]."
 shared Boolean fuelAvailable(Game game, Node node) {
     return node is FuelSalable
-            && (game.placedFuelStations.contains(node) || !(node is FuelStationable));
+            && (game.placedFuelStation(node) || !(node is FuelStationable));
 }

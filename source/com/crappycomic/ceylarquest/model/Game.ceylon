@@ -13,19 +13,12 @@ Integer defaultPlayerFuelStationCount = 3;
 
 shared Integer maximumFuel = 25;
 
-// TODO: maybe move elsewhere
-shared abstract class Unowned() of unowned {}
-
-shared object unowned extends Unowned() {}
-
-shared alias Owner => Player|Unowned;
-
 "Encapsulates the validated, immutable state of a game. This class does not concern itself with
  enforcing game logic beyond the minimal checks necessary to prevent instances from representing
  obviously invalid states. For example, this class verifies that no player has negative fuel, but
  makes no checks for, say, players who have thousands of units of fuel.
  
- The code in `Model.ceylon` handles game logic.
+ The code in [[package com.crappycomic.ceylarquest.model.logic]] handles game logic.
  
  Since instances of this class are immutable, use [[Game.with]] to create new instances that include
  requested updates."
@@ -42,11 +35,11 @@ shared class Game {
     
     shared Set<FuelStationable> placedFuelStations;
     
-    shared Map<Player, Integer> playerCashes;
+    Map<Player, Integer> playerCashes;
     
-    shared Map<Player, Integer> playerFuels;
+    Map<Player, Integer> playerFuels;
     
-    shared Map<Player, Integer> playerFuelStationCounts;
+    Map<Player, Integer> playerFuelStationCounts;
     
     Map<Player, Node> playerLocations;
     
@@ -156,6 +149,8 @@ shared class Game {
     }
     
     shared Owner owner(Node node) => owners.getOrDefault(node, unowned);
+    
+    shared Boolean placedFuelStation(Node node) => placedFuelStations.contains(node);
     
     shared Integer playerCash(Player player)
         => playerCashes.getOrDefault(player, defaultPlayerCash);
