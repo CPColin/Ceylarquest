@@ -11,7 +11,6 @@ import com.crappycomic.ceylarquest.model {
     FuelStationable,
     Game,
     incorrectPhase,
-    maximumFuel,
     postRoll,
     preRoll,
     testPlayers
@@ -150,16 +149,15 @@ shared void purchaseFuelWithFullTank() {
     value game = testGame.with {
         phase = preRoll;
         playerCashes = { player -> runtime.maxIntegerValue };
-        playerFuels = { player -> maximumFuel };
     };
     value playerCash = game.playerCash(player);
     value playerFuel = game.playerFuel(player);
     
-    assertTrue(playerCash >= fuelFee(game, player, node) * maximumFuel,
+    assertEquals(playerFuel, game.rules.maximumFuel, "Player's fuel tank is not full.");
+    assertTrue(playerCash >= fuelFee(game, player, node) * game.rules.maximumFuel,
         "Player does not have enough cash for this test.");
-    assertEquals(playerFuel, maximumFuel, "Player's fuel tank is not full.");
     
-    value result = purchaseFuel(game, player, maximumFuel);
+    value result = purchaseFuel(game, player, game.rules.maximumFuel);
     
     if (is Game result) {
         assertEquals(game.playerCash(player), playerCash, "Player's cash changed.");

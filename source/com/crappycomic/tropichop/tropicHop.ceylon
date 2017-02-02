@@ -15,6 +15,7 @@ import com.crappycomic.ceylarquest.model {
     Ownable,
     RollAgain,
     RollWithMultiplier,
+    Rules,
     UseFuel,
     WellOrbit,
     WinDisputeWithLeague,
@@ -341,4 +342,18 @@ shared object tropicHopBoard extends Board() {
     shared Node testUnownablePort = eastFreeport;
     
     shared Node testWell = eastToWest1;
+}
+
+shared object tropicHopRules extends Rules() {
+    shared actual Integer fuelStationPrice => 500;
+    
+    shared actual Integer initialCash => 1500;
+    
+    shared actual Integer initialFuelStationCount => 3;
+    
+    shared actual Integer maximumFuel => 25;
+    
+    shared actual Integer passStartCash => 500;
+    
+    shared actual Integer totalFuelStationCount => 20;
 }

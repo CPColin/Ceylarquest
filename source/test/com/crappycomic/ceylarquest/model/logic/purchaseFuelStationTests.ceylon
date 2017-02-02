@@ -7,7 +7,6 @@ import ceylon.test {
 
 import com.crappycomic.ceylarquest.model {
     Game,
-    defaultFuelStationPrice,
     incorrectPhase,
     postRoll,
     preRoll,
@@ -88,7 +87,7 @@ shared void purchaseFuelStationSuccess() {
     if (is Game result) {
         assertEquals(result.fuelStationsRemaining, fuelStationsRemaining - 1,
             "Fuel stations remaining didn't decrease.");
-        assertEquals(result.playerCash(player), playerCash - defaultFuelStationPrice,
+        assertEquals(result.playerCash(player), playerCash - game.rules.fuelStationPrice,
             "Player's cash didn't decrease.");
         assertEquals(result.playerFuelStationCount(player), playerFuelStationCount + 1,
             "Player's fuel station count didn't increase.");

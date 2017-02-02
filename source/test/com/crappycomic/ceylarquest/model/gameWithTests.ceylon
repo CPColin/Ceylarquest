@@ -15,7 +15,8 @@ import com.crappycomic.ceylarquest.model {
     unowned
 }
 import com.crappycomic.tropichop {
-    tropicHopBoard
+    tropicHopBoard,
+    tropicHopRules
 }
 
 // These tests aim to make sure Game.with makes only the changes that are passed to it, without
@@ -29,6 +30,7 @@ shared void gameWithDebts() {
     value gameStart = Game {
         board = tropicHopBoard;
         playerNames = testPlayers;
+        rules = tropicHopRules;
         debts = { debt1 };
     };
     
@@ -59,6 +61,7 @@ shared void gameWithOwnersDecreasing() {
     value gameStart = Game {
         board = tropicHopBoard;
         playerNames = testPlayers;
+        rules = tropicHopRules;
         owners = { node1 -> player, node2 -> player };
     };
     
@@ -87,6 +90,7 @@ shared void gameWithOwnersIncreasing() {
     value gameStart = Game {
         board = tropicHopBoard;
         playerNames = testPlayers;
+        rules = tropicHopRules;
         owners = { node1 -> player };
     };
     
@@ -115,6 +119,7 @@ shared void gameWithPlacedFuelStations() {
     value gameStart = Game {
         board = tropicHopBoard;
         playerNames = testPlayers;
+        rules = tropicHopRules;
         placedFuelStations = { node1 };
     };
     value gameEnd = gameStart.with {
@@ -133,6 +138,7 @@ shared void gameWithPlayerCashes() {
     value gameStart = Game {
         board = tropicHopBoard;
         playerNames = testPlayers;
+        rules = tropicHopRules;
         playerCashes = { for (player -> _ in testPlayers) player -> 1 };
     };
     value gameEnd = gameStart.with {
@@ -148,6 +154,7 @@ shared void gameWithPlayerFuels() {
     value gameStart = Game {
         board = tropicHopBoard;
         playerNames = testPlayers;
+        rules = tropicHopRules;
         playerFuels = { for (player -> _ in testPlayers) player -> 1 };
     };
     value gameEnd = gameStart.with {
@@ -163,6 +170,7 @@ shared void gameWithPlayerFuelStationCounts() {
     value gameStart = Game {
         board = tropicHopBoard;
         playerNames = testPlayers;
+        rules = tropicHopRules;
         playerFuelStationCounts = { for (player -> _ in testPlayers) player -> 1 };
     };
     value gameEnd = gameStart.with {
@@ -180,6 +188,7 @@ shared void gameWithPlayerLocations() {
     value gameStart = Game {
         board = tropicHopBoard;
         playerNames = testPlayers;
+        rules = tropicHopRules;
         playerLocations = { for (player -> _ in testPlayers) player -> node1 };
     };
     value gameEnd = gameStart.with {

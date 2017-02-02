@@ -2,17 +2,6 @@ import ceylon.random {
     randomize
 }
 
-// TODO: RuleSet class
-shared Integer defaultFuelStationsRemaining = 46;
-
-Integer defaultInitialFuelStations = 3;
-
-Integer defaultPlayerCash = 1995;
-
-Integer defaultPlayerFuelStationCount = 3;
-
-shared Integer maximumFuel = 25;
-
 "Encapsulates the validated, immutable state of a game. This class does not concern itself with
  enforcing game logic beyond the minimal checks necessary to prevent instances from representing
  obviously invalid states. For example, this class verifies that no player has negative fuel, but
@@ -45,7 +34,9 @@ shared class Game {
     
     Map<Player, String> playerNames;
     
-    shared new(Board board, {<Player -> String>*} playerNames,
+    shared Rules rules;
+    
+    shared new(Board board, {<Player -> String>*} playerNames, Rules rules,
             {Player*}? activePlayers = null,
             {Debt*}? debts = null,
             {<Node -> Owner>*}? owners = null,
@@ -57,6 +48,7 @@ shared class Game {
             {<Player -> Node>*}? playerLocations = null) {
         this.board = board;
         this.playerNames = map(playerNames);
+        this.rules = rules;
         
         if (exists activePlayers) {
             this.activePlayers
@@ -143,7 +135,7 @@ shared class Game {
     }
     
     shared Integer fuelStationsRemaining {
-        return defaultFuelStationsRemaining
+        return rules.totalFuelStationCount
             - placedFuelStations.size
             - sum { 0, *{ for (player in activePlayers) playerFuelStationCount(player) } };
     }
@@ -153,12 +145,12 @@ shared class Game {
     shared Boolean placedFuelStation(Node node) => placedFuelStations.contains(node);
     
     shared Integer playerCash(Player player)
-        => playerCashes.getOrDefault(player, defaultPlayerCash);
+        => playerCashes.getOrDefault(player, rules.initialCash);
     
-    shared Integer playerFuel(Player player) => playerFuels.getOrDefault(player, maximumFuel);
+    shared Integer playerFuel(Player player) => playerFuels.getOrDefault(player, rules.maximumFuel);
     
     shared Integer playerFuelStationCount(Player player)
-        => playerFuelStationCounts.getOrDefault(player, defaultPlayerFuelStationCount);
+        => playerFuelStationCounts.getOrDefault(player, rules.initialFuelStationCount);
     
     shared Node playerLocation(Player player) => playerLocations.getOrDefault(player, board.start);
     
@@ -178,6 +170,7 @@ shared class Game {
         return Game {
             board = this.board;
             playerNames = this.playerNames;
+            rules = this.rules;
             activePlayers = this.activePlayers;
             debts = debts?.chain(this.debts) else this.debts;
             owners = owners?.chain(this.owners) else this.owners;

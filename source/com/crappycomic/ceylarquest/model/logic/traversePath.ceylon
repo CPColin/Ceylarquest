@@ -6,7 +6,6 @@ import com.crappycomic.ceylarquest.model {
     Player,
     Result,
     Well,
-    defaultPassStartCash,
     incorrectPhase,
     preRoll
 }
@@ -29,7 +28,7 @@ shared Result traversePath(variable Game game, Player player, Path path) {
     }
     
     value playerCashes = game.board.passesStart(path)
-    then { player -> game.playerCash(player) + defaultPassStartCash }
+    then { player -> game.playerCash(player) + game.rules.passStartCash }
     else null;
     
     return game.with {

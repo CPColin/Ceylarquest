@@ -5,15 +5,13 @@ import ceylon.test {
     test
 }
 
-import com.crappycomic.ceylarquest.model {
-    defaultFuelStationPrice
-}
 import com.crappycomic.ceylarquest.model.logic {
     nodePrice
 }
 import com.crappycomic.tropichop {
     tropicHopBoard
 }
+
 import test.com.crappycomic.ceylarquest.model {
     testGame
 }
@@ -30,6 +28,6 @@ shared void testNodePrice() {
     };
     
     assertTrue(game.placedFuelStations.contains(node), "Node didn't gain a fuel station.");
-    assertEquals(nodePrice(game, node), node.price + defaultFuelStationPrice,
+    assertEquals(nodePrice(game, node), node.price + game.rules.fuelStationPrice,
         "Price with fuel station is wrong.");
 }

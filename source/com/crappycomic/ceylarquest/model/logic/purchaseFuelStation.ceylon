@@ -3,7 +3,6 @@ import com.crappycomic.ceylarquest.model {
     InvalidMove,
     Player,
     Result,
-    defaultFuelStationPrice,
     incorrectPhase,
     postRoll,
     preRoll
@@ -18,12 +17,12 @@ shared Result purchaseFuelStation(Game game, Player player) {
         return InvalidMove("No fuel stations remain for purchase.");
     }
     
-    if (game.playerCash(player) < defaultFuelStationPrice) {
+    if (game.playerCash(player) < game.rules.fuelStationPrice) {
         return InvalidMove("``game.playerName(player)`` cannot afford to purchase a fuel station.");
     }
     
     return game.with {
-        playerCashes = { player -> game.playerCash(player) - defaultFuelStationPrice };
+        playerCashes = { player -> game.playerCash(player) - game.rules.fuelStationPrice };
         playerFuelStationCounts = { player -> game.playerFuelStationCount(player) + 1 };
     };
 }

@@ -17,6 +17,11 @@ shared String debugGameJson => JsonObject {
         "green" -> "Green",
         "yellow" -> "Yellow"
     },
+    "rules" -> JsonObject {
+        "moduleName" -> `module com.crappycomic.tropichop`.name,
+        "packageName" -> `package com.crappycomic.tropichop`.name,
+        "objectName" -> "tropicHopRules"
+    },
     "activePlayers" -> JsonArray {
         "red",
         "blue",

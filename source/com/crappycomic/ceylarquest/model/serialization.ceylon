@@ -18,6 +18,7 @@ shared Game|InvalidSave loadGame(String json) {
         
         value board = loadBoard(jsonObject);
         value players = loadPlayers(jsonObject);
+        value rules = loadRules(jsonObject);
         value activePlayers = loadActivePlayers(jsonObject);
         value owners = loadOwners(jsonObject, board);
         value placedFuelStations = loadPlacedFuelStations(jsonObject, board);
@@ -26,6 +27,7 @@ shared Game|InvalidSave loadGame(String json) {
         return Game {
             board = board;
             playerNames = players;
+            rules = rules;
             activePlayers = activePlayers;
             owners = owners;
             placedFuelStations = placedFuelStations;
@@ -54,27 +56,34 @@ throws(`class AssertionError`)
 throws(`class InvalidTypeException`)
 Board loadBoard(JsonObject jsonObject) {
     value board = jsonObject.getObject("board");
-    value boardModuleName = board.getString("moduleName");
-    value boardPackageName = board.getString("packageName");
-    value boardObjectName = board.getString("objectName");
     
-    value boardModule = modules.list.find((mod) => mod.name == boardModuleName);
+    return loadObject<Board>(board);
+}
+
+throws(`class AssertionError`)
+throws(`class InvalidTypeException`)
+Type loadObject<Type>(JsonObject jsonObject) {
+    value moduleName = jsonObject.getString("moduleName");
+    value packageName = jsonObject.getString("packageName");
+    value objectName = jsonObject.getString("objectName");
     
-    assert (exists boardModule);
+    value objectModule = modules.list.find((mod) => mod.name == moduleName);
     
-    value boardPackage = boardModule.findPackage(boardPackageName);
+    assert (exists objectModule);
     
-    assert (exists boardPackage);
+    value objectPackage = objectModule.findPackage(packageName);
     
-    value boardObjectDeclaration = boardPackage.getValue(boardObjectName);
+    assert (exists objectPackage);
     
-    assert (exists boardObjectDeclaration);
+    value objectDeclaration = objectPackage.getValue(objectName);
     
-    value boardObject = boardObjectDeclaration.get();
+    assert (exists objectDeclaration);
     
-    assert (is Board boardObject);
+    value objectValue = objectDeclaration.get();
     
-    return boardObject;
+    assert (is Type objectValue);
+    
+    return objectValue;
 }
 
 throws(`class AssertionError`)
@@ -110,6 +119,14 @@ throws(`class InvalidTypeException`)
     
     return players.map((playerKey -> _)
         => resolvePlayer(playerKey) -> players.getString(playerKey));
+}
+
+throws(`class AssertionError`)
+throws(`class InvalidTypeException`)
+Rules loadRules(JsonObject jsonObject) {
+    value rules = jsonObject.getObject("rules");
+    
+    return loadObject<Rules>(rules);
 }
 
 Node resolveNode(Board board, String key) {

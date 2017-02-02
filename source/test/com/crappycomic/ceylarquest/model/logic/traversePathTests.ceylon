@@ -9,7 +9,6 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     CollectCash,
     Game,
-    defaultPassStartCash,
     incorrectPhase,
     preRoll,
     testPlayers
@@ -43,7 +42,7 @@ shared void traversePathPassesStart() {
     if (is Game result) {
         assertEquals(result.playerLocation(player), path.last,
             "Player didn't end up on the right node.");
-        assertEquals(result.playerCash(player), playerCash + defaultPassStartCash,
+        assertEquals(result.playerCash(player), playerCash + game.rules.passStartCash,
             "Player didn't earn cash for passing Start.");
     }
     else {
