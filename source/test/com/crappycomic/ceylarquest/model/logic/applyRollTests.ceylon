@@ -252,6 +252,5 @@ test
 shared void applyRollWrongPhase() {
     value player = testPlayers.first.key;
     
-    // TODO: This doesn't work. See the below function.
-    wrongPhaseTest((game) => applyRoll(game, player, [0, 0]), preRoll);
+    wrongPhaseTest((game) => applyRoll(game, player, [0, 0]), preRoll, RollingAgain(1));
 }
