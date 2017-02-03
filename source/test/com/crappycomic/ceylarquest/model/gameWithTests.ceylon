@@ -54,7 +54,7 @@ shared void gameWithOwnersDecreasing() {
     value node2 = nodes.last;
     value player = testPlayers.first.key;
     
-    assert(exists node1, exists node2);
+    assert (exists node1, exists node2);
     
     assertFalse(node1 == node2, "This test needs two different Ownable nodes.");
     
@@ -83,7 +83,7 @@ shared void gameWithOwnersIncreasing() {
     value node2 = nodes.last;
     value player = testPlayers.first.key;
     
-    assert(exists node1, exists node2);
+    assert (exists node1, exists node2);
     
     assertFalse(node1 == node2, "This test needs two different Ownable nodes.");
     
@@ -112,7 +112,7 @@ shared void gameWithPlacedFuelStations() {
     value node1 = nodes.first;
     value node2 = nodes.last;
     
-    assert(exists node1, exists node2);
+    assert (exists node1, exists node2);
     
     assertFalse(node1 == node2, "This test needs two different FuelStationable nodes.");
     

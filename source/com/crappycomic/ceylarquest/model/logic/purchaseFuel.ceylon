@@ -22,7 +22,7 @@ shared Result purchaseFuel(Game game, Player player, Integer fuel) {
         return InvalidMove("Fuel is not available for purchase at ``node.name``.");
     }
     
-    assert(is FuelSalable node);
+    assert (is FuelSalable node);
     
     value unitCost = fuelFee(game, player, node);
     value clampedFuel = largest(0, smallest(maximumPurchaseableFuel(game, player, node), fuel));

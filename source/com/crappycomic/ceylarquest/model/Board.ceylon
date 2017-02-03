@@ -37,7 +37,7 @@ shared abstract class Board() {
     shared [Node+] getDestinations(Node node) {
         value destinations = nodes.get(node);
         
-        assert(exists destinations);
+        assert (exists destinations);
         
         return destinations;
     }
@@ -48,6 +48,7 @@ shared abstract class Board() {
     shared [Path*] getAllowedMoves(Node origin, Integer distance) {
         variable value paths = LinkedList<MutableList<Node>>();
         
+        // TODO: unit test to cover zero-distance returning [[origin]]
         iterateAllowedMoves(paths, [origin], distance);
         
         for (path in paths) {

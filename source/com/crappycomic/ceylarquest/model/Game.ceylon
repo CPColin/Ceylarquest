@@ -74,9 +74,9 @@ shared class Game {
                     .filter((_ -> owner) => owner is Unowned || this.activePlayers.contains(owner))
                     .filter((node -> _) => node is Ownable)
                     .map((node -> owner) {
-                        assert(is Ownable node);
+                        assert (is Ownable node);
                         
-                        return (node -> owner);
+                        return node -> owner;
                     });
             };
         }

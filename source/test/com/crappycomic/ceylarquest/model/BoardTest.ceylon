@@ -99,14 +99,14 @@ shared abstract class BoardTest(shared Board board) {
     shared void verifyAllowedMoves(String originId, Integer distance, String message, String+ destinationIds) {
         value originNode = board.getNode(originId);
         
-        assert(exists originNode);
+        assert (exists originNode);
         
         value allowedMoves = board.getAllowedMoves(originNode, distance);
         value actualDestinations = allowedMoves.collect((move) => move.last);
         value expectedDestinations = [ for (destinationId in destinationIds) board.getNode(destinationId) ];
         
         for (expectedDestination in expectedDestinations) {
-            assert(exists expectedDestination);
+            assert (exists expectedDestination);
         }
         
         assertions.add(() => assertEquals(actualDestinations, expectedDestinations, message));
@@ -116,7 +116,7 @@ shared abstract class BoardTest(shared Board board) {
     shared void verifyPassesStart(String originId, Integer distance, Boolean passesStart) {
         value originNode = board.getNode(originId);
         
-        assert(exists originNode);
+        assert (exists originNode);
         
         value allowedMoves = board.getAllowedMoves(originNode, distance);
         
