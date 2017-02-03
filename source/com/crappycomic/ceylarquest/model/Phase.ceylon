@@ -4,25 +4,29 @@ import ceylon.language.meta {
 "Enumerates the possible phases a [[Game]] can be in, which affect what the players can and can't do
  at a given point during play."
 shared abstract class Phase()
-        of choosingAllowedMove | choosingNodeLostToLeague | choosingNodeWonFromLeague
-            | choosingNodeWonFromPlayer | gameOver | postRoll | preLand | preRoll | settlingDebt
-            | trading {
+        of ChoosingAllowedMove | RollingAgain | choosingNodeLostToLeague | choosingNodeWonFromLeague
+            | choosingNodeWonFromPlayer | drawingCard | gameOver | postRoll | preLand | preRoll
+            | settlingDebt | trading {
     shared actual String string {
-        value objectValue = classDeclaration(this).objectValue;
+        value declaration = classDeclaration(this);
+        value objectValue = declaration.objectValue;
         
-        assert (exists objectValue);
-        
-        return objectValue.name;
+        return objectValue?.name else declaration.name;
     }
 }
 
-shared object choosingAllowedMove extends Phase() {}
+// TODO: do we want/need [Path+] here?
+shared class ChoosingAllowedMove(shared [Path*] paths, Boolean useFuel) extends Phase() {}
+
+shared class RollingAgain(shared Integer multiplier) extends Phase() {}
 
 shared object choosingNodeLostToLeague extends Phase() {}
 
 shared object choosingNodeWonFromLeague extends Phase() {}
 
 shared object choosingNodeWonFromPlayer extends Phase() {}
+
+shared object drawingCard extends Phase() {}
 
 shared object gameOver extends Phase() {}
 

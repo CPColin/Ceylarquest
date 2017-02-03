@@ -25,6 +25,27 @@ import test.com.crappycomic.ceylarquest.model {
 }
 
 test
+shared void traversePathInsufficientFuel() {
+    value player = testPlayers.first.key;
+    value game = testGame.with {
+        phase = preRoll;
+    };
+    value playerFuel = game.playerFuel(player);
+    value path = [game.playerLocation(player)];
+    value result = traversePath(game, player, path, playerFuel + 1);
+    
+    if (is Game result) {
+        fail("Traversing a path with insufficient fuel should not have worked.");
+    }
+    else if (result == incorrectPhase) {
+        fail(result.message);
+    }
+    else {
+        print(result.message);
+    }
+}
+
+test
 shared void traversePathPassesStart() {
     value player = testPlayers.first.key;
     value game = testGame.with {
@@ -36,7 +57,7 @@ shared void traversePathPassesStart() {
     
     assertTrue(game.board.passesStart(path), "Path needs to pass Start.");
     
-    value result = traversePath(game, player, path);
+    value result = traversePath(game, player, path, 0);
     
     if (is Game result) {
         assertEquals(result.playerLocation(player), path.last,
@@ -62,7 +83,7 @@ shared void traversePathRemainAtActionTrigger() {
     assertTrue(actionGame.playerCash(player) > playerCash, "Action didn't increase player's cash.");
     
     value path = [node];
-    value result = traversePath(game, player, path);
+    value result = traversePath(game, player, path, 0);
     
     if (is Game result) {
         assertEquals(result.playerCash(player), playerCash, "Player should not have earned cash.");
@@ -83,7 +104,7 @@ shared void traversePathSkipStart() {
     
     assertFalse(game.board.passesStart(path), "Path incorrectly passes Start.");
     
-    value result = traversePath(game, player, path);
+    value result = traversePath(game, player, path, 0);
     
     if (is Game result) {
         assertEquals(result.playerLocation(player), path.last,
@@ -109,7 +130,7 @@ shared void traversePathToActionTrigger() {
     assertTrue(actionGame.playerCash(player) > playerCash, "Action didn't increase player's cash.");
     
     value path = [node, node];
-    value result = traversePath(game, player, path);
+    value result = traversePath(game, player, path, 0);
     
     if (is Game result) {
         assertEquals(result.playerCash(player), actionGame.playerCash(player),
@@ -127,7 +148,7 @@ shared void traversePathToWell() {
     value game = testGame.with {
         phase = preRoll;
     };
-    value result = traversePath(game, player, path);
+    value result = traversePath(game, player, path, 0);
     
     if (is Game result) {
         fail("Traversing a path ending on a Well should not have worked.");
@@ -145,5 +166,5 @@ shared void traversePathWrongPhase() {
     value player = testPlayers.first.key;
     value path = [tropicHopBoard.testOwnablePort];
     
-    wrongPhaseTest((game) => traversePath(game, player, path), preRoll);
+    wrongPhaseTest((game) => traversePath(game, player, path, 0), preRoll);
 }

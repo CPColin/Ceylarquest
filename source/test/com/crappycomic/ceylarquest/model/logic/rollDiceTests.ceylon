@@ -17,13 +17,6 @@ shared void rollDiceTest() {
     
     object rules extends Rules() {
         dieCount = count;
-        
-        fuelStationPrice = 0;
-        initialCash = 0;
-        initialFuelStationCount = 0;
-        maximumFuel = 0;
-        passStartCash = 0;
-        totalFuelStationCount = 0;
     }
     
     value roll = rollDice(rules);

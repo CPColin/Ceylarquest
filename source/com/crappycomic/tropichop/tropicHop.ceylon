@@ -17,6 +17,7 @@ import com.crappycomic.ceylarquest.model {
     loseDisputeWithLeague,
     mapNodes,
     rollAgain,
+    rollTypeAllMatch,
     useFuel,
     winDisputeWithLeague,
     winDisputeWithPlayer
@@ -326,9 +327,9 @@ shared object tropicHopBoard extends Board() {
     
     shared ActionTrigger testActionTrigger = westFreeport;
     
-    shared Node testAfterStart = westH;
+    shared Node testAfterStart = westA;
     
-    shared Node testBeforeStart = westA;
+    shared Node testBeforeStart = westH;
     
     shared Ownable & FuelSalable testFuelSalableNotStationable = westRum;
     
@@ -344,15 +345,9 @@ shared object tropicHopBoard extends Board() {
 }
 
 shared object tropicHopRules extends Rules() {
-    fuelStationPrice = 500;
+    cardRollType = rollTypeAllMatch;
     
     initialCash = 1500;
-    
-    initialFuelStationCount = 3;
-    
-    maximumFuel = 25;
-    
-    passStartCash = 500;
     
     totalFuelStationCount = 20;
 }

@@ -1,17 +1,19 @@
 shared abstract class Rules() {
+    shared default RollType cardRollType = rollTypeNever;
+    
     shared default Integer dieCount = 2;
     
     shared default Integer diePips = 6;
     
-    shared formal Integer fuelStationPrice;
+    shared default Integer fuelStationPrice = 500;
     
-    shared formal Integer initialCash;
+    shared default Integer initialCash = 1995;
     
-    shared formal Integer initialFuelStationCount;
+    shared default Integer initialFuelStationCount = 3;
     
-    shared formal Integer maximumFuel;
+    shared default Integer maximumFuel = 25;
     
-    shared formal Integer passStartCash;
+    shared default Integer passStartCash = 500;
     
-    shared formal Integer totalFuelStationCount;
+    shared default Integer totalFuelStationCount = 46;
 }
