@@ -6,16 +6,20 @@ import ceylon.collection {
 shared alias Path => [Node+];
 
 // TODO: sort
-"The game board, a layout of [[Node]]s and their connections to each other."
+"The game board, a layout of [[Node]]s and their connections to each other, the [[Card]]s that can
+ be drawn, and the default [[Rules]] by which the game will be played."
 shared abstract class Board() {
+    "The [[Card]]s that players can draw, in the order they were defined."
+    shared formal [Card*] cards;
+    
+    "The default rules by which the game will be played."
+    shared formal Rules defaultRules;
+    
     "Maps [[Node]]s to their one or more destinations, in the order they should be tried."
     shared formal Map<Node, [Node+]> nodes;
     
     "The [[Node]] that players start on."
     shared formal Node start;
-    
-    "The [[Card]]s that players can draw."
-    shared formal [Card+] cards;
     
     // TODO: this doesn't belong here
     shared Node calculateClosestNode(Integer x, Integer y) {

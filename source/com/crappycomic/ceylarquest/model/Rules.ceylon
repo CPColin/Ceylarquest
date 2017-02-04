@@ -1,4 +1,5 @@
-shared abstract class Rules() {
+"Encapsulates various values that make up the rules of the game."
+shared class Rules() {
     shared default RollType cardRollType = rollTypeNever;
     
     shared default Integer dieCount = 2;

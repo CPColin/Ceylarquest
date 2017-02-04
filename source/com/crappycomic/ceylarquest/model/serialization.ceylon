@@ -18,7 +18,7 @@ shared Game|InvalidSave loadGame(String json) {
         
         value board = loadBoard(jsonObject);
         value players = loadPlayers(jsonObject);
-        value rules = loadRules(jsonObject);
+        
         value activePlayers = loadActivePlayers(jsonObject);
         value owners = loadOwners(jsonObject, board);
         value placedFuelStations = loadPlacedFuelStations(jsonObject, board);
@@ -27,7 +27,7 @@ shared Game|InvalidSave loadGame(String json) {
         return Game {
             board = board;
             playerNames = players;
-            rules = rules;
+            
             activePlayers = activePlayers;
             owners = owners;
             placedFuelStations = placedFuelStations;
@@ -119,14 +119,6 @@ throws(`class InvalidTypeException`)
     
     return players.map((playerKey -> _)
         => resolvePlayer(playerKey) -> players.getString(playerKey));
-}
-
-throws(`class AssertionError`)
-throws(`class InvalidTypeException`)
-Rules loadRules(JsonObject jsonObject) {
-    value rules = jsonObject.getObject("rules");
-    
-    return loadObject<Rules>(rules);
 }
 
 Node resolveNode(Board board, String key) {

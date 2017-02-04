@@ -325,6 +325,16 @@ shared object tropicHopBoard extends Board() {
         Card("You WIN a dispute with any player of your choice", winDisputeWithPlayer)
     ];
     
+    defaultRules = object extends Rules() {
+        cardRollType = rollTypeAllMatch;
+        
+        initialCash = 1500;
+        
+        totalFuelStationCount = 20;
+    };
+    
+    // Stuff below here is for supporting unit tests.
+    
     shared ActionTrigger testActionTrigger = westFreeport;
     
     shared Node testAfterStart = westA;
@@ -342,12 +352,4 @@ shared object tropicHopBoard extends Board() {
     shared Node testUnownablePort = eastFreeport;
     
     shared Node testWell = eastToWest1;
-}
-
-shared object tropicHopRules extends Rules() {
-    cardRollType = rollTypeAllMatch;
-    
-    initialCash = 1500;
-    
-    totalFuelStationCount = 20;
 }

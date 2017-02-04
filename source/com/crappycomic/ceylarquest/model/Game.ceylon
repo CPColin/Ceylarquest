@@ -34,9 +34,11 @@ shared class Game {
     
     Map<Player, String> playerNames;
     
+    "The rules by which we will play this game, which may differ from the default rules contained in
+     the [[board]]."
     shared Rules rules;
     
-    shared new(Board board, {<Player -> String>*} playerNames, Rules rules,
+    shared new(Board board, {<Player -> String>*} playerNames,
             {Player*}? activePlayers = null,
             {Debt*}? debts = null,
             {<Node -> Owner>*}? owners = null,
@@ -45,10 +47,10 @@ shared class Game {
             {<Player -> Integer>*}? playerCashes = null,
             {<Player -> Integer>*}? playerFuels = null,
             {<Player -> Integer>*}? playerFuelStationCounts = null,
-            {<Player -> Node>*}? playerLocations = null) {
+            {<Player -> Node>*}? playerLocations = null,
+            Rules? rules = null) {
         this.board = board;
         this.playerNames = map(playerNames);
-        this.rules = rules;
         
         if (exists activePlayers) {
             this.activePlayers
@@ -132,6 +134,13 @@ shared class Game {
         else {
             this.playerLocations = emptyMap;
         }
+        
+        if (exists rules) {
+            this.rules = rules;
+        }
+        else {
+            this.rules = board.defaultRules;
+        }
     }
     
     shared Integer fuelStationsRemaining {
@@ -147,7 +156,8 @@ shared class Game {
     shared Integer playerCash(Player player)
         => playerCashes.getOrDefault(player, rules.initialCash);
     
-    shared Integer playerFuel(Player player) => playerFuels.getOrDefault(player, rules.maximumFuel);
+    shared Integer playerFuel(Player player)
+        => playerFuels.getOrDefault(player, rules.maximumFuel);
     
     shared Integer playerFuelStationCount(Player player)
         => playerFuelStationCounts.getOrDefault(player, rules.initialFuelStationCount);
@@ -170,8 +180,8 @@ shared class Game {
         return Game {
             board = this.board;
             playerNames = this.playerNames;
-            rules = this.rules;
             activePlayers = this.activePlayers;
+            
             debts = debts?.chain(this.debts) else this.debts;
             owners = owners?.chain(this.owners) else this.owners;
             phase = phase else this.phase;

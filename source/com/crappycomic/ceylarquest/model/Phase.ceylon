@@ -1,18 +1,15 @@
 import ceylon.language.meta {
     classDeclaration
 }
+
 "Enumerates the possible phases a [[Game]] can be in, which affect what the players can and can't do
- at a given point during play."
+ at a given point during play. Code in [[package com.crappycomic.ceylarquest.model.logic]] should,
+ at most, advance the phase one step along the (not-yet-drawn) state diagram."
 shared abstract class Phase()
         of ChoosingAllowedMove | RollingAgain | choosingNodeLostToLeague | choosingNodeWonFromLeague
             | choosingNodeWonFromPlayer | drawingCard | gameOver | postRoll | preLand | preRoll
             | settlingDebt | trading {
-    shared actual String string {
-        value declaration = classDeclaration(this);
-        value objectValue = declaration.objectValue;
-        
-        return objectValue?.name else declaration.name;
-    }
+    shared actual String string => classDeclaration(this).name;
 }
 
 // TODO: do we want/need [Path+] here?
