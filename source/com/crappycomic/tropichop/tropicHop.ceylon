@@ -58,8 +58,8 @@ shared object tropicHopBoard extends Board() {
         location = [117, 936];
         deedGroup = westIsland;
         price = 250;
-        rents = [50, 150, 250, 350, 450, 550, 650, 750];
-        fuels = [10, 10, 20, 20, 30, 30, 40, 40];
+        rents = [50, 150, 250, 350, 450, 550, 650, 750, 850];
+        fuels = [10, 10, 20, 20, 30, 30, 40, 40, 50];
     }
     object westFreeport satisfies FreePort {
         name = "West Freeport";
@@ -71,32 +71,32 @@ shared object tropicHopBoard extends Board() {
         location = [204, 1181];
         deedGroup = westIsland;
         price = 250;
-        rents = [50, 150, 250, 350, 450, 550, 650, 750];
-        fuels = [10, 10, 20, 20, 30, 30, 40, 40];
+        rents = [50, 150, 250, 350, 450, 550, 650, 750, 850];
+        fuels = [10, 10, 20, 20, 30, 30, 40, 40, 50];
     }
     object westC satisfies OwnablePort {
         name = "West C";
         location = [376, 1203];
         deedGroup = westIsland;
         price = 250;
-        rents = [50, 150, 250, 350, 450, 550, 650, 750];
-        fuels = [10, 10, 20, 20, 30, 30, 40, 40];
+        rents = [50, 150, 250, 350, 450, 550, 650, 750, 850];
+        fuels = [10, 10, 20, 20, 30, 30, 40, 40, 50];
     }
     object westD satisfies OwnablePort {
         name = "West D";
         location = [457, 1104];
         deedGroup = westIsland;
         price = 250;
-        rents = [50, 150, 250, 350, 450, 550, 650, 750];
-        fuels = [10, 10, 20, 20, 30, 30, 40, 40];
+        rents = [50, 150, 250, 350, 450, 550, 650, 750, 850];
+        fuels = [10, 10, 20, 20, 30, 30, 40, 40, 50];
     }
     object westE satisfies OwnablePort {
         name = "West E";
         location = [611, 1050];
         deedGroup = westIsland;
         price = 250;
-        rents = [50, 150, 250, 350, 450, 550, 650, 750];
-        fuels = [10, 10, 20, 20, 30, 30, 40, 40];
+        rents = [50, 150, 250, 350, 450, 550, 650, 750, 850];
+        fuels = [10, 10, 20, 20, 30, 30, 40, 40, 50];
     }
     object westResort satisfies Resort {
         name = "West Resort";
@@ -118,38 +118,42 @@ shared object tropicHopBoard extends Board() {
         location = [509, 660];
         deedGroup = westIsland;
         price = 250;
-        rents = [50, 150, 250, 350, 450, 550, 650, 750];
-        fuels = [10, 10, 20, 20, 30, 30, 40, 40];
+        rents = [50, 150, 250, 350, 450, 550, 650, 750, 850];
+        fuels = [10, 10, 20, 20, 30, 30, 40, 40, 50];
     }
     object westG satisfies OwnablePort {
         name = "West G";
         location = [358, 580];
         deedGroup = westIsland;
         price = 250;
-        rents = [50, 150, 250, 350, 450, 550, 650, 750];
-        fuels = [10, 10, 20, 20, 30, 30, 40, 40];
+        rents = [50, 150, 250, 350, 450, 550, 650, 750, 850];
+        fuels = [10, 10, 20, 20, 30, 30, 40, 40, 50];
     }
     object westH satisfies OwnablePort {
         name = "West H";
         location = [201, 634];
         deedGroup = westIsland;
         price = 250;
-        rents = [50, 150, 250, 350, 450, 550, 650, 750];
-        fuels = [10, 10, 20, 20, 30, 30, 40, 40];
+        rents = [50, 150, 250, 350, 450, 550, 650, 750, 850];
+        fuels = [10, 10, 20, 20, 30, 30, 40, 40, 50];
+    }
+    object westI satisfies OwnablePort {
+        name = "West I";
+        location = [756, 947];
+        deedGroup = westIsland;
+        price = 250;
+        rents = [50, 150, 250, 350, 450, 550, 650, 750, 850];
+        fuels = [10, 10, 20, 20, 30, 30, 40, 40, 50];
     }
     object westToEast1 satisfies OpenWater {
         name = "Open Water between West and East Islands";
-        location = [756, 947];
+        location = [850, 891];
     }
     object westToEast2 satisfies OpenWater {
         name = "Open Water between West and East Islands";
-        location = [850, 891];
-    }
-    object westToEast3 satisfies OpenWater {
-        name = "Open Water between West and East Islands";
         location = [951, 858];
     }
-    object westToEast4 satisfies OpenWater {
+    object westToEast3 satisfies OpenWater {
         name = "Open Water between West and East Islands";
         location = [1052, 812];
     }
@@ -281,16 +285,16 @@ shared object tropicHopBoard extends Board() {
         westB -> westC,
         westC -> westD,
         westD -> westE,
-        westE -> [westToEast1, westResort],
+        westE -> [westI, westResort],
         westResort -> westRum,
         westRum -> westF,
         westF -> westG,
         westG -> westH,
         westH -> companyHQ,
+        westI -> westToEast1,
         westToEast1 -> westToEast2,
         westToEast2 -> westToEast3,
-        westToEast3 -> westToEast4,
-        westToEast4 -> eastA,
+        westToEast3 -> eastA,
         eastA -> eastResort,
         eastResort -> eastB,
         eastB -> eastC,
