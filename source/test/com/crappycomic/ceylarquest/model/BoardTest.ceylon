@@ -1,20 +1,27 @@
 import ceylon.collection {
-    MutableSet,
-    HashSet,
     ArrayList,
-    MutableList
+    HashSet,
+    MutableList,
+    MutableSet
 }
 import ceylon.test {
+    afterTest,
+    assertAll,
     assertEquals,
     assertTrue,
-    test,
     beforeTest,
-    assertAll,
-    afterTest
+    test
 }
 
 import com.crappycomic.ceylarquest.model {
-    ...
+    Board,
+    FuelSalable,
+    Node,
+    Ownable
+}
+import com.crappycomic.ceylarquest.model.logic {
+    allowedMoves,
+    destinations
 }
 
 shared abstract class BoardTest(shared Board board) {
@@ -101,8 +108,8 @@ shared abstract class BoardTest(shared Board board) {
         
         assert (exists originNode);
         
-        value allowedMoves = board.getAllowedMoves(originNode, distance);
-        value actualDestinations = allowedMoves.collect((move) => move.last);
+        value actualDestinations
+            = allowedMoves(board, originNode, distance).collect((move) => move.last);
         value expectedDestinations = [ for (destinationId in destinationIds) board.getNode(destinationId) ];
         
         for (expectedDestination in expectedDestinations) {
@@ -118,9 +125,7 @@ shared abstract class BoardTest(shared Board board) {
         
         assert (exists originNode);
         
-        value allowedMoves = board.getAllowedMoves(originNode, distance);
-        
-        for (allowedMove in allowedMoves) {
+        for (allowedMove in allowedMoves(board, originNode, distance)) {
             assertions.add(() => assertEquals(board.passesStart(allowedMove), passesStart,
                 "Unexpected passesStart value for path from ``originId`` over ``distance`` distance."));
         }
@@ -134,9 +139,7 @@ shared abstract class BoardTest(shared Board board) {
         shared void iterate(Node node) {
             visited.add(node);
             
-            value destinations = board.getDestinations(node);
-            
-            for (destination in destinations) {
+            for (destination in destinations(board, node)) {
                 if (destination == board.start) {
                     startConnected = true;
                 }

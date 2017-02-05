@@ -5,7 +5,8 @@ import com.crappycomic.ceylarquest.model {
     loadGame
 }
 import com.crappycomic.ceylarquest.view {
-    black
+    black,
+    calculateClosestNode
 }
 
 import debug {
@@ -83,7 +84,7 @@ void calculateClosestNodes() {
     
     for (x in 0..image.width) {
         for (y in 0..image.height) {
-            value closestNode = game.board.calculateClosestNode(x, y);
+            value closestNode = calculateClosestNode(game.board, x, y);
             value nodeHash = closestNode.id.hash.magnitude;
             
             value color = Color(

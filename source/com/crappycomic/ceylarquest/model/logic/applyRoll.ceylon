@@ -54,7 +54,7 @@ shared Result applyRoll(Game game, Player player, Roll roll) {
         }
     }
     
-    value paths = game.board.getAllowedMoves(game.playerLocation(player), distance);
+    value paths = allowedMoves(game.board, game.playerLocation(player), distance);
     
     return game.with {
         phase = ChoosingAllowedMove(paths, !phase is RollingAgain);

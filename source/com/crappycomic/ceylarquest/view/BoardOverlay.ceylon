@@ -13,6 +13,10 @@ import com.crappycomic.ceylarquest.model {
     Player
 }
 
+import com.crappycomic.ceylarquest.model.logic {
+    destinations
+}
+
 "A visual representation of a [[Game]] state. Does not include the background of the [[Board]]."
 shared class BoardOverlay(GraphicsContext g) {
     Color fuelStationColor = Color(192, 192, 192);
@@ -85,7 +89,7 @@ shared class BoardOverlay(GraphicsContext g) {
         value nodes = game.board.nodes.keys;
         
         for (node in nodes) {
-            for (destination in game.board.getDestinations(node)) {
+            for (destination in destinations(game.board, node)) {
                 g.drawLine(node.location, destination.location, white, 2);
             }
         }
@@ -98,7 +102,7 @@ shared class BoardOverlay(GraphicsContext g) {
     }
     
     shared void drawClosestNode(Game game, Integer x, Integer y, Integer width, Integer height) {
-        value closestNode = game.board.calculateClosestNode(x, y);
+        value closestNode = calculateClosestNode(game.board, x, y);
         value nodeHash = closestNode.hash;
         value color = Color(255 - (nodeHash * 2), (nodeHash * 37) % 256, nodeHash * 3);
         
