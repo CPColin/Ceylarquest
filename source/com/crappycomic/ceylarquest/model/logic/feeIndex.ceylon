@@ -1,6 +1,7 @@
 import com.crappycomic.ceylarquest.model {
     DeedGroup,
     Game,
+    Ownable,
     Player
 }
 
@@ -11,5 +12,5 @@ import com.crappycomic.ceylarquest.model {
  owned.)"
 shared Integer feeIndex(Game game, Player player, DeedGroup deedGroup) {
     return game.owners.count((node -> owner)
-        => node.deedGroup == deedGroup && owner == player) - 1;
+        => if (is Ownable node) then node.deedGroup == deedGroup && owner == player else false) - 1;
 }

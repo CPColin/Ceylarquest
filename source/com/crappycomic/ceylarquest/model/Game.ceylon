@@ -18,7 +18,7 @@ shared class Game {
     
     shared {Debt*} debts;
     
-    shared Map<Ownable, Owner> owners;
+    shared Map<Node, Owner> owners;
     
     shared Phase phase;
     
@@ -74,12 +74,7 @@ shared class Game {
             this.owners = map {
                 owners
                     .filter((_ -> owner) => owner is Unowned || this.activePlayers.contains(owner))
-                    .filter((node -> _) => node is Ownable)
-                    .map((node -> owner) {
-                        assert (is Ownable node);
-                        
-                        return node -> owner;
-                    });
+                    .filter((node -> _) => node is Ownable);
             };
         }
         else {
