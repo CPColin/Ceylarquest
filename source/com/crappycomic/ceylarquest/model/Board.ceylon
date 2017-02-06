@@ -1,6 +1,5 @@
 shared alias Path => [Node+];
 
-// TODO: sort
 "The game board, a layout of [[Node]]s and their connections to each other, the [[Card]]s that can
  be drawn, and the default [[Rules]] by which the game will be played."
 shared abstract class Board() {
@@ -16,18 +15,11 @@ shared abstract class Board() {
     "The [[Node]] that players start on."
     shared formal Node start;
     
-    shared Node? getNode(String id) {
-        return nodes.keys.find((node) => node.id == id);
-    }
-    
-    "Returns `true` if the given [[path]] passes the [[start]] node or lands on
-     it. Starting from the [[start]] node does not, on its own, count as
-     passing it."
-    shared Boolean passesStart(Path path) {
-        return path.rest.contains(start);
-    }
+    "Returns the [[Node]] with the given [[id]], if any."
+    shared Node? node(String id) => nodes.keys.find((node) => node.id == id);
 }
 
+"Converts the given stream of [[nodes]] into a form that matches the [[Board.nodes]] attribute."
 shared Map<Node, [Node+]> mapNodes({<Node -> Node|[Node+]>+} nodes) {
     return map(nodes.map((node -> destinations)
         => if (is Node destinations) then node -> [destinations] else node -> destinations));

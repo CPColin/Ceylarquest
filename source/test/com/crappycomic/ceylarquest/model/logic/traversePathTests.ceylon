@@ -13,6 +13,7 @@ import com.crappycomic.ceylarquest.model {
     testPlayers
 }
 import com.crappycomic.ceylarquest.model.logic {
+    passesStart,
     traversePath
 }
 import com.crappycomic.tropichop {
@@ -55,7 +56,7 @@ shared void traversePathPassesStart() {
     value path
         = [tropicHopBoard.testBeforeStart, tropicHopBoard.start, tropicHopBoard.testAfterStart];
     
-    assertTrue(game.board.passesStart(path), "Path needs to pass Start.");
+    assertTrue(passesStart(game.board, path), "Path needs to pass Start.");
     
     value result = traversePath(game, player, path, 0);
     
@@ -102,7 +103,7 @@ shared void traversePathSkipStart() {
     value playerCash = game.playerCash(player);
     value path = [tropicHopBoard.testBeforeStart, tropicHopBoard.testAfterStart];
     
-    assertFalse(game.board.passesStart(path), "Path incorrectly passes Start.");
+    assertFalse(passesStart(game.board, path), "Path incorrectly passes Start.");
     
     value result = traversePath(game, player, path, 0);
     

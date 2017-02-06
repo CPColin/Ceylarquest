@@ -122,7 +122,7 @@ throws(`class InvalidTypeException`)
 }
 
 Node resolveNode(Board board, String key) {
-    value node = board.getNode(key);
+    value node = board.node(key);
     
     return node else board.start;
 }

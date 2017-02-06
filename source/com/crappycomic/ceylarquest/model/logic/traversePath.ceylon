@@ -33,7 +33,7 @@ shared Result traversePath(variable Game game, Player player, Path path, Integer
         }
     }
     
-    value playerCashes = game.board.passesStart(path)
+    value playerCashes = passesStart(game.board, path)
         then { player -> game.playerCash(player) + game.rules.passStartCash };
     value playerFuels = fuel > 0
         then { player -> game.playerFuel(player) - fuel };
