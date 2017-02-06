@@ -189,6 +189,27 @@ shared void gameWithPlayerLocations() {
     checkPlayers(gameStart, gameEnd, Game.playerLocation, "location", player, node2);
 }
 
+"Verifies that attempts to use a node unknown to the game will be ignored."
+test
+shared void gameWithUnknownNode() {
+    value player = testPlayers.first.key;
+    object node extends TestNode("FuelStationable") satisfies FuelStationable {}
+    value gameStart = Game {
+        board = tropicHopBoard;
+        playerNames = testPlayers;
+    };
+    value gameEnd = gameStart.with {
+        owners = { node -> player };
+        placedFuelStations = { node };
+        playerLocations = { player -> node };
+    };
+    
+    assertEquals(gameEnd.owner(node), unowned, "Unknown node shouldn't be owned.");
+    assertFalse(gameEnd.placedFuelStation(node), "Unknown node shouldn't have a fuel station.");
+    assertEquals(gameEnd.playerLocation(player), tropicHopBoard.start,
+        "Player shouldn't be at unknown node.");
+}
+
 void checkPlayers<Value>(Game gameStart, Game gameEnd, Value(Player)(Game) attribute,
         String attributeName, Player targetPlayer, Value targetValue) {
     for (player -> _ in testPlayers) {

@@ -74,7 +74,7 @@ shared class Game {
             this.owners = map {
                 owners
                     .filter((_ -> owner) => owner is Unowned || this.activePlayers.contains(owner))
-                    .filter((node -> _) => node is Ownable);
+                    .filter((node -> _) => node is Ownable && board.nodes.defines(node));
             };
         }
         else {
@@ -84,7 +84,11 @@ shared class Game {
         this.phase = phase else preRoll;
         
         if (exists placedFuelStations) {
-            this.placedFuelStations = set(placedFuelStations.narrow<FuelStationable>());
+            this.placedFuelStations = set {
+                placedFuelStations
+                    .filter((node) => board.nodes.defines(node))
+                    .narrow<FuelStationable>();
+            };
         }
         else {
             this.placedFuelStations = emptySet;
@@ -123,7 +127,9 @@ shared class Game {
         if (exists playerLocations) {
             this.playerLocations = map {
                 playerLocations.filter((player -> node)
-                    => this.activePlayers.contains(player) && !node is Well);
+                    => this.activePlayers.contains(player)
+                        && !node is Well
+                        && board.nodes.defines(node));
             };
         }
         else {

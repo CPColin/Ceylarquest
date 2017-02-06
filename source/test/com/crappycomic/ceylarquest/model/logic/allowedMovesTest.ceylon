@@ -6,7 +6,7 @@ import ceylon.test {
 }
 
 import com.crappycomic.ceylarquest.model {
-    Node,
+    WellOrbit,
     WellPull
 }
 import com.crappycomic.ceylarquest.model.logic {
@@ -16,46 +16,45 @@ import com.crappycomic.ceylarquest.model.logic {
     matchingPaths,
     removeWellOrbitPaths
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
-class TestNode() satisfies Node {
-    location = [0, 0];
-    
-    name => id;
+import test.com.crappycomic.ceylarquest.model {
+    TestNode
 }
 
 test
 shared void containsWellOrbitTest() {
-    assertFalse(containsWellOrbit([tropicHopBoard.start], 0));
-    assertTrue(containsWellOrbit([tropicHopBoard.start, tropicHopBoard.testWellOrbit], 0));
-    assertFalse(containsWellOrbit([tropicHopBoard.testWellOrbit, tropicHopBoard.start], 1),
-        "WellOrbit node before the fromIndex should not have been noticed.");
-    assertTrue(containsWellOrbit(
-        [tropicHopBoard.testWellOrbit, tropicHopBoard.start, tropicHopBoard.testWellOrbit], 1));
+    object testNode extends TestNode("testNode") {}
+    object testWellOrbit extends TestNode("testWellOrbit") satisfies WellOrbit {}
+    
+    assertFalse(containsWellOrbit([testNode], 0));
+    assertTrue(containsWellOrbit([testNode, testWellOrbit], 0));
+    assertFalse(containsWellOrbit([testWellOrbit, testNode], 1),
+        "WellOrbit testNode before the fromIndex should not have been noticed.");
+    assertTrue(containsWellOrbit([testWellOrbit, testNode, testWellOrbit], 1));
 }
 
 test
 shared void enforceWellPullPathTest() {
-    object testWellPull1 extends TestNode() satisfies WellPull {}
-    object testWellPull2 extends TestNode() satisfies WellPull {}
+    object testNode1 extends TestNode("testNode1") {}
+    object testNode2 extends TestNode("testNode2") {}
+    object testWellPull1 extends TestNode("testWellPull1") satisfies WellPull {}
+    object testWellPull2 extends TestNode("testWellPull2") satisfies WellPull {}
     
-    assertEquals(enforceWellPullPath([tropicHopBoard.start, testWellPull1]),
-        [tropicHopBoard.start, testWellPull1, tropicHopBoard.start]);
-    assertEquals(enforceWellPullPath([tropicHopBoard.start, tropicHopBoard.testAfterStart]),
-        [tropicHopBoard.start, tropicHopBoard.testAfterStart]);
-    assertEquals(enforceWellPullPath([tropicHopBoard.start, testWellPull1, testWellPull2]),
-        [tropicHopBoard.start, testWellPull1, testWellPull2, testWellPull1, tropicHopBoard.start]);
+    assertEquals(enforceWellPullPath([testNode1, testWellPull1]),
+        [testNode1, testWellPull1, testNode1]);
+    assertEquals(enforceWellPullPath([testNode1, testNode2]),
+        [testNode1, testNode2]);
+    assertEquals(enforceWellPullPath([testNode1, testNode2, testWellPull1, testWellPull2]),
+        [testNode1, testNode2, testWellPull1, testWellPull2, testWellPull1, testNode2]);
 }
 
 test
 shared void findBranchesTest() {
-    object testNode1 extends TestNode() {}
-    object testNode2 extends TestNode() {}
-    object testNode3 extends TestNode() {}
-    object testNode4 extends TestNode() {}
-    object testNode5 extends TestNode() {}
+    object testNode1 extends TestNode("testNode1") {}
+    object testNode2 extends TestNode("testNode2") {}
+    object testNode3 extends TestNode("testNode3") {}
+    object testNode4 extends TestNode("testNode4") {}
+    object testNode5 extends TestNode("testNode5") {}
     
     value path1 = [testNode1, testNode2, testNode3];
     value path2 = [testNode1, testNode2, testNode4];
@@ -68,10 +67,14 @@ shared void findBranchesTest() {
 
 test
 shared void matchingPathsTest() {
-    value path1 = [tropicHopBoard.start, tropicHopBoard.testWellOrbit];
-    value path2 = [tropicHopBoard.start, tropicHopBoard.testOwnablePort];
-    value path3
-        = [tropicHopBoard.start, tropicHopBoard.testWellOrbit, tropicHopBoard.testFuelStationable];
+    object testNode1 extends TestNode("testNode1") {}
+    object testNode2 extends TestNode("testNode2") {}
+    object testNode3 extends TestNode("testNode3") {}
+    object testNode4 extends TestNode("testNode4") {}
+    
+    value path1 = [testNode1, testNode2];
+    value path2 = [testNode1, testNode3];
+    value path3 = [testNode1, testNode2, testNode4];
     
     assertEquals(matchingPaths([path1, path2, path3], 0), [path1, path2, path3]);
     assertEquals(matchingPaths([path1, path2, path3], 1), [path1, path3]);
@@ -81,8 +84,12 @@ shared void matchingPathsTest() {
 
 test
 shared void removeWellOrbitPathsTest() {
-    value path1 = [tropicHopBoard.start, tropicHopBoard.testWellOrbit];
-    value path2 = [tropicHopBoard.start, tropicHopBoard.testOwnablePort];
+    object testNode1 extends TestNode("testNode1") {}
+    object testNode2 extends TestNode("testNode2") {}
+    object testWellOrbit extends TestNode("testWellOrbit") satisfies WellOrbit {}
+    
+    value path1 = [testNode1, testWellOrbit];
+    value path2 = [testNode1, testNode2];
     value paths = removeWellOrbitPaths({path1, path2}).sequence();
     
     assertEquals(paths.size, 1, "Exactly one path should have been returned.");

@@ -7,7 +7,12 @@ import ceylon.test {
 }
 
 import com.crappycomic.ceylarquest.model {
+    ActionTrigger,
     Game,
+    Well,
+    WellOrbit,
+    WellPull,
+    collectCash,
     incorrectPhase,
     preRoll,
     testPlayers
@@ -22,7 +27,8 @@ import com.crappycomic.tropichop {
 
 import test.com.crappycomic.ceylarquest.model {
     testGame,
-    wrongPhaseTest
+    wrongPhaseTest,
+    TestNode
 }
 
 test
@@ -78,7 +84,9 @@ shared void traversePathRemainAtActionTrigger() {
         phase = preRoll;
     };
     value playerCash = game.playerCash(player);
-    value node = tropicHopBoard.testActionTrigger;
+    object node extends TestNode("ActionTrigger") satisfies ActionTrigger {
+        action = collectCash(100);
+    }
     value actionGame = node.action(game, player);
     
     assertTrue(actionGame.playerCash(player) > playerCash, "Action didn't increase player's cash.");
@@ -124,18 +132,16 @@ shared void traversePathToActionTrigger() {
         phase = preRoll;
     };
     value playerCash = game.playerCash(player);
-    value node = tropicHopBoard.testActionTrigger;
-    value action = node.action;
-    value actionGame = action(game, player);
-    
-    assertTrue(actionGame.playerCash(player) > playerCash, "Action didn't increase player's cash.");
-    
+    value cash = 100;
+    object node extends TestNode("ActionTrigger") satisfies ActionTrigger {
+        action = collectCash(cash);
+    }
     value path = [node, node];
     value result = traversePath(game, player, path, 0);
     
     if (is Game result) {
-        assertEquals(result.playerCash(player), actionGame.playerCash(player),
-            "Resulting games didn't match.");
+        assertEquals(result.playerCash(player), playerCash + cash,
+            "Player didn't earn correct amount of cash.");
     }
     else {
         fail(result.message);
@@ -143,9 +149,18 @@ shared void traversePathToActionTrigger() {
 }
 
 test
-shared void traversePathToWell() {
+shared void traversePathToWellOrbit() {
+    traversePathToWell(object extends TestNode("WellOrbit") satisfies WellOrbit {});
+}
+
+test
+shared void traversePathToWellPull() {
+    traversePathToWell(object extends TestNode("WellPull") satisfies WellPull {});
+}
+
+void traversePathToWell(Well node) {
     value player = testPlayers.first.key;
-    value path = [tropicHopBoard.testWell];
+    value path = [node];
     value game = testGame.with {
         phase = preRoll;
     };
@@ -165,7 +180,8 @@ shared void traversePathToWell() {
 test
 shared void traversePathWrongPhase() {
     value player = testPlayers.first.key;
-    value path = [tropicHopBoard.testOwnablePort];
+    object node extends TestNode("Node") {}
+    value path = [node];
     
     wrongPhaseTest((game) => traversePath(game, player, path, 0), preRoll);
 }
