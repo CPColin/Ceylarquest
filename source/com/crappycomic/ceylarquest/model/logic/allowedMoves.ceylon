@@ -10,7 +10,6 @@ import com.crappycomic.ceylarquest.model {
  Each value returned contains the full [[Path]] from the origin to a node that is, at most,
  [[distance]] spaces away. This method can return a single path with just the origin in it, which
  means no moves are valid for the given parameters."
-// TODO: unit tests for the helper functions, at least
 shared [Path+] allowedMoves(Board board, Node origin, Integer distance) {
     // Find all the paths with the given distance.
     value paths = depthFirstSearch(board, origin, distance);
@@ -52,7 +51,7 @@ shared [Path+] allowedMoves(Board board, Node origin, Integer distance) {
 
 "Returns `true` if the given [[path]] contains any [[WellOrbit]] nodes between the given
  [[index|fromIndex]] and the end of the path."
-Boolean containsWellOrbit(Path path, Integer fromIndex) {
+shared Boolean containsWellOrbit(Path path, Integer fromIndex) {
     return path
         .skip(fromIndex)
         .any((node) => node is WellOrbit);
@@ -71,7 +70,7 @@ Boolean containsWellOrbit(Path path, Integer fromIndex) {
  the previous node. The resulting path will lead up to the pulling node, then backtrack, in order,
  over the previous nodes until one can be landed upon. The path is assumed to start from a valid
  location."
-Path enforceWellPullPath(Path path) {
+shared Path enforceWellPullPath(Path path) {
     assert (!path.first is WellPull);
     
     if (path.last is WellPull) {
@@ -89,8 +88,9 @@ Path enforceWellPullPath(Path path) {
 
 "Recursively finds among the given [[paths]] the latest index where they branch, starting from the
  given [[index]]. The returned paths will share a common node at the returned index and will share
- no further nodes between there and the end of the path. Returns [[Finished]] when no path remains."
-[Path[], Integer]|Finished findBranches(Path[] paths, Integer index = 0) {
+ no further nodes between there and the end of the path. Returns [[Finished]] when no path remains.
+ The paths are assumed to share a common first node and are expected to be all the same length."
+shared [Path[], Integer]|Finished findBranches(Path[] paths, Integer index = 0) {
     if (nonempty paths) {
         value result = matchingPaths(paths, index + 1);
         
@@ -106,8 +106,9 @@ Path enforceWellPullPath(Path path) {
     }
 }
 
-"Returns all [[paths]] that share the same node at the given [[index]]."
-Path[] matchingPaths([Path+] paths, Integer index) {
+"Returns all [[paths]] that share the same node at the given [[index]]. The node must exist in the
+ first path given."
+shared Path[] matchingPaths([Path+] paths, Integer index) {
     value target = paths[0][index];
     
     if (exists target) {
@@ -119,6 +120,6 @@ Path[] matchingPaths([Path+] paths, Integer index) {
 }
 
 "Filters paths that end on a [[WellOrbit]] node from the given stream of [[paths]]."
-{Path*} removeWellOrbitPaths({Path*} paths) {
+shared {Path*} removeWellOrbitPaths({Path*} paths) {
     return paths.filter((path) => !path.last is WellOrbit);
 }

@@ -356,4 +356,6 @@ shared object tropicHopBoard extends Board() {
     shared Node testUnownablePort = eastFreeport;
     
     shared Node testWell = eastToWest1;
+    
+    shared Node testWellOrbit = westToEast1;
 }
