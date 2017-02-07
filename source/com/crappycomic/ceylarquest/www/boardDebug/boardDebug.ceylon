@@ -7,7 +7,8 @@ import com.crappycomic.ceylarquest.model {
     Game,
     InvalidSave,
     Location,
-    loadGame
+    loadGame,
+    testPlayers
 }
 
 import com.crappycomic.ceylarquest.view {
@@ -106,9 +107,14 @@ object g satisfies GraphicsContext {
         => "rgba(``color.red``, ``color.green``, ``color.blue``, ``color.alpha.float / 255``)";
 }
 
-Game game = createGame();
+//Game game = loadDebugGame();
 
-Game createGame() {
+Game game = Game {
+    board = tropicHopBoard;
+    playerNames = testPlayers;
+};
+
+Game loadDebugGame() {
     /*
      TODO File a bug report for this:
      The com.crappycomic.tropichop module is loaded via the debug module in Java mode, but the
