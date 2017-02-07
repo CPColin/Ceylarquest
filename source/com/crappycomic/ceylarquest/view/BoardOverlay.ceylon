@@ -112,11 +112,10 @@ shared class BoardOverlay(GraphicsContext g) {
     }
     
     shared void drawPaths(Player player, {Path*} paths) {
-        paths.each((path) => drawPath(player, path));
-    }
-    
-    void drawPath(Player player, Path path) {
-        g.drawPath(path.map(Node.location), player.color, 7, roundCap, miterJoin);
+        paths.each((path) => g.drawPath(path.map(Node.location), player.color.withSaturation(0.75),
+            13, roundCap, roundJoin));
+        paths.each((path) => g.drawPath(path.map(Node.location), player.color.withValue(0.75),
+            7, roundCap, roundJoin));
     }
     
     shared void highlightNodes(Game game) {

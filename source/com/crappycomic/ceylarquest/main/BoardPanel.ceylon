@@ -78,12 +78,13 @@ class BoardPanel() extends JPanel() {
             boardOverlay.drawOwnedNodes(game);
             //boardOverlay.highlightNodes(game);
             boardOverlay.drawPlacedFuelStations(game);
-            boardOverlay.drawActivePlayers(game);
             
             value player = testPlayers.last.key;
             
             boardOverlay.drawPaths(player,
                 allowedMoves(game.board, game.playerLocation(player), 7));
+            
+            boardOverlay.drawActivePlayers(game);
         }
     }
 }
