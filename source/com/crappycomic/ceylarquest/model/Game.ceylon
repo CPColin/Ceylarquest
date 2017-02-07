@@ -12,7 +12,11 @@ import ceylon.random {
  Since instances of this class are immutable, use [[Game.with]] to create new instances that include
  requested updates."
 shared class Game {
-    shared List<Player> activePlayers;
+    "The players who have not yet been knocked out of the game."
+    shared Set<Player> activePlayers;
+    
+    "All the players in the game, in the order they'll take turns."
+    Player[] allPlayers;
     
     shared Board board;
     
@@ -40,6 +44,7 @@ shared class Game {
     
     shared new(Board board, {<Player -> String>*} playerNames,
             {Player*}? activePlayers = null,
+            {Player*}? allPlayers = null,
             {Debt*}? debts = null,
             {<Node -> Owner>*}? owners = null,
             Phase? phase = null,
@@ -52,12 +57,18 @@ shared class Game {
         this.board = board;
         this.playerNames = map(playerNames);
         
-        if (exists activePlayers) {
-            this.activePlayers
-                = randomize(activePlayers.filter((player) => this.playerNames.defines(player)));
+        if (exists allPlayers) {
+            this.allPlayers = allPlayers.sequence();
         }
         else {
-            this.activePlayers = randomize(this.playerNames.keys);
+            this.allPlayers = randomize(this.playerNames.keys).sequence();
+        }
+        
+        if (exists activePlayers) {
+            this.activePlayers = set(activePlayers);
+        }
+        else {
+            this.activePlayers = set(this.allPlayers);
         }
         
         if (exists debts) {
@@ -182,6 +193,7 @@ shared class Game {
             board = this.board;
             playerNames = this.playerNames;
             activePlayers = this.activePlayers;
+            allPlayers = this.allPlayers;
             
             debts = debts?.chain(this.debts) else this.debts;
             owners = owners?.chain(this.owners) else this.owners;

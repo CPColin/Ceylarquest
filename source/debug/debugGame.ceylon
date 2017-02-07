@@ -3,31 +3,35 @@ import ceylon.json {
     JsonArray
 }
 
+"A partially played game that can be used for debugging UI and serialization logic."
 shared String debugGameJson => JsonObject {
     "board" -> JsonObject {
         "moduleName" -> `module com.crappycomic.tropichop`.name,
         "packageName" -> `package com.crappycomic.tropichop`.name,
         "objectName" -> "tropicHopBoard"
     },
-    "players" -> JsonObject {
-        "cyan" -> "Cyan",
-        "red" -> "Red",
+    "playerNames" -> JsonObject {
         "blue" -> "Blue",
-        "magenta" -> "Magenta",
+        "cyan" -> "Cyan",
         "green" -> "Green",
+        "magenta" -> "Magenta",
+        "red" -> "Red",
         "yellow" -> "Yellow"
     },
     "activePlayers" -> JsonArray {
+        "blue",
+        "green",
+        "magenta",
+        "red",
+        "yellow"
+    },
+    "allPlayers" -> JsonArray {
         "red",
         "blue",
         "magenta",
         "green",
-        "yellow"
-    },
-    "playerLocations" -> JsonObject {
-        "cyan" -> "westFreeport", // Ignored because Cyan is not active
-        "magenta" -> "eastFreeport",
-        "green" -> "westB"
+        "yellow",
+        "cyan"
     },
     "owners" -> JsonObject {
         "westC" -> "green",
@@ -39,6 +43,10 @@ shared String debugGameJson => JsonObject {
         "westC",
         "eastD",
         "eastFreeport" // Invalid becayse it's not FuelStationable
+    },
+    "playerLocations" -> JsonObject {
+        "cyan" -> "westFreeport", // Ignored because Cyan is not active
+        "magenta" -> "eastFreeport",
+        "green" -> "westB"
     }
 }.pretty;
-

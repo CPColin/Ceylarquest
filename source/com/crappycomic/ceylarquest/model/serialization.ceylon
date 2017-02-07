@@ -17,9 +17,10 @@ shared Game|InvalidSave loadGame(String json) {
         assert (is JsonObject jsonObject = parse(json));
         
         value board = loadBoard(jsonObject);
-        value players = loadPlayers(jsonObject);
+        value players = loadPlayerNames(jsonObject);
         
-        value activePlayers = loadActivePlayers(jsonObject);
+        value activePlayers = loadPlayers(jsonObject, "activePlayers");
+        value allPlayers = loadPlayers(jsonObject, "allPlayers");
         value owners = loadOwners(jsonObject, board);
         value placedFuelStations = loadPlacedFuelStations(jsonObject, board);
         value playerLocations = loadPlayerLocations(jsonObject, board);
@@ -29,6 +30,7 @@ shared Game|InvalidSave loadGame(String json) {
             playerNames = players;
             
             activePlayers = activePlayers;
+            allPlayers = allPlayers;
             owners = owners;
             placedFuelStations = placedFuelStations;
             playerLocations = playerLocations;
@@ -36,19 +38,6 @@ shared Game|InvalidSave loadGame(String json) {
     }
     catch (AssertionError | InvalidTypeException e) {
         return InvalidSave(e.message);
-    }
-}
-
-throws(`class AssertionError`)
-throws(`class InvalidTypeException`)
-{Player*} loadActivePlayers(JsonObject jsonObject) {
-    value activePlayers = jsonObject.getArrayOrNull("activePlayers");
-    
-    if (exists activePlayers) {
-        return activePlayers.narrow<String>().map((playerKey) => resolvePlayer(playerKey));
-    }
-    else {
-        return {};
     }
 }
 
@@ -114,11 +103,24 @@ throws(`class InvalidTypeException`)
 
 throws(`class AssertionError`)
 throws(`class InvalidTypeException`)
-{<Player -> String>*} loadPlayers(JsonObject jsonObject) {
-    value players = jsonObject.getObject("players");
+{<Player -> String>*} loadPlayerNames(JsonObject jsonObject) {
+    value playerNames = jsonObject.getObject("playerNames");
     
-    return players.map((playerKey -> _)
-        => resolvePlayer(playerKey) -> players.getString(playerKey));
+    return playerNames.map((playerKey -> _)
+        => resolvePlayer(playerKey) -> playerNames.getString(playerKey));
+}
+
+throws(`class AssertionError`)
+throws(`class InvalidTypeException`)
+{Player*}? loadPlayers(JsonObject jsonObject, String key) {
+    value players = jsonObject.getArrayOrNull(key);
+    
+    if (exists players) {
+        return players.narrow<String>().map((playerKey) => resolvePlayer(playerKey));
+    }
+    else {
+        return null;
+    }
 }
 
 Node resolveNode(Board board, String key) {
