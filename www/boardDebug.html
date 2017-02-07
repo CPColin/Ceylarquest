@@ -23,11 +23,15 @@ body {
 </style>
 </head>
 <body>
-<a href="#" onclick="boardDebug.clear(); return false;">Clear</a>
-<input id="radius" type="number" value="20" onchange="boardDebug.colorNodes();" />
-<a href="#" onclick="boardDebug.drawActivePlayers(); return false;">Draw Players</a>
-<a href="#" onclick="boardDebug.colorNodes(); return false;">Highlight</a>
-<a href="#" onclick="boardDebug.drawNodeAreas(); return false;">Draw Areas</a>
+<nav style="display: block;">
+  <a href="#" onclick="boardDebug.clear(); return false;">Clear</a>
+  <input id="parameter" type="number" value="20" />
+  <a href="#" onclick="boardDebug.drawActivePlayers(); return false;">Draw Players</a>
+  <a href="#" onclick="boardDebug.colorNodes(); return false;">Highlight</a>
+  <a href="#" onclick="boardDebug.drawNodeAreas(); return false;">Draw Areas</a>
+  <a href="#" onclick="boardDebug.drawAllowedMoves(); return false;">Draw Allowed Moves</a>
+</nav>
+
 <canvas id="board" width="1280" height="1280" style="background-image: url(tropichop.png);"></canvas>
 </body>
 </html>

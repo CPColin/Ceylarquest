@@ -5,6 +5,12 @@ import ceylon.language {
     cprint=print
 }
 
+import com.crappycomic.ceylarquest.model {
+    testPlayers
+}
+import com.crappycomic.ceylarquest.model.logic {
+    allowedMoves
+}
 import com.crappycomic.ceylarquest.view {
     BoardOverlay,
     black
@@ -73,6 +79,11 @@ class BoardPanel() extends JPanel() {
             //boardOverlay.highlightNodes(game);
             boardOverlay.drawPlacedFuelStations(game);
             boardOverlay.drawActivePlayers(game);
+            
+            value player = testPlayers.last.key;
+            
+            boardOverlay.drawPaths(player,
+                allowedMoves(game.board, game.playerLocation(player), 7));
         }
     }
 }

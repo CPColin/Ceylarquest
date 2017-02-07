@@ -1,9 +1,21 @@
+import ceylon.interop.java {
+    createJavaIntArray
+}
+
 import com.crappycomic.ceylarquest.model {
     Color,
     Location
 }
 import com.crappycomic.ceylarquest.view {
-    GraphicsContext
+    GraphicsContext,
+    LineCap,
+    LineJoin,
+    bevelJoin,
+    buttCap,
+    miterJoin,
+    roundCap,
+    roundJoin,
+    squareCap
 }
 
 import java.awt {
@@ -26,8 +38,8 @@ class JavaGraphicsContext(Graphics2D g, Integer width, Integer height) satisfies
     shared actual void drawCircle(Location center, Color color, Integer radius, Integer width) {
         value diameter = radius * 2;
         
-        g.stroke = BasicStroke(width.float);
         g.color = awtColor(color);
+        g.stroke = BasicStroke(width.float);
         
         g.drawArc(center[0] - radius, center[1] - radius, diameter, diameter, 0, 360);
     }
@@ -37,10 +49,30 @@ class JavaGraphicsContext(Graphics2D g, Integer width, Integer height) satisfies
     }
     
     shared actual void drawLine(Location from, Location to, Color color, Integer width) {
-        g.stroke = BasicStroke(width.float);
         g.color = awtColor(color);
+        g.stroke = BasicStroke(width.float);
         
         g.drawLine(from[0], from[1], to[0], to[1]);
+    }
+    
+    shared actual void drawPath({Location*} locations, Color color, Integer width,
+            LineCap lineCap, LineJoin lineJoin) {
+        g.color = awtColor(color);
+        g.stroke = BasicStroke(
+            width.float,
+            switch (lineCap)
+                case (buttCap) BasicStroke.capButt
+                case (roundCap) BasicStroke.capRound
+                case (squareCap) BasicStroke.capSquare,
+            switch (lineJoin)
+                case (bevelJoin) BasicStroke.joinBevel
+                case (miterJoin) BasicStroke.joinMiter
+                case (roundJoin) BasicStroke.joinRound);
+        
+        g.drawPolyline(
+            createJavaIntArray(locations.map((location) => location[0])),
+            createJavaIntArray(locations.map((location) => location[1])),
+            locations.size);
     }
     
     shared actual void fillCircle(Location center, Color color, Integer radius) {

@@ -10,12 +10,21 @@ import com.crappycomic.ceylarquest.model {
     loadGame,
     testPlayers
 }
-
+import com.crappycomic.ceylarquest.model.logic {
+    allowedMoves
+}
 import com.crappycomic.ceylarquest.view {
     BoardOverlay,
-    GraphicsContext
+    GraphicsContext,
+    LineCap,
+    LineJoin,
+    bevelJoin,
+    buttCap,
+    miterJoin,
+    roundCap,
+    roundJoin,
+    squareCap
 }
-
 import com.crappycomic.tropichop {
     tropicHopBoard
 }
@@ -33,6 +42,8 @@ dynamic JsCanvas {
 
 dynamic JsContext {
     shared formal variable String fillStyle;
+    shared formal variable String lineCap;
+    shared formal variable String lineJoin;
     shared formal variable Integer lineWidth;
     shared formal variable String strokeStyle;
     
@@ -78,6 +89,31 @@ object g satisfies GraphicsContext {
         context.beginPath();
         context.moveTo(from[0], from[1]);
         context.lineTo(to[0], to[1]);
+        
+        context.stroke();
+    }
+    
+    shared actual void drawPath({Location*} locations, Color color, Integer width,
+            LineCap lineCap, LineJoin lineJoin) {
+        value canvas = getCanvas();
+        value context = getContext(canvas);
+        
+        context.lineCap = switch (lineCap)
+            case (buttCap) "butt"
+            case (roundCap) "round"
+            case (squareCap) "square";
+        context.lineJoin = switch (lineJoin)
+            case (bevelJoin) "bevel"
+            case (miterJoin) "miter"
+            case (roundJoin) "round";
+        context.lineWidth = width;
+        context.strokeStyle = rgba(color);
+        
+        context.beginPath();
+        //locations.each((location) => context.lineTo(location[0], location[1]));
+        for (location in locations) {
+            context.lineTo(location[0], location[1]);
+        }
         
         context.stroke();
     }
@@ -145,7 +181,15 @@ shared void drawActivePlayers() {
 
 shared void colorNodes() {
     clear();
-    boardOverlay.colorNodes(game, getRadius());
+    boardOverlay.colorNodes(game, getParameter());
+}
+
+shared void drawAllowedMoves() {
+    value player = testPlayers.last.key;
+    value paths = allowedMoves(game.board, game.playerLocation(player), getParameter());
+    
+    clear();
+    boardOverlay.drawPaths(player, paths);
 }
 
 variable Integer nodeAreaX = 0;
@@ -155,7 +199,7 @@ variable Integer nodeAreaRadius = 0;
 shared void drawNodeAreas() {
     nodeAreaX = 0;
     nodeAreaY = 0;
-    nodeAreaRadius = getRadius();
+    nodeAreaRadius = getParameter();
     
     value canvas = getCanvas();
     value context = getContext(canvas);
@@ -191,10 +235,10 @@ JsContext getContext(JsCanvas canvas) {
     return canvas.getContext("2d");
 }
 
-Integer getRadius() {
+Integer getParameter() {
     dynamic {
-        value radius = Integer.parse(document.getElementById("radius").\ivalue);
+        value parameter = Integer.parse(document.getElementById("parameter").\ivalue);
         
-        return if (is Integer radius) then radius else 0;
+        return if (is Integer parameter) then parameter else 0;
     }
 }

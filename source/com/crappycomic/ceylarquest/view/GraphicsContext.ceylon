@@ -10,8 +10,8 @@ shared interface GraphicsContext {
     
     shared formal void drawLine(Location from, Location to, Color color, Integer width = 1);
     
-    // TODO
-    //shared formal void drawPath({Location+} points, Color color, Integer width = 1, Join = miter);
+    shared formal void drawPath({Location*} points, Color color, Integer width = 1,
+        LineCap lineCap = buttCap, LineJoin lineJoin = miterJoin);
     
     shared formal void fillCircle(Location center, Color color, Integer radius);
     

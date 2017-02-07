@@ -9,7 +9,9 @@ import com.crappycomic.ceylarquest.model {
     Color,
     Game,
     Location,
+    Node,
     Ownable,
+    Path,
     Player
 }
 
@@ -107,6 +109,14 @@ shared class BoardOverlay(GraphicsContext g) {
         value color = Color(255 - (nodeHash * 2), (nodeHash * 37) % 256, nodeHash * 3);
         
         g.fillRect([x, y], color, width, height);
+    }
+    
+    shared void drawPaths(Player player, {Path*} paths) {
+        paths.each((path) => drawPath(player, path));
+    }
+    
+    void drawPath(Player player, Path path) {
+        g.drawPath(path.map(Node.location), player.color, 7, roundCap, miterJoin);
     }
     
     shared void highlightNodes(Game game) {
