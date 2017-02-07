@@ -110,10 +110,7 @@ object g satisfies GraphicsContext {
         context.strokeStyle = rgba(color);
         
         context.beginPath();
-        //locations.each((location) => context.lineTo(location[0], location[1]));
-        for (location in locations) {
-            context.lineTo(location[0], location[1]);
-        }
+        locations.each((location) => context.lineTo(location[0], location[1]));
         
         context.stroke();
     }
