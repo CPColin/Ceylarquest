@@ -21,6 +21,7 @@ shared Game|InvalidSave loadGame(String json) {
         
         value activePlayers = loadPlayers(jsonObject, "activePlayers");
         value allPlayers = loadPlayers(jsonObject, "allPlayers");
+        value currentPlayer = loadCurrentPlayer(jsonObject);
         value owners = loadOwners(jsonObject, board);
         value placedFuelStations = loadPlacedFuelStations(jsonObject, board);
         value playerLocations = loadPlayerLocations(jsonObject, board);
@@ -31,6 +32,7 @@ shared Game|InvalidSave loadGame(String json) {
             
             activePlayers = activePlayers;
             allPlayers = allPlayers;
+            currentPlayer = currentPlayer;
             owners = owners;
             placedFuelStations = placedFuelStations;
             playerLocations = playerLocations;
@@ -47,6 +49,14 @@ Board loadBoard(JsonObject jsonObject) {
     value board = jsonObject.getObject("board");
     
     return loadObject<Board>(board);
+}
+
+throws(`class AssertionError`)
+throws(`class InvalidTypeException`)
+Player? loadCurrentPlayer(JsonObject jsonObject) {
+    value currentPlayer = jsonObject.getStringOrNull("currentPlayer");
+    
+    return if (exists currentPlayer) then resolvePlayer(currentPlayer) else null;
 }
 
 throws(`class AssertionError`)

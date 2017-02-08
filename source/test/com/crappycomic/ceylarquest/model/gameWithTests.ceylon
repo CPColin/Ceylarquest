@@ -1,6 +1,7 @@
 import ceylon.test {
     assertEquals,
     assertFalse,
+    assertNotEquals,
     assertTrue,
     test
 }
@@ -21,6 +22,27 @@ import com.crappycomic.tropichop {
 // affecting other players or and nodes.
 
 test
+shared void gameWithCurrentPlayer() {
+    value gameStart = testGame;
+    value playerStart = gameStart.currentPlayer;
+    value gameEnd = gameStart.with {
+        currentPlayer = gameStart.nextPlayer;
+    };
+    value playerEnd = gameEnd.currentPlayer;
+    
+    assertNotEquals(playerEnd, playerStart, "Current player didn't change.");
+    
+    variable value game = testGame;
+    
+    for (i in 0:10) {
+        print(game.currentPlayer);
+        game = game.with {
+            currentPlayer = game.nextPlayer;
+        };
+    }
+}
+
+test
 shared void gameWithOwnersDecreasing() {
     value nodes = tropicHopBoard.nodes.keys.narrow<Ownable>();
     value node1 = nodes.first;
@@ -29,7 +51,7 @@ shared void gameWithOwnersDecreasing() {
     
     assert (exists node1, exists node2);
     
-    assertFalse(node1 == node2, "This test needs two different Ownable nodes.");
+    assertNotEquals(node1, node2, "This test needs two different Ownable nodes.");
     
     value gameStart = Game {
         board = tropicHopBoard;
@@ -57,7 +79,7 @@ shared void gameWithOwnersIncreasing() {
     
     assert (exists node1, exists node2);
     
-    assertFalse(node1 == node2, "This test needs two different Ownable nodes.");
+    assertNotEquals(node1, node2, "This test needs two different Ownable nodes.");
     
     value gameStart = Game {
         board = tropicHopBoard;
@@ -85,7 +107,7 @@ shared void gameWithPlacedFuelStations() {
     
     assert (exists node1, exists node2);
     
-    assertFalse(node1 == node2, "This test needs two different FuelStationable nodes.");
+    assertNotEquals(node1, node2, "This test needs two different FuelStationable nodes.");
     
     value gameStart = Game {
         board = tropicHopBoard;

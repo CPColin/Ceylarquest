@@ -86,13 +86,9 @@ shared void purchaseUnownedNode() {
     value result = purchaseNode(game, player, node);
     
     if (is Game result) {
-        value owner = result.owners.get(node);
+        value owner = result.owner(node);
         
-        assertTrue(owner exists);
-        
-        if (exists owner) {
-            assertTrue(owner == player);
-        }
+        assertEquals(owner, player, "Node is owned by the wrong player.");
         
         assertEquals(result.playerCash(player), playerCash - node.price,
             "Player's cash didn't decrease by the price of the node: ``node.price``.");

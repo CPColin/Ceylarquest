@@ -16,9 +16,11 @@ shared class Game {
     shared Set<Player> activePlayers;
     
     "All the players in the game, in the order they'll take turns."
-    Player[] allPlayers;
+    [Player+] allPlayers;
     
     shared Board board;
+    
+    shared Player currentPlayer;
     
     shared Map<Node, Owner> owners;
     
@@ -43,7 +45,7 @@ shared class Game {
     shared new(Board board, {<Player -> String>*} playerNames,
             {Player*}? activePlayers = null,
             {Player*}? allPlayers = null,
-            {Debt*}? debts = null,
+            Player? currentPlayer = null,
             {<Node -> Owner>*}? owners = null,
             Phase? phase = null,
             {Node*}? placedFuelStations = null,
@@ -55,18 +57,35 @@ shared class Game {
         this.board = board;
         this.playerNames = map(playerNames);
         
+        Player[] allPlayersSequence;
+        
         if (exists allPlayers) {
-            this.allPlayers = allPlayers.sequence();
+            allPlayersSequence = allPlayers.sequence();
         }
         else {
-            this.allPlayers = randomize(this.playerNames.keys).sequence();
+            allPlayersSequence = randomize(this.playerNames.keys).sequence();
         }
+        
+        assert (nonempty allPlayersSequence);
+        
+        this.allPlayers = allPlayersSequence;
         
         if (exists activePlayers) {
             this.activePlayers = set(activePlayers);
         }
         else {
             this.activePlayers = set(this.allPlayers);
+        }
+        
+        assert (this.allPlayers.containsEvery(this.activePlayers));
+        
+        if (exists currentPlayer) {
+            this.currentPlayer = this.activePlayers.contains(currentPlayer)
+                then currentPlayer
+                else this.allPlayers.first;
+        }
+        else {
+            this.currentPlayer = this.activePlayers.first else this.allPlayers.first;
         }
         
         if (exists owners) {
@@ -149,6 +168,26 @@ shared class Game {
             - sum { 0, *{ for (player in activePlayers) playerFuelStationCount(player) } };
     }
     
+    shared Player nextPlayer {
+        if (activePlayers.empty) {
+            // This should never happen, but fail safely, if it somehow does.
+            return currentPlayer;
+        }
+        
+        // Also asserted in the constructor.
+        assert (allPlayers.containsEvery(activePlayers));
+        
+        value currentPlayerIndex
+            = allPlayers.firstIndexWhere((player) => player == currentPlayer) else 0;
+        
+        value nextPlayer = allPlayers
+            .cycled
+            .skip(currentPlayerIndex + 1)
+            .find((player) => activePlayers.contains(player));
+        
+        return nextPlayer else currentPlayer;
+    }
+    
     shared Owner owner(Node node) => owners.getOrDefault(node, unowned);
     
     shared Boolean placedFuelStation(Node node) => placedFuelStations.contains(node);
@@ -169,6 +208,7 @@ shared class Game {
     
     "Returns a copy of this object that includes the given changes."
     shared Game with(
+            Player? currentPlayer = null,
             {<Node -> Owner>*}? owners = null,
             Phase? phase = null,
             {Node*}? placedFuelStations = null,
@@ -182,6 +222,7 @@ shared class Game {
             activePlayers = this.activePlayers;
             allPlayers = this.allPlayers;
             
+            currentPlayer = currentPlayer else this.currentPlayer;
             owners = owners?.chain(this.owners) else this.owners;
             phase = phase else this.phase;
             placedFuelStations = placedFuelStations?.chain(this.placedFuelStations)
