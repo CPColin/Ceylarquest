@@ -2,10 +2,10 @@ import ceylon.http.common {
     get
 }
 import ceylon.http.server {
-    newServer,
-    startsWith,
     AsynchronousEndpoint,
-    Request
+    Request,
+    endsWith,
+    newServer
 }
 import ceylon.http.server.endpoints {
     RepositoryEndpoint,
@@ -19,13 +19,19 @@ shared void run() {
     function mapper(Request req)
             => req.path == "/" then "/index.html" else req.path;
     
+    value resourceEp = AsynchronousEndpoint(
+        endsWith(".png"),
+        serveStaticFile("resource", mapper),
+        { get }
+    );
+    
     value staticEp = AsynchronousEndpoint(
-        startsWith("/"),
+        endsWith(".html"),
         serveStaticFile("www", mapper),
         { get }
     );
     
-    value server = newServer { modulesEp, staticEp };
+    value server = newServer { modulesEp, resourceEp, staticEp };
     
     server.start();
 }

@@ -1,3 +1,6 @@
+import ceylon.language.meta {
+    classDeclaration
+}
 import ceylon.numeric.float {
     pi
 }
@@ -237,5 +240,20 @@ Integer getParameter() {
         value parameter = Integer.parse(document.getElementById("parameter").\ivalue);
         
         return if (is Integer parameter) then parameter else 0;
+    }
+}
+
+shared void setImages() {
+    dynamic {
+        value resourcePath = classDeclaration(game.board).containingModule.name.replace(".", "/");
+        
+        dynamic bodies = document.getElementsByTagName("body");
+        dynamic body = bodies[0];
+        
+        body.style.background = "url(``resourcePath``/background.png) black fixed";
+        
+        dynamic canvas = getCanvas();
+        
+        canvas.style.background = "url(``resourcePath``/foreground.png)";
     }
 }

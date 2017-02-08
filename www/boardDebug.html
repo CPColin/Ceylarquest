@@ -2,7 +2,7 @@
 <html>
 <head>
 <script src="//requirejs.org/docs/release/2.1.22/minified/require.js"></script>
-<script type="text/javascript">
+<script type="text/javascript" defer>
 require.config({
 	baseUrl : 'modules'
 });
@@ -13,14 +13,10 @@ require(
 	[ 'com/crappycomic/ceylarquest/www/boardDebug/1.0.0/com.crappycomic.ceylarquest.www.boardDebug-1.0.0' ],
 	function(app) {
 		boardDebug = app;
+        boardDebug.setImages();
 	}
 );
 </script>
-<style>
-body {
-   background: url(starfield.png) fixed;
-}
-</style>
 </head>
 <body>
 <nav style="display: block;">
@@ -32,6 +28,6 @@ body {
   <a href="#" onclick="boardDebug.drawAllowedMoves(); return false;">Draw Allowed Moves</a>
 </nav>
 
-<canvas id="board" width="1280" height="1280" style="background-image: url(tropichop.png);"></canvas>
+<canvas id="board" width="1280" height="1280"></canvas>
 </body>
 </html>
