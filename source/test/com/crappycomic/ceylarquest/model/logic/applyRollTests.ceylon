@@ -238,8 +238,6 @@ shared void applyRollSuccess() {
         
         value paths = phase.paths;
         
-        assert (nonempty paths);
-        
         assertEquals(paths.first.first, startNode, "Path didn't start at the right node.");
         assertEquals(paths.first.last, endNode, "Path didn't end at the right node.");
     }

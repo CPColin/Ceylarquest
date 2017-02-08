@@ -339,8 +339,6 @@ shared object tropicHopBoard extends Board() {
     
     // Stuff below here is for supporting unit tests.
     
-    shared ActionTrigger testActionTrigger = westFreeport;
-    
     shared Node testAfterStart = westA;
     
     shared Node testBeforeStart = westH;
@@ -354,8 +352,4 @@ shared object tropicHopBoard extends Board() {
     shared Node testNotFuelSalableOrStationable = westResort;
     
     shared Node testUnownablePort = eastFreeport;
-    
-    shared Node testWell = eastToWest1;
-    
-    shared Node testWellOrbit = westToEast1;
 }

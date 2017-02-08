@@ -126,29 +126,6 @@ shared void traversePathSkipStart() {
 }
 
 test
-shared void traversePathToActionTrigger() {
-    value player = testPlayers.first.key;
-    value game = testGame.with {
-        phase = preRoll;
-    };
-    value playerCash = game.playerCash(player);
-    value cash = 100;
-    object node extends TestNode("ActionTrigger") satisfies ActionTrigger {
-        action = collectCash(cash);
-    }
-    value path = [node, node];
-    value result = traversePath(game, player, path, 0);
-    
-    if (is Game result) {
-        assertEquals(result.playerCash(player), playerCash + cash,
-            "Player didn't earn correct amount of cash.");
-    }
-    else {
-        fail(result.message);
-    }
-}
-
-test
 shared void traversePathToWellOrbit() {
     traversePathToWell(object extends TestNode("WellOrbit") satisfies WellOrbit {});
 }

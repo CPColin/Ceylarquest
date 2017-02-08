@@ -1,5 +1,18 @@
+import ceylon.language.meta {
+    classDeclaration
+}
 shared abstract class Player(shared Color color)
-    of blue | cyan | green | magenta | red | yellow {}
+        of blue | cyan | green | magenta | red | yellow {
+    shared actual String string {
+        // This value is null when run in a browser.
+        // See: https://github.com/ceylon/ceylon/issues/6881
+        value objectValue = classDeclaration(this).objectValue;
+        
+        assert (exists objectValue);
+        
+        return objectValue.name;
+    }
+}
 
 object blue extends Player(Color(0, 0, 255)) {}
 object cyan extends Player(Color(0, 255, 255)) {}

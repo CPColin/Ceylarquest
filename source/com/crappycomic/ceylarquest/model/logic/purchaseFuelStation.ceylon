@@ -4,12 +4,12 @@ import com.crappycomic.ceylarquest.model {
     Player,
     Result,
     incorrectPhase,
-    postRoll,
+    postLand,
     preRoll
 }
 
 shared Result purchaseFuelStation(Game game, Player player) {
-    if (game.phase != preRoll && game.phase != postRoll) {
+    if (game.phase != preRoll && game.phase != postLand) {
         return incorrectPhase;
     }
     

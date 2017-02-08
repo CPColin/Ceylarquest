@@ -11,7 +11,7 @@ import com.crappycomic.ceylarquest.model {
     FuelStationable,
     Game,
     incorrectPhase,
-    postRoll,
+    postLand,
     preRoll,
     testPlayers
 }
@@ -172,5 +172,5 @@ test
 shared void purchaseFuelWrongPhase() {
     value player = testPlayers.first.key;
     
-    wrongPhaseTest((game) => purchaseFuel(game, player, 1), preRoll, postRoll);
+    wrongPhaseTest((game) => purchaseFuel(game, player, 1), preRoll, postLand);
 }

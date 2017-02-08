@@ -1,13 +1,12 @@
 import com.crappycomic.ceylarquest.model {
-    ActionTrigger,
     Game,
     InvalidMove,
     Path,
     Player,
+    PreLand,
     Result,
     Well,
     incorrectPhase,
-    preLand,
     preRoll
 }
 
@@ -26,20 +25,13 @@ shared Result traversePath(variable Game game, Player player, Path path, Integer
         return InvalidMove("Required fuel use is more than the player has left.");
     }
     
-    // TODO: you maybe shouldn't trigger actions while bypassing
-    if (is ActionTrigger node) {
-        if (path.size > 1) {
-            game = node.action(game, player);
-        }
-    }
-    
     value playerCashes = passesStart(game.board, path)
         then { player -> game.playerCash(player) + game.rules.passStartCash };
     value playerFuels = fuel > 0
         then { player -> game.playerFuel(player) - fuel };
     
     return game.with {
-        phase = preLand;
+        phase = PreLand(path.size > 1);
         playerCashes = playerCashes;
         playerFuels = playerFuels;
         playerLocations = { player -> node };

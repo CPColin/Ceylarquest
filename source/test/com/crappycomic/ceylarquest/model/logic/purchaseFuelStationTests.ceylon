@@ -8,7 +8,7 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     Game,
     incorrectPhase,
-    postRoll,
+    postLand,
     preRoll,
     testPlayers
 }
@@ -101,5 +101,5 @@ test
 shared void purchaseFuelStationWrongPhase() {
     value player = testPlayers.first.key;
     
-    wrongPhaseTest((game) => purchaseFuelStation(game, player), preRoll, postRoll);
+    wrongPhaseTest((game) => purchaseFuelStation(game, player), preRoll, postLand);
 }

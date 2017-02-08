@@ -10,7 +10,7 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Player,
     incorrectPhase,
-    postRoll,
+    postLand,
     testPlayers
 }
 import com.crappycomic.ceylarquest.model.logic {
@@ -31,7 +31,7 @@ shared void purchaseOwnedNode() {
     value player = testPlayers.first.key;
     value game = testGame.with {
         owners = { node -> player };
-        phase = postRoll;
+        phase = postLand;
     };
     
     assertTrue(game.owner(node) is Player, "Node is unexpectedly not owned.");
@@ -54,7 +54,7 @@ shared void purchaseUnownableNode() {
     value node = tropicHopBoard.testUnownablePort;
     value player = testPlayers.first.key;
     value game = testGame.with {
-        phase = postRoll;
+        phase = postLand;
     };
     
     assertFalse(game.owner(node) is Player, "Node is unexpectedly owned.");
@@ -77,7 +77,7 @@ shared void purchaseUnownedNode() {
     value node = tropicHopBoard.testOwnablePort;
     value player = testPlayers.first.key;
     value game = testGame.with {
-        phase = postRoll;
+        phase = postLand;
     };
     value playerCash = game.playerCash(player);
     
@@ -107,7 +107,7 @@ shared void purchaseWithInsufficientFunds() {
     value node = tropicHopBoard.testOwnablePort;
     value player = testPlayers.first.key;
     value game = testGame.with {
-        phase = postRoll;
+        phase = postLand;
         playerCashes = { player -> 0 };
     };
     
@@ -131,5 +131,5 @@ shared void purchaseNodeWrongPhase() {
     value player = testPlayers.first.key;
     value node = tropicHopBoard.testOwnablePort;
     
-    wrongPhaseTest((game) => purchaseNode(game, player, node), postRoll);
+    wrongPhaseTest((game) => purchaseNode(game, player, node), postLand);
 }

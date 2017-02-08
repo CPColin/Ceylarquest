@@ -6,11 +6,11 @@ import com.crappycomic.ceylarquest.model {
     Player,
     Result,
     incorrectPhase,
-    postRoll
+    postLand
 }
 
 shared Result purchaseNode(Game game, Player player, Node node) {
-    if (game.phase != postRoll) {
+    if (game.phase != postLand) {
         return incorrectPhase;
     }
     

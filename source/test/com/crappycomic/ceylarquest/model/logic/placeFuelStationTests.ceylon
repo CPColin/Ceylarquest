@@ -10,7 +10,7 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Player,
     incorrectPhase,
-    postRoll,
+    postLand,
     preRoll,
     testPlayers
 }
@@ -181,5 +181,5 @@ shared void placeFuelStationWrongPhase() {
     value player = testPlayers.first.key;
     value node = tropicHopBoard.testOwnablePort;
     
-    wrongPhaseTest((game) => placeFuelStation(game, player, node), preRoll, postRoll);
+    wrongPhaseTest((game) => placeFuelStation(game, player, node), preRoll, postLand);
 }

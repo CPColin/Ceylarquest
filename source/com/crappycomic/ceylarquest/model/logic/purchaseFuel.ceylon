@@ -6,13 +6,13 @@ import com.crappycomic.ceylarquest.model {
     Player,
     Result,
     incorrectPhase,
-    postRoll,
+    postLand,
     preRoll
 }
 
 // TODO: should all these bad cases continue to fail silently or return InvalidMove?
 shared Result purchaseFuel(Game game, Player player, Integer fuel) {
-    if (game.phase != preRoll && game.phase != postRoll) {
+    if (game.phase != preRoll && game.phase != postLand) {
         return incorrectPhase;
     }
     

@@ -7,11 +7,11 @@ import com.crappycomic.ceylarquest.model {
     Result,
     incorrectPhase,
     preRoll,
-    postRoll
+    postLand
 }
 
 shared Result placeFuelStation(Game game, Player player, Node node) {
-    if (game.phase != preRoll && game.phase != postRoll) {
+    if (game.phase != preRoll && game.phase != postLand) {
         return incorrectPhase;
     }
     

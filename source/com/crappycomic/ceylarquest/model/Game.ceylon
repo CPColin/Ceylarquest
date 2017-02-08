@@ -20,8 +20,6 @@ shared class Game {
     
     shared Board board;
     
-    shared {Debt*} debts;
-    
     shared Map<Node, Owner> owners;
     
     shared Phase phase;
@@ -69,16 +67,6 @@ shared class Game {
         }
         else {
             this.activePlayers = set(this.allPlayers);
-        }
-        
-        if (exists debts) {
-            this.debts = debts.filter((debt)
-                => this.activePlayers.contains(debt.creditor)
-                    && this.activePlayers.contains(debt.debtor)
-                    && debt.amount > 0);
-        }
-        else {
-            this.debts = {};
         }
         
         if (exists owners) {
@@ -181,7 +169,6 @@ shared class Game {
     
     "Returns a copy of this object that includes the given changes."
     shared Game with(
-            {Debt*}? debts = null,
             {<Node -> Owner>*}? owners = null,
             Phase? phase = null,
             {Node*}? placedFuelStations = null,
@@ -195,7 +182,6 @@ shared class Game {
             activePlayers = this.activePlayers;
             allPlayers = this.allPlayers;
             
-            debts = debts?.chain(this.debts) else this.debts;
             owners = owners?.chain(this.owners) else this.owners;
             phase = phase else this.phase;
             placedFuelStations = placedFuelStations?.chain(this.placedFuelStations)
