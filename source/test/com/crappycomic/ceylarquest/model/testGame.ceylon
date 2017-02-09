@@ -1,7 +1,6 @@
 import com.crappycomic.ceylarquest.model {
     Game,
-    gameOver,
-    testPlayers
+    gameOver
 }
 import com.crappycomic.tropichop {
     tropicHopBoard
@@ -10,5 +9,5 @@ import com.crappycomic.tropichop {
 shared Game testGame = Game {
     board = tropicHopBoard;
     phase = gameOver;
-    playerNames = testPlayers;
+    playerNames = testPlayerNames;
 };

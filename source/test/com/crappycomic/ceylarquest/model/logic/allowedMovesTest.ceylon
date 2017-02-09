@@ -23,8 +23,8 @@ import test.com.crappycomic.ceylarquest.model {
 
 test
 shared void containsWellOrbitTest() {
-    object testNode extends TestNode("testNode") {}
-    object testWellOrbit extends TestNode("testWellOrbit") satisfies WellOrbit {}
+    object testNode extends TestNode() {}
+    object testWellOrbit extends TestNode() satisfies WellOrbit {}
     
     assertFalse(containsWellOrbit([testNode], 0));
     assertTrue(containsWellOrbit([testNode, testWellOrbit], 0));
@@ -35,10 +35,10 @@ shared void containsWellOrbitTest() {
 
 test
 shared void enforceWellPullPathTest() {
-    object testNode1 extends TestNode("testNode1") {}
-    object testNode2 extends TestNode("testNode2") {}
-    object testWellPull1 extends TestNode("testWellPull1") satisfies WellPull {}
-    object testWellPull2 extends TestNode("testWellPull2") satisfies WellPull {}
+    object testNode1 extends TestNode() {}
+    object testNode2 extends TestNode() {}
+    object testWellPull1 extends TestNode() satisfies WellPull {}
+    object testWellPull2 extends TestNode() satisfies WellPull {}
     
     assertEquals(enforceWellPullPath([testNode1, testWellPull1]),
         [testNode1, testWellPull1, testNode1]);
@@ -50,11 +50,11 @@ shared void enforceWellPullPathTest() {
 
 test
 shared void findBranchesTest() {
-    object testNode1 extends TestNode("testNode1") {}
-    object testNode2 extends TestNode("testNode2") {}
-    object testNode3 extends TestNode("testNode3") {}
-    object testNode4 extends TestNode("testNode4") {}
-    object testNode5 extends TestNode("testNode5") {}
+    object testNode1 extends TestNode() {}
+    object testNode2 extends TestNode() {}
+    object testNode3 extends TestNode() {}
+    object testNode4 extends TestNode() {}
+    object testNode5 extends TestNode() {}
     
     value path1 = [testNode1, testNode2, testNode3];
     value path2 = [testNode1, testNode2, testNode4];
@@ -67,10 +67,10 @@ shared void findBranchesTest() {
 
 test
 shared void matchingPathsTest() {
-    object testNode1 extends TestNode("testNode1") {}
-    object testNode2 extends TestNode("testNode2") {}
-    object testNode3 extends TestNode("testNode3") {}
-    object testNode4 extends TestNode("testNode4") {}
+    object testNode1 extends TestNode() {}
+    object testNode2 extends TestNode() {}
+    object testNode3 extends TestNode() {}
+    object testNode4 extends TestNode() {}
     
     value path1 = [testNode1, testNode2];
     value path2 = [testNode1, testNode3];
@@ -84,9 +84,9 @@ shared void matchingPathsTest() {
 
 test
 shared void removeWellOrbitPathsTest() {
-    object testNode1 extends TestNode("testNode1") {}
-    object testNode2 extends TestNode("testNode2") {}
-    object testWellOrbit extends TestNode("testWellOrbit") satisfies WellOrbit {}
+    object testNode1 extends TestNode() {}
+    object testNode2 extends TestNode() {}
+    object testWellOrbit extends TestNode() satisfies WellOrbit {}
     
     value path1 = [testNode1, testWellOrbit];
     value path2 = [testNode1, testNode2];

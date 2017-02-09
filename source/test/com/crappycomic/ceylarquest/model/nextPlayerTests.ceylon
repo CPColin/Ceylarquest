@@ -5,8 +5,7 @@ import ceylon.test {
 }
 
 import com.crappycomic.ceylarquest.model {
-    Game,
-    testPlayers
+    Game
 }
 import com.crappycomic.tropichop {
     tropicHopBoard
@@ -16,9 +15,12 @@ test
 shared void nextPlayerTests() {
     value game1 = Game {
         board = tropicHopBoard;
-        playerNames = testPlayers;
-        activePlayers = { testPlayers.first.key, testPlayers.last.key };
+        playerNames = testPlayerNames;
+        activePlayers = testPlayers;
     };
+    
+    assertEquals(game1.activePlayers.size, 2, "This test requires exactly two active players.");
+    
     value game2 = game1.with {
         currentPlayer = game1.nextPlayer;
     };

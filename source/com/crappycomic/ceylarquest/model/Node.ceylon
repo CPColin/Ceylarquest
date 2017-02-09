@@ -28,15 +28,7 @@ shared interface FuelStationable
 "A single space on the [[Board]]."
 shared interface Node
         satisfies Identifiable {
-    shared default String id {
-        // This value is null when run in a browser.
-        // See: https://github.com/ceylon/ceylon/issues/6881
-        value objectValue = classDeclaration(this).objectValue;
-        
-        assert (exists objectValue);
-        
-        return objectValue.name;
-    }
+    shared String id => classDeclaration(this).name;
     
     shared formal String name;
     

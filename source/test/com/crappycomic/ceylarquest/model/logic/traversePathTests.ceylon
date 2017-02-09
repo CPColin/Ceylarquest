@@ -14,8 +14,7 @@ import com.crappycomic.ceylarquest.model {
     WellPull,
     collectCash,
     incorrectPhase,
-    preRoll,
-    testPlayers
+    preRoll
 }
 import com.crappycomic.ceylarquest.model.logic {
     passesStart,
@@ -26,17 +25,17 @@ import com.crappycomic.tropichop {
 }
 
 import test.com.crappycomic.ceylarquest.model {
+    TestNode,
     testGame,
-    wrongPhaseTest,
-    TestNode
+    wrongPhaseTest
 }
 
 test
 shared void traversePathInsufficientFuel() {
-    value player = testPlayers.first.key;
     value game = testGame.with {
         phase = preRoll;
     };
+    value player = game.currentPlayer;
     value playerFuel = game.playerFuel(player);
     value path = [game.playerLocation(player)];
     value result = traversePath(game, player, path, playerFuel + 1);
@@ -54,10 +53,10 @@ shared void traversePathInsufficientFuel() {
 
 test
 shared void traversePathPassesStart() {
-    value player = testPlayers.first.key;
     value game = testGame.with {
         phase = preRoll;
     };
+    value player = game.currentPlayer;
     value playerCash = game.playerCash(player);
     value path
         = [tropicHopBoard.testBeforeStart, tropicHopBoard.start, tropicHopBoard.testAfterStart];
@@ -79,12 +78,12 @@ shared void traversePathPassesStart() {
 
 test
 shared void traversePathRemainAtActionTrigger() {
-    value player = testPlayers.first.key;
     value game = testGame.with {
         phase = preRoll;
     };
+    value player = game.currentPlayer;
     value playerCash = game.playerCash(player);
-    object node extends TestNode("ActionTrigger") satisfies ActionTrigger {
+    object node extends TestNode() satisfies ActionTrigger {
         action = collectCash(100);
     }
     value actionGame = node.action(game, player);
@@ -104,10 +103,10 @@ shared void traversePathRemainAtActionTrigger() {
 
 test
 shared void traversePathSkipStart() {
-    value player = testPlayers.first.key;
     value game = testGame.with {
         phase = preRoll;
     };
+    value player = game.currentPlayer;
     value playerCash = game.playerCash(player);
     value path = [tropicHopBoard.testBeforeStart, tropicHopBoard.testAfterStart];
     
@@ -127,20 +126,20 @@ shared void traversePathSkipStart() {
 
 test
 shared void traversePathToWellOrbit() {
-    traversePathToWell(object extends TestNode("WellOrbit") satisfies WellOrbit {});
+    traversePathToWell(object extends TestNode() satisfies WellOrbit {});
 }
 
 test
 shared void traversePathToWellPull() {
-    traversePathToWell(object extends TestNode("WellPull") satisfies WellPull {});
+    traversePathToWell(object extends TestNode() satisfies WellPull {});
 }
 
 void traversePathToWell(Well node) {
-    value player = testPlayers.first.key;
-    value path = [node];
     value game = testGame.with {
         phase = preRoll;
     };
+    value player = game.currentPlayer;
+    value path = [node];
     value result = traversePath(game, player, path, 0);
     
     if (is Game result) {
@@ -156,9 +155,8 @@ void traversePathToWell(Well node) {
 
 test
 shared void traversePathWrongPhase() {
-    value player = testPlayers.first.key;
-    object node extends TestNode("Node") {}
+    object node extends TestNode() {}
     value path = [node];
     
-    wrongPhaseTest((game) => traversePath(game, player, path, 0), preRoll);
+    wrongPhaseTest((game) => traversePath(game, game.currentPlayer, path, 0), preRoll);
 }

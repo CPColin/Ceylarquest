@@ -4,9 +4,6 @@ import ceylon.test {
     test
 }
 
-import com.crappycomic.ceylarquest.model {
-    testPlayers
-}
 import com.crappycomic.ceylarquest.model.logic {
     fuelAvailable,
     fuelFee
@@ -16,14 +13,14 @@ import com.crappycomic.tropichop {
 }
 
 import test.com.crappycomic.ceylarquest.model {
-    testGame
+    testGame,
+    testPlayers
 }
 
 "Verifies the [[fuel fee|fuelFee]] is non-zero when a different player owns the node."
 test
 shared void fuelFeeDifferentOwner() {
-    value player = testPlayers.first.key;
-    value owner = testPlayers.last.key;
+    value [player, owner] = testPlayers;
     value node = tropicHopBoard.testFuelSalableNotStationable;
     value game = testGame.with {
         owners = { node -> owner };
@@ -39,7 +36,7 @@ shared void fuelFeeDifferentOwner() {
 "Verifies the [[fuel fee|fuelFee]] is zero when the current player owns the node."
 test
 shared void fuelFeeSameOwner() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value node = tropicHopBoard.testFuelSalableNotStationable;
     value game = testGame.with {
         owners = { node -> player };
@@ -54,11 +51,11 @@ shared void fuelFeeSameOwner() {
 "Verifies the [[fuel fee|fuelFee]] matches the lowest possible fee when nobody owns the node."
 test
 shared void fuelFeeUnowned() {
-    value player = testPlayers.first.key;
     value node = tropicHopBoard.testFuelSalableNotStationable;
     value game = testGame;
     
     assertTrue(fuelAvailable(game, node), "Fuel needs to be available for this test.");
     
-    assertEquals(fuelFee(game, player, node), node.fuels.first, "Unowned fuel fee didn't match.");
+    assertEquals(fuelFee(game, game.currentPlayer, node), node.fuels.first,
+        "Unowned fuel fee didn't match.");
 }

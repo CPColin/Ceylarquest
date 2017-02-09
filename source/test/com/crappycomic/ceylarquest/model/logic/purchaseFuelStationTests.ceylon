@@ -9,8 +9,7 @@ import com.crappycomic.ceylarquest.model {
     Game,
     incorrectPhase,
     postLand,
-    preRoll,
-    testPlayers
+    preRoll
 }
 import com.crappycomic.ceylarquest.model.logic {
     purchaseFuelStation
@@ -23,7 +22,7 @@ import test.com.crappycomic.ceylarquest.model {
 
 test
 shared void purchaseFuelStationInsufficientFunds() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value game = testGame.with {
         phase = preRoll;
         playerCashes = { player -> 0 };
@@ -46,7 +45,7 @@ shared void purchaseFuelStationInsufficientFunds() {
 
 test
 shared void purchaseFuelStationNoneRemain() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value game = testGame.with {
         phase = preRoll;
         playerFuelStationCounts = {
@@ -71,7 +70,7 @@ shared void purchaseFuelStationNoneRemain() {
 
 test
 shared void purchaseFuelStationSuccess() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value game = testGame.with {
         phase = preRoll;
     };
@@ -99,7 +98,5 @@ shared void purchaseFuelStationSuccess() {
 
 test
 shared void purchaseFuelStationWrongPhase() {
-    value player = testPlayers.first.key;
-    
-    wrongPhaseTest((game) => purchaseFuelStation(game, player), preRoll, postLand);
+    wrongPhaseTest((game) => purchaseFuelStation(game, game.currentPlayer), preRoll, postLand);
 }

@@ -12,8 +12,7 @@ import com.crappycomic.ceylarquest.model {
     Game,
     incorrectPhase,
     postLand,
-    preRoll,
-    testPlayers
+    preRoll
 }
 import com.crappycomic.ceylarquest.model.logic {
     fuelFee,
@@ -31,7 +30,7 @@ import test.com.crappycomic.ceylarquest.model {
 test
 suppressWarnings("redundantNarrowing") // Making sure our test data has the right type.
 shared void purchaseFuelNoFuelStation() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value node = tropicHopBoard.testFuelStationable;
     
     assertTrue(node is FuelStationable, "Node must be FuelStationable for this test.");
@@ -59,7 +58,7 @@ shared void purchaseFuelNoFuelStation() {
 
 test
 shared void purchaseFuelNoMoney() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value node = tropicHopBoard.testFuelSalableNotStationable;
     value game = testGame.with {
         phase = preRoll;
@@ -86,7 +85,7 @@ shared void purchaseFuelNoMoney() {
 
 test
 shared void purchaseFuelNotFuelSalable() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value node = tropicHopBoard.testNotFuelSalableOrStationable;
     
     assertFalse(node is FuelSalable, "Node can't be FuelSalable for this test.");
@@ -112,7 +111,7 @@ shared void purchaseFuelNotFuelSalable() {
 "Attempts to purchase two units of fuel when the player has only enough cash to purchase one unit."
 test
 shared void purchaseFuelSomeMoney() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value node = tropicHopBoard.testFuelSalableNotStationable;
     value fuelUnitFee = fuelFee(testGame, player, node);
     
@@ -144,7 +143,7 @@ shared void purchaseFuelSomeMoney() {
 
 test
 shared void purchaseFuelWithFullTank() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value node = tropicHopBoard.testFuelSalableNotStationable;
     value game = testGame.with {
         phase = preRoll;
@@ -170,7 +169,5 @@ shared void purchaseFuelWithFullTank() {
 
 test
 shared void purchaseFuelWrongPhase() {
-    value player = testPlayers.first.key;
-    
-    wrongPhaseTest((game) => purchaseFuel(game, player, 1), preRoll, postLand);
+    wrongPhaseTest((game) => purchaseFuel(game, game.currentPlayer, 1), preRoll, postLand);
 }

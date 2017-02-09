@@ -5,9 +5,6 @@ import ceylon.language {
     cprint=print
 }
 
-import com.crappycomic.ceylarquest.model {
-    testPlayers
-}
 import com.crappycomic.ceylarquest.model.logic {
     allowedMoves
 }
@@ -79,7 +76,7 @@ class BoardPanel() extends JPanel() {
             //boardOverlay.highlightNodes(game);
             boardOverlay.drawPlacedFuelStations(game);
             
-            value player = testPlayers.last.key;
+            value player = game.currentPlayer;
             
             boardOverlay.drawPaths(player,
                 allowedMoves(game.board, game.playerLocation(player), 7));

@@ -6,8 +6,7 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     DeedGroup,
     Ownable,
-    Player,
-    testPlayers
+    Player
 }
 import com.crappycomic.ceylarquest.model.logic {
     feeIndex
@@ -17,12 +16,13 @@ import com.crappycomic.tropichop {
 }
 
 import test.com.crappycomic.ceylarquest.model {
-    testGame
+    testGame,
+    testPlayers
 }
 
 test
 shared void feeIndexTests() {
-    value player = testPlayers.first.key;
+    value player = testPlayers[0];
     value deedGroup = tropicHopBoard.testOwnablePort.deedGroup;
     value nodes = tropicHopBoard.nodes.keys
         .narrow<Ownable>()

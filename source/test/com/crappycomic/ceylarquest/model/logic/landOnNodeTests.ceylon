@@ -11,8 +11,7 @@ import com.crappycomic.ceylarquest.model {
     Game,
     PreLand,
     SettlingDebts,
-    collectCash,
-    testPlayers
+    collectCash
 }
 import com.crappycomic.ceylarquest.model.logic {
     landOnNode,
@@ -25,13 +24,13 @@ import com.crappycomic.tropichop {
 import test.com.crappycomic.ceylarquest.model {
     TestNode,
     testGame,
+    testPlayers,
     wrongPhaseTest
 }
 
 test
 shared void landOnNodePayRent() {
-    value player = testPlayers.first.key;
-    value owner = testPlayers.last.key;
+    value [player, owner] = testPlayers;
     value node = tropicHopBoard.testOwnablePort;
     value game = testGame.with {
         owners = { node -> owner };
@@ -71,14 +70,14 @@ shared void landOnNodeWithoutTriggeringAction() {
 }
 
 void landOnNodeMaybeTriggeringAction(Boolean triggerAction) {
-    value player = testPlayers.first.key;
     value cash = 100;
-    object testNode extends TestNode("testNode") satisfies ActionTrigger {
+    object testNode extends TestNode() satisfies ActionTrigger {
         action = collectCash(cash);
     }
     value game = testGame.with {
         phase = PreLand(triggerAction);
     };
+    value player = game.currentPlayer;
     value playerCash = game.playerCash(player);
     value expectedCash = triggerAction then playerCash + cash else playerCash;
     value result = landOnNode(game, player, testNode);
@@ -94,8 +93,7 @@ void landOnNodeMaybeTriggeringAction(Boolean triggerAction) {
 
 test
 shared void landOnNodeWrongPhase() {
-    value player = testPlayers.first.key;
     value node = tropicHopBoard.testAfterStart;
     
-    wrongPhaseTest((game) => landOnNode(game, player, node), PreLand(true));
+    wrongPhaseTest((game) => landOnNode(game, game.currentPlayer, node), PreLand(true));
 }

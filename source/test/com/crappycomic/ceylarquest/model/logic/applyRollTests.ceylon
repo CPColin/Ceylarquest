@@ -15,8 +15,7 @@ import com.crappycomic.ceylarquest.model {
     incorrectPhase,
     preRoll,
     rollTypeAlways,
-    rollTypeNever,
-    testPlayers
+    rollTypeNever
 }
 import com.crappycomic.ceylarquest.model.logic {
     applyRoll
@@ -27,20 +26,20 @@ import com.crappycomic.tropichop {
 
 import test.com.crappycomic.ceylarquest.model {
     testGame,
+    testPlayerNames,
     wrongPhaseTest
 }
 
 test
 shared void applyRollDrawCard() {
-    value player = testPlayers.first.key;
     value game = Game {
         board = tropicHopBoard;
-        playerNames = testPlayers;
+        playerNames = testPlayerNames;
         rules = object extends Rules() {
             cardRollType = rollTypeAlways;
         };
     };
-    value result = applyRoll(game, player, [1, 2]);
+    value result = applyRoll(game, game.currentPlayer, [1, 2]);
     
     if (is Game result) {
         assertEquals(result.phase, drawingCard, "Phase isn't DrawingCard");
@@ -52,7 +51,7 @@ shared void applyRollDrawCard() {
 
 test
 shared void applyRollingAgainDontCheckFuel() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value node = tropicHopBoard.testAfterStart;
     value game = testGame.with {
         phase = RollingAgain(1);
@@ -80,13 +79,13 @@ shared void applyRollingAgainDontCheckFuel() {
 
 test
 shared void applyRollingAgainDontDrawCard() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value node = tropicHopBoard.testAfterStart;
     value game = Game {
         board = tropicHopBoard;
         phase = RollingAgain(1);
         playerLocations = { player -> node };
-        playerNames = testPlayers;
+        playerNames = testPlayerNames;
         rules = object extends Rules() {
             cardRollType = rollTypeAlways;
         };
@@ -112,7 +111,7 @@ shared void applyRollingAgainDontDrawCard() {
 
 test
 shared void applyRollingAgainMultiplier() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value node = tropicHopBoard.testAfterStart;
     value multiplier = 4;
     value game = testGame.with {
@@ -145,7 +144,7 @@ shared void applyRollingAgainMultiplier() {
 
 test
 shared void applyRollInsufficientFuel() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value node = tropicHopBoard.testAfterStart;
     value game = testGame.with {
         phase = preRoll;
@@ -173,11 +172,10 @@ shared void applyRollInsufficientFuel() {
 
 test
 shared void applyRollInvalidRollTooHigh() {
-    value player = testPlayers.first.key;
     value game = testGame.with {
         phase = preRoll;
     };
-    value result = applyRoll(game, player, [1, game.rules.diePips + 1]);
+    value result = applyRoll(game, game.currentPlayer, [1, game.rules.diePips + 1]);
     
     if (is Game result) {
         fail("Too-high roll should have failed.");
@@ -193,11 +191,10 @@ shared void applyRollInvalidRollTooHigh() {
 
 test
 shared void applyRollInvalidRollZero() {
-    value player = testPlayers.first.key;
     value game = testGame.with {
         phase = preRoll;
     };
-    value result = applyRoll(game, player, [0, 1]);
+    value result = applyRoll(game, game.currentPlayer, [0, 1]);
     
     if (is Game result) {
         fail("Zero in roll should have failed.");
@@ -213,14 +210,14 @@ shared void applyRollInvalidRollZero() {
 
 test
 shared void applyRollSuccess() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value startNode = tropicHopBoard.testBeforeStart;
     value endNode = tropicHopBoard.testAfterStart;
     value game = Game {
         board = tropicHopBoard;
         phase = preRoll;
         playerLocations = { player -> startNode };
-        playerNames = testPlayers;
+        playerNames = testPlayerNames;
         rules = object extends Rules() {
             cardRollType = rollTypeNever;
         };
@@ -248,7 +245,5 @@ shared void applyRollSuccess() {
 
 test
 shared void applyRollWrongPhase() {
-    value player = testPlayers.first.key;
-    
-    wrongPhaseTest((game) => applyRoll(game, player, [0, 0]), preRoll, RollingAgain(1));
+    wrongPhaseTest((game) => applyRoll(game, game.currentPlayer, [0, 0]), preRoll, RollingAgain(1));
 }

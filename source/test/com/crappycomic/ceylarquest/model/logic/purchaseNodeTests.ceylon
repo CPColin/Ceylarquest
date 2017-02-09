@@ -10,8 +10,7 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Player,
     incorrectPhase,
-    postLand,
-    testPlayers
+    postLand
 }
 import com.crappycomic.ceylarquest.model.logic {
     purchaseNode
@@ -28,7 +27,7 @@ import test.com.crappycomic.ceylarquest.model {
 test
 shared void purchaseOwnedNode() {
     value node = tropicHopBoard.testOwnablePort;
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value game = testGame.with {
         owners = { node -> player };
         phase = postLand;
@@ -52,14 +51,13 @@ shared void purchaseOwnedNode() {
 test
 shared void purchaseUnownableNode() {
     value node = tropicHopBoard.testUnownablePort;
-    value player = testPlayers.first.key;
     value game = testGame.with {
         phase = postLand;
     };
     
     assertFalse(game.owner(node) is Player, "Node is unexpectedly owned.");
     
-    value result = purchaseNode(game, player, node);
+    value result = purchaseNode(game, game.currentPlayer, node);
     
     if (is Game result) {
         fail("Purchase of node that was not able to be owned should have failed.");
@@ -75,10 +73,10 @@ shared void purchaseUnownableNode() {
 test
 shared void purchaseUnownedNode() {
     value node = tropicHopBoard.testOwnablePort;
-    value player = testPlayers.first.key;
     value game = testGame.with {
         phase = postLand;
     };
+    value player = game.currentPlayer;
     value playerCash = game.playerCash(player);
     
     assertFalse(game.owner(node) is Player, "Node is unexpectedly owned.");
@@ -101,7 +99,7 @@ shared void purchaseUnownedNode() {
 test
 shared void purchaseWithInsufficientFunds() {
     value node = tropicHopBoard.testOwnablePort;
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value game = testGame.with {
         phase = postLand;
         playerCashes = { player -> 0 };
@@ -124,8 +122,7 @@ shared void purchaseWithInsufficientFunds() {
 
 test
 shared void purchaseNodeWrongPhase() {
-    value player = testPlayers.first.key;
     value node = tropicHopBoard.testOwnablePort;
     
-    wrongPhaseTest((game) => purchaseNode(game, player, node), postLand);
+    wrongPhaseTest((game) => purchaseNode(game, game.currentPlayer, node), postLand);
 }

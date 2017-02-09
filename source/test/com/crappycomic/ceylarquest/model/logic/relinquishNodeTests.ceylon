@@ -10,8 +10,7 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Ownable,
     Player,
-    incorrectPhase,
-    testPlayers
+    incorrectPhase
 }
 import com.crappycomic.ceylarquest.model.logic {
     nodePrice,
@@ -22,12 +21,13 @@ import com.crappycomic.tropichop {
 }
 
 import test.com.crappycomic.ceylarquest.model {
-    testGame
+    testGame,
+    testPlayers
 }
 
 test
 shared void relinquishNodeSuccess() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value node = tropicHopBoard.testOwnablePort;
     value game = testGame.with {
         owners = { node -> player };
@@ -49,8 +49,7 @@ shared void relinquishNodeSuccess() {
 
 test
 shared void relinquishNodeWrongOwner() {
-    value player = testPlayers.first.key;
-    value owner = testPlayers.last.key;
+    value [player, owner] = testPlayers;
     value node = tropicHopBoard.testOwnablePort;
     value game = testGame.with {
         owners = { node -> owner };
@@ -73,12 +72,11 @@ shared void relinquishNodeWrongOwner() {
 
 test
 shared void relinquishUnownableNode() {
-    value player = testPlayers.first.key;
     value node = tropicHopBoard.testUnownablePort;
     
     assertFalse(node is Ownable, "Node may not be Ownable for this test.");
     
-    value result = relinquishNode(testGame, player, node, false);
+    value result = relinquishNode(testGame, testGame.currentPlayer, node, false);
     
     if (is Game result) {
         fail("Relinquishing unownable node should not have worked.");
@@ -94,12 +92,11 @@ shared void relinquishUnownableNode() {
 test
 suppressWarnings("redundantNarrowing") // Double-checking the node is Ownable
 shared void relinquishUnownedNode() {
-    value player = testPlayers.first.key;
     value node = tropicHopBoard.testOwnablePort;
     
     assertTrue(node is Ownable, "Node must be Ownable for this test.");
     
-    value result = relinquishNode(testGame, player, node, false);
+    value result = relinquishNode(testGame, testGame.currentPlayer, node, false);
     
     if (is Game result) {
         fail("Relinquishing unowned node should not have worked.");
@@ -114,7 +111,7 @@ shared void relinquishUnownedNode() {
 
 test
 shared void sellNodeSuccess() {
-    value player = testPlayers.first.key;
+    value player = testGame.currentPlayer;
     value node = tropicHopBoard.testOwnablePort;
     value game = testGame.with {
         owners = { node -> player };

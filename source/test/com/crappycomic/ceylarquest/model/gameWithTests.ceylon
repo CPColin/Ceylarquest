@@ -11,7 +11,6 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Ownable,
     Player,
-    testPlayers,
     unowned
 }
 import com.crappycomic.tropichop {
@@ -31,31 +30,15 @@ shared void gameWithCurrentPlayer() {
     value playerEnd = gameEnd.currentPlayer;
     
     assertNotEquals(playerEnd, playerStart, "Current player didn't change.");
-    
-    variable value game = testGame;
-    
-    for (i in 0:10) {
-        print(game.currentPlayer);
-        game = game.with {
-            currentPlayer = game.nextPlayer;
-        };
-    }
 }
 
 test
 shared void gameWithOwnersDecreasing() {
-    value nodes = tropicHopBoard.nodes.keys.narrow<Ownable>();
-    value node1 = nodes.first;
-    value node2 = nodes.last;
-    value player = testPlayers.first.key;
-    
-    assert (exists node1, exists node2);
-    
-    assertNotEquals(node1, node2, "This test needs two different Ownable nodes.");
-    
+    value [node1, node2] = testNodes<Ownable>();
+    value player = testPlayers[0];
     value gameStart = Game {
         board = tropicHopBoard;
-        playerNames = testPlayers;
+        playerNames = testPlayerNames;
         owners = { node1 -> player, node2 -> player };
     };
     
@@ -72,18 +55,11 @@ shared void gameWithOwnersDecreasing() {
 
 test
 shared void gameWithOwnersIncreasing() {
-    value nodes = tropicHopBoard.nodes.keys.narrow<Ownable>();
-    value node1 = nodes.first;
-    value node2 = nodes.last;
-    value player = testPlayers.first.key;
-    
-    assert (exists node1, exists node2);
-    
-    assertNotEquals(node1, node2, "This test needs two different Ownable nodes.");
-    
+    value [node1, node2] = testNodes<Ownable>();
+    value player = testPlayers[0];
     value gameStart = Game {
         board = tropicHopBoard;
-        playerNames = testPlayers;
+        playerNames = testPlayerNames;
         owners = { node1 -> player };
     };
     
@@ -101,17 +77,10 @@ shared void gameWithOwnersIncreasing() {
 
 test
 shared void gameWithPlacedFuelStations() {
-    value nodes = tropicHopBoard.nodes.keys.narrow<FuelStationable>();
-    value node1 = nodes.first;
-    value node2 = nodes.last;
-    
-    assert (exists node1, exists node2);
-    
-    assertNotEquals(node1, node2, "This test needs two different FuelStationable nodes.");
-    
+    value [node1, node2] = testNodes<FuelStationable>();
     value gameStart = Game {
         board = tropicHopBoard;
-        playerNames = testPlayers;
+        playerNames = testPlayerNames;
         placedFuelStations = { node1 };
     };
     value gameEnd = gameStart.with {
@@ -126,12 +95,12 @@ shared void gameWithPlacedFuelStations() {
 
 test
 shared void gameWithPlayerCashes() {
-    value player = testPlayers.first.key;
     value gameStart = Game {
         board = tropicHopBoard;
-        playerNames = testPlayers;
-        playerCashes = { for (player -> _ in testPlayers) player -> 1 };
+        playerNames = testPlayerNames;
+        playerCashes = { for (player -> _ in testPlayerNames) player -> 1 };
     };
+    value player = gameStart.currentPlayer;
     value gameEnd = gameStart.with {
         playerCashes = { player -> 0 };
     };
@@ -141,12 +110,12 @@ shared void gameWithPlayerCashes() {
 
 test
 shared void gameWithPlayerFuels() {
-    value player = testPlayers.first.key;
     value gameStart = Game {
         board = tropicHopBoard;
-        playerNames = testPlayers;
-        playerFuels = { for (player -> _ in testPlayers) player -> 1 };
+        playerNames = testPlayerNames;
+        playerFuels = { for (player -> _ in testPlayerNames) player -> 1 };
     };
+    value player = gameStart.currentPlayer;
     value gameEnd = gameStart.with {
         playerFuels = { player -> 0 };
     };
@@ -156,12 +125,12 @@ shared void gameWithPlayerFuels() {
 
 test
 shared void gameWithPlayerFuelStationCounts() {
-    value player = testPlayers.first.key;
     value gameStart = Game {
         board = tropicHopBoard;
-        playerNames = testPlayers;
-        playerFuelStationCounts = { for (player -> _ in testPlayers) player -> 1 };
+        playerNames = testPlayerNames;
+        playerFuelStationCounts = { for (player -> _ in testPlayerNames) player -> 1 };
     };
+    value player = gameStart.currentPlayer;
     value gameEnd = gameStart.with {
         playerFuelStationCounts = { player -> 0 };
     };
@@ -171,14 +140,14 @@ shared void gameWithPlayerFuelStationCounts() {
 
 test
 shared void gameWithPlayerLocations() {
-    value player = testPlayers.first.key;
     value node1 = tropicHopBoard.testOwnablePort;
     value node2 = tropicHopBoard.testNotFuelSalableOrStationable;
     value gameStart = Game {
         board = tropicHopBoard;
-        playerNames = testPlayers;
-        playerLocations = { for (player -> _ in testPlayers) player -> node1 };
+        playerNames = testPlayerNames;
+        playerLocations = { for (player -> _ in testPlayerNames) player -> node1 };
     };
+    value player = gameStart.currentPlayer;
     value gameEnd = gameStart.with {
         playerLocations = { player -> node2 };
     };
@@ -189,12 +158,12 @@ shared void gameWithPlayerLocations() {
 "Verifies that attempts to use a node unknown to the game will be ignored."
 test
 shared void gameWithUnknownNode() {
-    value player = testPlayers.first.key;
-    object node extends TestNode("FuelStationable") satisfies FuelStationable {}
+    object node extends TestNode() satisfies FuelStationable {}
     value gameStart = Game {
         board = tropicHopBoard;
-        playerNames = testPlayers;
+        playerNames = testPlayerNames;
     };
+    value player = gameStart.currentPlayer;
     value gameEnd = gameStart.with {
         owners = { node -> player };
         placedFuelStations = { node };
@@ -209,7 +178,7 @@ shared void gameWithUnknownNode() {
 
 void checkPlayers<Value>(Game gameStart, Game gameEnd, Value(Player)(Game) attribute,
         String attributeName, Player targetPlayer, Value targetValue) {
-    for (player -> _ in testPlayers) {
+    for (player -> _ in testPlayerNames) {
         if (player == targetPlayer) {
             assertEquals(attribute(gameEnd)(player), targetValue,
                 "Target player has incorrect ``attributeName``.");

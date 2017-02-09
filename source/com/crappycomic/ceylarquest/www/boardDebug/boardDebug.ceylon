@@ -10,8 +10,7 @@ import com.crappycomic.ceylarquest.model {
     Game,
     InvalidSave,
     Location,
-    loadGame,
-    testPlayers
+    loadGame
 }
 import com.crappycomic.ceylarquest.model.logic {
     allowedMoves
@@ -27,9 +26,6 @@ import com.crappycomic.ceylarquest.view {
     roundCap,
     roundJoin,
     squareCap
-}
-import com.crappycomic.tropichop {
-    tropicHopBoard
 }
 
 import debug {
@@ -143,21 +139,9 @@ object g satisfies GraphicsContext {
         => "rgba(``color.red``, ``color.green``, ``color.blue``, ``color.alpha.float / 255``)";
 }
 
-//Game game = loadDebugGame();
-
-Game game = Game {
-    board = tropicHopBoard;
-    playerNames = testPlayers;
-};
+Game game = loadDebugGame();
 
 Game loadDebugGame() {
-    /*
-     TODO File a bug report for this:
-     The com.crappycomic.tropichop module is loaded via the debug module in Java mode, but the
-     browser gets a "module X not available" error. Manually touching the module, for now.
-     */ 
-    suppressWarnings("unusedDeclaration")
-    value board = tropicHopBoard;
     value game = loadGame(debugGameJson);
     
     if (is InvalidSave game) {
@@ -185,7 +169,7 @@ shared void colorNodes() {
 }
 
 shared void drawAllowedMoves() {
-    value player = testPlayers.last.key;
+    value player = game.currentPlayer;
     value paths = allowedMoves(game.board, game.playerLocation(player), getParameter());
     
     clear();
