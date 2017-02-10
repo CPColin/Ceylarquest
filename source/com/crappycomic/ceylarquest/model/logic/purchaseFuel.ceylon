@@ -2,6 +2,7 @@ import com.crappycomic.ceylarquest.model {
     FuelSalable,
     Game,
     InvalidMove,
+    Node,
     Ownable,
     Player,
     Result,
@@ -10,13 +11,12 @@ import com.crappycomic.ceylarquest.model {
     preRoll
 }
 
-// TODO: should all these bad cases continue to fail silently or return InvalidMove?
-shared Result purchaseFuel(Game game, Player player, Integer fuel) {
+"Alters the state of the given [[game]] so the given [[player]] has purchased the given amount of
+ [[fuel]] at the given [[node]]."
+shared Result purchaseFuel(Game game, Player player, Node node, Integer fuel) {
     if (game.phase != preRoll && game.phase != postLand) {
         return incorrectPhase;
     }
-    
-    value node = game.playerLocation(player);
     
     if (!fuelAvailable(game, node)) {
         return InvalidMove("Fuel is not available for purchase at ``node.name``.");
@@ -24,18 +24,19 @@ shared Result purchaseFuel(Game game, Player player, Integer fuel) {
     
     assert (is FuelSalable node);
     
-    value unitCost = fuelFee(game, player, node);
-    value clampedFuel = largest(0, smallest(maximumPurchaseableFuel(game, player, node), fuel));
-    
-    if (clampedFuel == 0) {
-        return game;
+    if (fuel <= 0) {
+        return InvalidMove("Fuel to purchase must be greater than zero.");
+    }
+    else if (fuel > maximumPurchaseableFuel(game, player, node)) {
+        return InvalidMove("Fuel to purchase may not exceed what player can afford.");
     }
     
+    value unitCost = fuelFee(game, player, node);
     value owner = if (is Ownable node) then game.owner(node) else null;
     {<Player -> Integer>*}? playerCashes;
     
     if (unitCost > 0) {
-        value totalCost = unitCost * clampedFuel;
+        value totalCost = unitCost * fuel;
         
         // The second conditional should be enough, but using it alone is triggering this error:
         // Ceylon backend error: incompatible types: com.crappycomic.ceylarquest.model.Unowned
@@ -58,6 +59,6 @@ shared Result purchaseFuel(Game game, Player player, Integer fuel) {
     
     return game.with {
         playerCashes = playerCashes;
-        playerFuels = { player -> game.playerFuel(player) + clampedFuel };
+        playerFuels = { player -> game.playerFuel(player) + fuel };
     };
 }

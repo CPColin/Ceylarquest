@@ -9,6 +9,7 @@ import com.crappycomic.ceylarquest.model {
     postLand
 }
 
+"Alters the state of the given [[game]] so the given [[player]] has purchased the given [[node]]."
 shared Result purchaseNode(Game game, Player player, Node node) {
     if (game.phase != postLand) {
         return incorrectPhase;

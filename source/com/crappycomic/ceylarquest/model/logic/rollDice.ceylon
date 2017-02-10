@@ -7,6 +7,7 @@ import com.crappycomic.ceylarquest.model {
     Rules
 }
 
+"Performs a random roll of however many dice the given [[rules]] call for and returns the result."
 shared Roll rollDice(Rules rules) {
     value random = DefaultRandom();
     

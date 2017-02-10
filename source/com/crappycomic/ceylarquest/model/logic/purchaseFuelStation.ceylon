@@ -8,6 +8,7 @@ import com.crappycomic.ceylarquest.model {
     preRoll
 }
 
+"Alters the state of the given [[game]] so the given [[player]] has purchased a fuel station."
 shared Result purchaseFuelStation(Game game, Player player) {
     if (game.phase != preRoll && game.phase != postLand) {
         return incorrectPhase;
