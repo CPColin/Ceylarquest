@@ -13,7 +13,7 @@ import com.crappycomic.ceylarquest.model {
  This code is indirectly covered by tests that use the `BoardTest` class to verify the layout of a
  specific board."
 shared {Path+} depthFirstSearch(Board board, Node head, Integer distance) {
-    if (distance == 0) {
+    if (distance <= 0) {
         return {[head]};
     }
     else {

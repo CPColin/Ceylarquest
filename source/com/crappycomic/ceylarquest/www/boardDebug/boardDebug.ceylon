@@ -27,6 +27,9 @@ import com.crappycomic.ceylarquest.view {
     roundJoin,
     squareCap
 }
+import com.crappycomic.tropichop {
+    tropicHopBoard
+}
 
 import debug {
     debugGameJson
@@ -142,6 +145,13 @@ object g satisfies GraphicsContext {
 Game game = loadDebugGame();
 
 Game loadDebugGame() {
+    /*
+     TODO File a bug report for this:
+     The com.crappycomic.tropichop module is loaded via the debug module in Java mode, but the
+     browser gets a "module X not available" error. Manually touching the module, for now.
+     */ 
+    suppressWarnings("unusedDeclaration")
+    value board = tropicHopBoard;
     value game = loadGame(debugGameJson);
     
     if (is InvalidSave game) {
@@ -239,5 +249,9 @@ shared void setImages() {
         dynamic canvas = getCanvas();
         
         canvas.style.background = "url(``resourcePath``/foreground.png)";
+        
+        boardOverlay.drawOwnedNodes(game);
+        boardOverlay.drawPlacedFuelStations(game);
+        boardOverlay.drawActivePlayers(game);
     }
 }
