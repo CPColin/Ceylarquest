@@ -7,36 +7,42 @@ shared alias CardAction => Result(Game, Player);
  knock a player out of the game."
 shared alias NodeAction => Game(Game, Player);
 
-shared Result advanceToNode(Node node)(Game game, Player player) {
-    return game; // TODO
-}
+shared Result advanceToNode(Node node)(Game game, Player player) 
+    => game; // TODO
 
 shared Game collectCash(Integer amount)(Game game, Player player)
-    => game.with { playerCashes = { player -> game.playerCash(player) + amount }; };
+    => game.with {
+        playerCashes = { player -> game.playerCash(player) + amount };
+    };
+
+shared Game collectCashAndRollAgain(Integer amount)(Game game, Player player)
+    => game.with {
+        phase = preRoll; // Using preRoll instead of RollingAgain so card and fuel checks happen.
+        playerCashes = { player -> game.playerCash(player) + amount };
+    };
 
 shared Game collectFuelStation(Integer amount)(Game game, Player player)
-    => let (fuelStations = smallest(amount, game.fuelStationsRemaining)) if (fuelStations > 0)
+    => let (fuelStations = smallest(amount, game.fuelStationsRemaining))
+        if (fuelStations > 0)
         then game.with {
-            playerFuelStationCounts = { player -> game.playerFuelStationCount(player) + fuelStations };
+            playerFuelStationCounts
+                = { player -> game.playerFuelStationCount(player) + fuelStations };
         }
         else game; // TODO: with message saying no fuel station was available
 
-shared Game loseDisputeWithLeague(Game game, Player player) {
-    return game; // TODO
-}
+shared Game loseDisputeWithLeague(Game game, Player player)
+    => game; // TODO
 
-shared Game rollAgain(Integer multiplier)(Game game, Player player) {
-    return game; // TODO: separate "roll again" phase
-}
+shared Game rollWithMultiplier(Integer multiplier)(Game game, Player player)
+    => game.with {
+        phase = RollingWithMultiplier(multiplier);
+    };
 
-shared Game useFuel(Integer amount)(Game game, Player player) {
-    return game; // TODO
-}
+shared Result useFuel(Integer amount)(Game game, Player player)
+    => game; // TODO
 
-shared Game winDisputeWithLeague(Game game, Player player) {
-    return game; // TODO
-}
+shared Game winDisputeWithLeague(Game game, Player player)
+    => game; // TODO
 
-shared Game winDisputeWithPlayer(Game game, Player player) {
-    return game; // TODO
-}
+shared Game winDisputeWithPlayer(Game game, Player player)
+    => game; // TODO

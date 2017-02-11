@@ -5,7 +5,7 @@ import com.crappycomic.ceylarquest.model {
     Player,
     Result,
     Roll,
-    RollingAgain,
+    RollingWithMultiplier,
     drawingCard,
     incorrectPhase,
     preRoll
@@ -17,12 +17,13 @@ import com.crappycomic.ceylarquest.model {
  [[choosing an allowed move|ChoosingAllowedMove]] from those available, depending on the
  [[player's fuel|Game.playerFuel]].
  
- If the player is currently [[rolling again|RollingAgain]] because of an action or when bypassing a
- node, this function will never result in drawing a card and will skip the fuel check."
+ If the player is currently [[rolling with a multiplier|RollingWithMultiplier]] because of an action
+ or when bypassing a node, this function will never result in drawing a card and will skip the fuel
+ check."
 shared Result applyRoll(Game game, Player player, Roll roll) {
     value phase = game.phase;
     
-    if (phase != preRoll && !phase is RollingAgain) {
+    if (phase != preRoll && !phase is RollingWithMultiplier) {
         return incorrectPhase;
     }
     
@@ -33,8 +34,8 @@ shared Result applyRoll(Game game, Player player, Roll roll) {
     value totalRoll = roll.fold(0)(plus);
     Integer distance;
     
-    if (is RollingAgain phase) {
-        // Don't draw cards or check fuel when rolling again.
+    if (is RollingWithMultiplier phase) {
+        // Don't draw cards or check fuel when rolling with a multiplier.
         distance = totalRoll * phase.multiplier;
     }
     else {
@@ -57,6 +58,6 @@ shared Result applyRoll(Game game, Player player, Roll roll) {
     value paths = allowedMoves(game.board, game.playerLocation(player), distance);
     
     return game.with {
-        phase = ChoosingAllowedMove(paths, !phase is RollingAgain);
+        phase = ChoosingAllowedMove(paths, phase is RollingWithMultiplier then 0 else totalRoll);
     };
 }

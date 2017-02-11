@@ -1,4 +1,5 @@
 import com.crappycomic.ceylarquest.model {
+    ChoosingAllowedMove,
     Game,
     InvalidMove,
     Path,
@@ -6,14 +7,13 @@ import com.crappycomic.ceylarquest.model {
     PreLand,
     Result,
     Well,
-    incorrectPhase,
-    preRoll
+    incorrectPhase
 }
 
 "Alters the state of the given [[game]] to have the given [[player]] traverse the given [[path]],
  using the given amount of [[fuel]]."
 shared Result traversePath(variable Game game, Player player, Path path, Integer fuel) {
-    if (game.phase != preRoll) {
+    if (!game.phase is ChoosingAllowedMove) {
         return incorrectPhase;
     }
     

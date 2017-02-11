@@ -12,12 +12,12 @@ import com.crappycomic.ceylarquest.model {
     Ownable,
     Rules,
     WellOrbit,
-    collectCash,
+    collectCashAndRollAgain,
     collectFuelStation,
     loseDisputeWithLeague,
     mapNodes,
-    rollAgain,
     rollTypeAllMatch,
+    rollWithMultiplier,
     useFuel,
     winDisputeWithLeague,
     winDisputeWithPlayer
@@ -64,7 +64,7 @@ shared object tropicHopBoard extends Board() {
     object westFreeport satisfies FreePort {
         name = "West Freeport";
         location = [144, 1078];
-        action = collectCash(600);
+        action = collectCashAndRollAgain(600);
     }
     object westB satisfies OwnablePort {
         name = "West B";
@@ -318,10 +318,10 @@ shared object tropicHopBoard extends Board() {
     
     cards = [
         Card("Doldrums", useFuel(3)),
-        Card("Gale 2", useFuel(2), rollAgain(2)),
-        Card("Gale 3", useFuel(3), rollAgain(3)),
-        Card("Gale 4", useFuel(4), rollAgain(4)),
-        Card("Bonus Contract", collectCash(300), rollAgain(1)),
+        Card("Gale 2", useFuel(2), rollWithMultiplier(2)),
+        Card("Gale 3", useFuel(3), rollWithMultiplier(3)),
+        Card("Gale 4", useFuel(4), rollWithMultiplier(4)),
+        Card("Bonus Contract", collectCashAndRollAgain(300)),
         Card("You LOSE a dispute with the Company", loseDisputeWithLeague),
         Card("You LOSE a dispute with the Company", loseDisputeWithLeague),
         Card("You WIN a dispute with the Company", winDisputeWithLeague),

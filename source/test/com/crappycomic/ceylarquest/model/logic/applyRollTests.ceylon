@@ -9,7 +9,7 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     ChoosingAllowedMove,
     Game,
-    RollingAgain,
+    RollingWithMultiplier,
     Rules,
     drawingCard,
     incorrectPhase,
@@ -54,12 +54,13 @@ shared void applyRollingAgainDontCheckFuel() {
     value player = testGame.currentPlayer;
     value node = tropicHopBoard.testAfterStart;
     value game = testGame.with {
-        phase = RollingAgain(1);
+        phase = RollingWithMultiplier(1);
         playerFuels = { player -> 0 };
         playerLocations = { player -> node };
     };
     
-    assertTrue(game.phase is RollingAgain, "Phase needs to be RollingAgain for this test.");
+    assertTrue(game.phase is RollingWithMultiplier,
+        "Phase needs to be RollingWithMultiplier for this test.");
     
     value result = applyRoll(game, player, [1, 2]);
     
@@ -83,7 +84,7 @@ shared void applyRollingAgainDontDrawCard() {
     value node = tropicHopBoard.testAfterStart;
     value game = Game {
         board = tropicHopBoard;
-        phase = RollingAgain(1);
+        phase = RollingWithMultiplier(1);
         playerLocations = { player -> node };
         playerNames = testPlayerNames;
         rules = object extends Rules() {
@@ -91,7 +92,8 @@ shared void applyRollingAgainDontDrawCard() {
         };
     };
     
-    assertTrue(game.phase is RollingAgain, "Phase needs to be RollingAgain for this test.");
+    assertTrue(game.phase is RollingWithMultiplier,
+        "Phase needs to be RollingWithMultiplier for this test.");
     
     value result = applyRoll(game, player, [1, 1]);
     
@@ -115,11 +117,12 @@ shared void applyRollingAgainMultiplier() {
     value node = tropicHopBoard.testAfterStart;
     value multiplier = 4;
     value game = testGame.with {
-        phase = RollingAgain(multiplier);
+        phase = RollingWithMultiplier(multiplier);
         playerLocations = { player -> node };
     };
     
-    assertTrue(game.phase is RollingAgain, "Phase needs to be RollingAgain for this test.");
+    assertTrue(game.phase is RollingWithMultiplier,
+        "Phase needs to be RollingWithMultiplier for this test.");
     
     value roll = [3, 4];
     value totalRoll = roll.fold(0)(plus);
@@ -245,5 +248,6 @@ shared void applyRollSuccess() {
 
 test
 shared void applyRollWrongPhase() {
-    wrongPhaseTest((game) => applyRoll(game, game.currentPlayer, [0, 0]), preRoll, RollingAgain(1));
+    wrongPhaseTest((game)
+        => applyRoll(game, game.currentPlayer, [0, 0]), preRoll, RollingWithMultiplier(1));
 }

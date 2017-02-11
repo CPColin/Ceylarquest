@@ -8,13 +8,13 @@ import ceylon.test {
 
 import com.crappycomic.ceylarquest.model {
     ActionTrigger,
+    ChoosingAllowedMove,
     Game,
     Well,
     WellOrbit,
     WellPull,
     collectCash,
-    incorrectPhase,
-    preRoll
+    incorrectPhase
 }
 import com.crappycomic.ceylarquest.model.logic {
     passesStart,
@@ -32,12 +32,12 @@ import test.com.crappycomic.ceylarquest.model {
 
 test
 shared void traversePathInsufficientFuel() {
+    value player = testGame.currentPlayer;
+    value path = [testGame.playerLocation(player)];
     value game = testGame.with {
-        phase = preRoll;
+        phase = ChoosingAllowedMove([path], 0);
     };
-    value player = game.currentPlayer;
     value playerFuel = game.playerFuel(player);
-    value path = [game.playerLocation(player)];
     value result = traversePath(game, player, path, playerFuel + 1);
     
     if (is Game result) {
@@ -53,13 +53,13 @@ shared void traversePathInsufficientFuel() {
 
 test
 shared void traversePathPassesStart() {
-    value game = testGame.with {
-        phase = preRoll;
-    };
-    value player = game.currentPlayer;
-    value playerCash = game.playerCash(player);
     value path
-        = [tropicHopBoard.testBeforeStart, tropicHopBoard.start, tropicHopBoard.testAfterStart];
+            = [tropicHopBoard.testBeforeStart, tropicHopBoard.start, tropicHopBoard.testAfterStart];
+    value game = testGame.with {
+        phase = ChoosingAllowedMove([path], 0);
+    };
+    value player = testGame.currentPlayer;
+    value playerCash = game.playerCash(player);
     
     assertTrue(passesStart(game.board, path), "Path needs to pass Start.");
     
@@ -78,19 +78,19 @@ shared void traversePathPassesStart() {
 
 test
 shared void traversePathRemainAtActionTrigger() {
-    value game = testGame.with {
-        phase = preRoll;
-    };
-    value player = game.currentPlayer;
-    value playerCash = game.playerCash(player);
     object node extends TestNode() satisfies ActionTrigger {
         action = collectCash(100);
     }
+    value path = [node];
+    value game = testGame.with {
+        phase = ChoosingAllowedMove([path], 0);
+    };
+    value player = game.currentPlayer;
+    value playerCash = game.playerCash(player);
     value actionGame = node.action(game, player);
     
     assertTrue(actionGame.playerCash(player) > playerCash, "Action didn't increase player's cash.");
     
-    value path = [node];
     value result = traversePath(game, player, path, 0);
     
     if (is Game result) {
@@ -103,12 +103,12 @@ shared void traversePathRemainAtActionTrigger() {
 
 test
 shared void traversePathSkipStart() {
+    value path = [tropicHopBoard.testBeforeStart, tropicHopBoard.testAfterStart];
     value game = testGame.with {
-        phase = preRoll;
+        phase = ChoosingAllowedMove([path], 0);
     };
     value player = game.currentPlayer;
     value playerCash = game.playerCash(player);
-    value path = [tropicHopBoard.testBeforeStart, tropicHopBoard.testAfterStart];
     
     assertFalse(passesStart(game.board, path), "Path incorrectly passes Start.");
     
@@ -135,11 +135,11 @@ shared void traversePathToWellPull() {
 }
 
 void traversePathToWell(Well node) {
+    value path = [node];
     value game = testGame.with {
-        phase = preRoll;
+        phase = ChoosingAllowedMove([path], 0);
     };
     value player = game.currentPlayer;
-    value path = [node];
     value result = traversePath(game, player, path, 0);
     
     if (is Game result) {
@@ -158,5 +158,6 @@ shared void traversePathWrongPhase() {
     object node extends TestNode() {}
     value path = [node];
     
-    wrongPhaseTest((game) => traversePath(game, game.currentPlayer, path, 0), preRoll);
+    wrongPhaseTest((game)
+        => traversePath(game, game.currentPlayer, path, 0), ChoosingAllowedMove([path], 0));
 }

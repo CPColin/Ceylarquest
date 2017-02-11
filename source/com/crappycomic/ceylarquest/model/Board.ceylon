@@ -4,7 +4,7 @@ shared alias Path => [Node+];
  be drawn, and the default [[Rules]] by which the game will be played."
 shared abstract class Board() {
     "The [[Card]]s that players can draw, in the order they were defined."
-    shared formal [Card*] cards;
+    shared formal [Card+] cards;
     
     "The default rules by which the game will be played."
     shared formal Rules defaultRules;

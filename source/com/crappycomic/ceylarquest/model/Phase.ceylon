@@ -6,15 +6,17 @@ import ceylon.language.meta {
  at a given point during play. Code in [[package com.crappycomic.ceylarquest.model.logic]] should,
  at most, advance the phase one step along the (not-yet-drawn) state diagram."
 shared abstract class Phase()
-        of ChoosingAllowedMove | RollingAgain | PreLand | SettlingDebts | choosingNodeLostToLeague
-            | choosingNodeWonFromLeague | choosingNodeWonFromPlayer | drawingCard | gameOver
-            | postLand | preRoll | trading {
+        of ChoosingAllowedMove | DrewCard | RollingWithMultiplier | PreLand | SettlingDebts
+            | choosingNodeLostToLeague | choosingNodeWonFromLeague | choosingNodeWonFromPlayer
+            | drawingCard | gameOver | postLand | preRoll | trading {
     shared actual String string => classDeclaration(this).name;
 }
 
-shared class ChoosingAllowedMove(shared [Path+] paths, Boolean useFuel) extends Phase() {}
+shared class ChoosingAllowedMove(shared [Path+] paths, shared Integer fuel) extends Phase() {}
 
-shared class RollingAgain(shared Integer multiplier) extends Phase() {}
+shared class DrewCard(shared Card card) extends Phase() {}
+
+shared class RollingWithMultiplier(shared Integer multiplier) extends Phase() {}
 
 shared class PreLand(shared Boolean advancedToNode) extends Phase() {}
 
