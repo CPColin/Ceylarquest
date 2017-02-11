@@ -8,7 +8,7 @@ import ceylon.language.meta {
 shared abstract class Phase()
         of ChoosingAllowedMove | DrewCard | RollingWithMultiplier | PreLand | SettlingDebts
             | choosingNodeLostToLeague | choosingNodeWonFromLeague | choosingNodeWonFromPlayer
-            | drawingCard | gameOver | postLand | preRoll | trading {
+            | currentPlayerEliminated | drawingCard | gameOver | postLand | preRoll | trading {
     shared actual String string => classDeclaration(this).name;
 }
 
@@ -27,6 +27,8 @@ shared object choosingNodeLostToLeague extends Phase() {}
 shared object choosingNodeWonFromLeague extends Phase() {}
 
 shared object choosingNodeWonFromPlayer extends Phase() {}
+
+shared object currentPlayerEliminated extends Phase() {}
 
 shared object drawingCard extends Phase() {}
 

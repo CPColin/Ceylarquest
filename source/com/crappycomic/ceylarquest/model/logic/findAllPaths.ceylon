@@ -12,14 +12,14 @@ import com.crappycomic.ceylarquest.model {
  
  This code is indirectly covered by tests that use the `BoardTest` class to verify the layout of a
  specific board."
-shared {Path+} depthFirstSearch(Board board, Node head, Integer distance) {
+shared {Path+} findAllPaths(Board board, Node head, Integer distance) {
     if (distance <= 0) {
         return {[head]};
     }
     else {
         return {
             for (destination in destinations(board, head))
-                for (tail in depthFirstSearch(board, destination, distance - 1))
+                for (tail in findAllPaths(board, destination, distance - 1))
                     tail.withLeading(head)
         };
     }

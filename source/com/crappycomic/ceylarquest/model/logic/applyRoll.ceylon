@@ -8,7 +8,8 @@ import com.crappycomic.ceylarquest.model {
     RollingWithMultiplier,
     drawingCard,
     incorrectPhase,
-    preRoll
+    preRoll,
+    CostsFuelToLeave
 }
 
 "Applies the given [[roll]] to the given [[game]] and returns a Game [[with|Game.with]] the
@@ -32,6 +33,9 @@ shared Result applyRoll(Game game, Player player, Roll roll) {
     }
     
     value totalRoll = roll.fold(0)(plus);
+    value fuel = phase is RollingWithMultiplier
+        then 0
+        else (game.playerLocation(player) is CostsFuelToLeave then totalRoll else 0);
     Integer distance;
     
     if (is RollingWithMultiplier phase) {
@@ -45,7 +49,7 @@ shared Result applyRoll(Game game, Player player, Roll roll) {
                 phase = drawingCard;
             };
         }
-        else if (totalRoll > game.playerFuel(player)) {
+        else if (fuel > game.playerFuel(player)) {
             // Insufficient fuel to move, so stay put.
             distance = 0;
         }
@@ -56,8 +60,10 @@ shared Result applyRoll(Game game, Player player, Roll roll) {
     }
     
     value paths = allowedMoves(game.board, game.playerLocation(player), distance);
+    // The smaller value is used for cases where the player had to stay put.
+    value usedFuel = smallest(fuel, distance);
     
     return game.with {
-        phase = ChoosingAllowedMove(paths, phase is RollingWithMultiplier then 0 else totalRoll);
+        phase = ChoosingAllowedMove(paths, usedFuel);
     };
 }

@@ -15,6 +15,10 @@ shared interface ActionTrigger
 shared interface Administration
         satisfies Node {}
 
+"A node that costs fuel when players leave it."
+shared interface CostsFuelToLeave
+        satisfies Node {}
+
 "A node that may sell fuel to players."
 shared interface FuelSalable
         satisfies Node {
@@ -46,10 +50,6 @@ shared interface Ownable
     
     shared formal [Integer+] rents;
 }
-
-"A node that costs fuel when players leave it."
-shared interface CostsFuelToLeave
-        satisfies Node {}
 
 "A node that represents a gravity well and, thus, may not be landed upon or bypassed."
 shared interface Well

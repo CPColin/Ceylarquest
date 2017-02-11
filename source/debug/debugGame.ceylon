@@ -45,6 +45,9 @@ shared String debugGameJson => JsonObject {
         "eastD",
         "eastFreeport" // Invalid becayse it's not FuelStationable
     },
+    "playerFuels" -> JsonObject {
+        "magenta" -> 0
+    },
     "playerLocations" -> JsonObject {
         "cyan" -> "westFreeport", // Ignored because Cyan is not active
         "magenta" -> "eastFreeport",

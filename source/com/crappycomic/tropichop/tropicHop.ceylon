@@ -12,6 +12,7 @@ import com.crappycomic.ceylarquest.model {
     Ownable,
     Rules,
     WellOrbit,
+    advanceToNode,
     collectCashAndRollAgain,
     collectFuelStation,
     loseDisputeWithLeague,
@@ -318,10 +319,12 @@ shared object tropicHopBoard extends Board() {
     
     cards = [
         Card("Doldrums", useFuel(3)),
-        Card("Gale 2", useFuel(2), rollWithMultiplier(2)),
-        Card("Gale 3", useFuel(3), rollWithMultiplier(3)),
-        Card("Gale 4", useFuel(4), rollWithMultiplier(4)),
+        Card("Gale 2", rollWithMultiplier(2)),
+        Card("Gale 3", rollWithMultiplier(3)),
+        Card("Gale 4", rollWithMultiplier(4)),
         Card("Bonus Contract", collectCashAndRollAgain(300)),
+        Card("Advance to East Freeport", advanceToNode(2, eastFreeport)),
+        Card("Advance to West Freeport", advanceToNode(2, westFreeport)),
         Card("You LOSE a dispute with the Company", loseDisputeWithLeague),
         Card("You LOSE a dispute with the Company", loseDisputeWithLeague),
         Card("You WIN a dispute with the Company", winDisputeWithLeague),

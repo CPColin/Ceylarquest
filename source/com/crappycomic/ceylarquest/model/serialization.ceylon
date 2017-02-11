@@ -24,6 +24,7 @@ shared Game|InvalidSave loadGame(String json) {
         value currentPlayer = loadCurrentPlayer(jsonObject);
         value owners = loadOwners(jsonObject, board);
         value placedFuelStations = loadPlacedFuelStations(jsonObject, board);
+        value playerFuels = loadPlayerFuels(jsonObject);
         value playerLocations = loadPlayerLocations(jsonObject, board);
         
         return Game {
@@ -34,6 +35,7 @@ shared Game|InvalidSave loadGame(String json) {
             allPlayers = allPlayers;
             currentPlayer = currentPlayer;
             owners = owners;
+            playerFuels = playerFuels;
             placedFuelStations = placedFuelStations;
             playerLocations = playerLocations;
         };
@@ -100,6 +102,15 @@ throws(`class InvalidTypeException`)
     value placedFuelStations = jsonObject.getArray("placedFuelStations");
     
     return placedFuelStations.narrow<String>().map((nodeKey) => resolveNode(board, nodeKey));
+}
+
+throws(`class AssertionError`)
+throws(`class InvalidTypeException`)
+{<Player -> Integer>*} loadPlayerFuels(JsonObject jsonObject) {
+    value playerFuels = jsonObject.getObject("playerFuels");
+    
+    return playerFuels.map((playerKey -> _)
+        => resolvePlayer(playerKey) -> playerFuels.getInteger(playerKey));
 }
 
 throws(`class AssertionError`)

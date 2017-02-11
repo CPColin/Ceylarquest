@@ -12,7 +12,7 @@ import com.crappycomic.ceylarquest.model {
  means no moves are valid for the given parameters."
 shared [Path+] allowedMoves(Board board, Node origin, Integer distance) {
     // Find all the paths with the given distance.
-    value paths = depthFirstSearch(board, origin, distance);
+    value paths = findAllPaths(board, origin, distance);
     // Remove paths that end on a WellOrbit node.
     value filteredPaths = removeWellOrbitPaths(paths);
     // Find branches and the branch point, if any.
