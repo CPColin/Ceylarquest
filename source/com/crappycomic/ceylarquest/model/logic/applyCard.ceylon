@@ -5,7 +5,9 @@ import com.crappycomic.ceylarquest.model {
     postLand
 }
 
-// TODO: need tests
+"Applies the [[action|Card.action]] of the given [[card]] to the given [[game]]. If the action does
+ not change the [[phase|Game.phase]] of the game, the result will use the [[postLand]] phase, to
+ indicate that the card consumed the player's turn."
 shared Result applyCard(Game game, Card card) {
     value result = card.action(game, game.currentPlayer);
     
