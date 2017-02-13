@@ -33,6 +33,7 @@ shared void landOnNodePayRent() {
     value [player, owner] = testPlayers;
     value node = tropicHopBoard.testOwnablePort;
     value game = testGame.with {
+        currentPlayer = player;
         owners = { node -> owner };
         phase = PreLand(false);
         playerLocations = { player -> node };
@@ -41,7 +42,7 @@ shared void landOnNodePayRent() {
     
     assertTrue(rent > 0, "Rent needs to be positive for this test.");
     
-    value result = landOnNode(game, player, node);
+    value result = landOnNode(game);
     
     if (is Game result) {
         value phase = result.phase;
@@ -80,7 +81,7 @@ void landOnNodeMaybeTriggeringAction(Boolean triggerAction) {
     value player = game.currentPlayer;
     value playerCash = game.playerCash(player);
     value expectedCash = triggerAction then playerCash + cash else playerCash;
-    value result = landOnNode(game, player, testNode);
+    value result = landOnNode(game, testNode);
     
     if (is Game result) {
         assertEquals(result.playerCash(player), expectedCash,
@@ -95,5 +96,5 @@ test
 shared void landOnNodeWrongPhase() {
     value node = tropicHopBoard.testAfterStart;
     
-    wrongPhaseTest((game) => landOnNode(game, game.currentPlayer, node), PreLand(true));
+    wrongPhaseTest((game) => landOnNode(game, node), PreLand(true));
 }

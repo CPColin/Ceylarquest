@@ -9,7 +9,7 @@ import com.crappycomic.ceylarquest.model {
  not change the [[phase|Game.phase]] of the game, the result will use the [[postLand]] phase, to
  indicate that the card consumed the player's turn."
 shared Result applyCard(Game game, Card card) {
-    value result = card.action(game, game.currentPlayer);
+    value result = card.action(game);
     
     if (is Game result) {
         if (result.phase == game.phase) {

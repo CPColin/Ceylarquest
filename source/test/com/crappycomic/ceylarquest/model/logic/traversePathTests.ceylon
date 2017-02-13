@@ -87,7 +87,7 @@ shared void traversePathRemainAtActionTrigger() {
     };
     value player = game.currentPlayer;
     value playerCash = game.playerCash(player);
-    value actionGame = node.action(game, player);
+    value actionGame = node.action(game);
     
     assertTrue(actionGame.playerCash(player) > playerCash, "Action didn't increase player's cash.");
     

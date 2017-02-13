@@ -78,7 +78,7 @@ shared class BoardOverlay(GraphicsContext g) {
         }
         else {
             Float radius = playerRadius / sin(pi / players);
-            Float theta = 2 * pi * player / players; // TODO: phase
+            Float theta = 2 * pi * player / players;
             
             return [(nodeCenter[0] + radius * cos(theta)).integer,
                 (nodeCenter[1] - radius * sin(theta)).integer];

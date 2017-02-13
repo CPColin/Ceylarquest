@@ -25,7 +25,7 @@ test
 shared void applyCardNoPhaseChange() {
     assertNotEquals(testGame.phase, postLand);
     
-    value card = Card("No phase change", (game, player) => game);
+    value card = Card("No phase change", identity);
     value result = applyCard(testGame, card);
     
     if (is Game result) {
@@ -44,7 +44,7 @@ shared void applyCardPhaseChange() {
 
     assertNotEquals(testGame.phase, phase);
     
-    value card = Card("Phase change", (game, player) => game.with { phase = phase; });
+    value card = Card("Phase change", (game) => game.with { phase = phase; });
     value result = applyCard(testGame, card);
     
     if (is Game result) {
