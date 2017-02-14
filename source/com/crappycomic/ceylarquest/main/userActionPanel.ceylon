@@ -1,12 +1,15 @@
 import com.crappycomic.ceylarquest.model {
     Card,
     Game,
-    Path
+    Node,
+    Path,
+    Player
 }
 import com.crappycomic.ceylarquest.model.logic {
     applyCard,
     applyRoll,
     drawCard,
+    landOnNode,
     rollDice,
     traversePath
 }
@@ -43,7 +46,7 @@ object userActionPanel extends JPanel() satisfies UserActionPanel {
     shared actual void showDrawingCardPanel(Game game) {
         value panel = JPanel();
         
-        panel.add(JLabel("``playerName(game)`` Must Draw a Card"));
+        panel.add(JLabel("``playerName(game)`` must draw a card."));
         
         value button = JButton("Draw a Card");
         
@@ -73,13 +76,25 @@ object userActionPanel extends JPanel() satisfies UserActionPanel {
     }
     
     shared actual void showPreLandPanel(Game game) {
-        // TODO
+        value panel = JPanel();
+        
+        panel.add(JLabel("``playerName(game)`` has arrived at ``nodeName(game)``."));
+        
+        value continueButton = JButton("Continue");
+        
+        continueButton.addActionListener(void(_) {
+            updateView(landOnNode(game));
+        });
+        
+        panel.add(continueButton);
+        
+        showPanel(panel);
     }
     
     shared actual void showPreRollPanel(Game game) {
         value panel = JPanel();
         
-        panel.add(JLabel("``playerName(game)``'s Turn"));
+        panel.add(JLabel("``playerName(game)``'s turn!"));
         
         value rollDiceButton = JButton("Roll Dice");
         
@@ -90,8 +105,12 @@ object userActionPanel extends JPanel() satisfies UserActionPanel {
         showPanel(panel);
     }
     
-    String playerName(Game game) {
-        return game.playerName(game.currentPlayer);
+    String nodeName(Game game, Node node = game.playerLocation(game.currentPlayer)) {
+        return node.name;
+    }
+    
+    String playerName(Game game, Player player = game.currentPlayer) {
+        return game.playerName(player);
     }
     
     void rollDiceAndApplyRoll(Game game)(Anything _)  {

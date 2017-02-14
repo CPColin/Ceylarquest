@@ -8,6 +8,7 @@ import com.crappycomic.ceylarquest.model {
     DrewCard,
     Game,
     InvalidSave,
+    PreLand,
     Result,
     loadGame,
     preRoll,
@@ -97,9 +98,9 @@ void updateView(Result result) {
         case (is DrewCard) {
             userActionPanel.showDrewCardPanel(game, phase.card);
         }
-        //case (is PreLand) {
-        //    userActionPanel.showPreLandPanel(game);
-        //}
+        case (is PreLand) {
+            userActionPanel.showPreLandPanel(game);
+        }
         case (drawingCard) {
             userActionPanel.showDrawingCardPanel(game);
         }
