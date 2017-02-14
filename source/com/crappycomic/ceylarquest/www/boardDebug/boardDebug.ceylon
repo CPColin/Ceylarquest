@@ -16,11 +16,11 @@ import com.crappycomic.ceylarquest.model.logic {
     allowedMoves
 }
 import com.crappycomic.ceylarquest.view {
-    BoardOverlay,
     GraphicsContext,
     LineCap,
     LineJoin,
     bevelJoin,
+    boardOverlay,
     buttCap,
     miterJoin,
     roundCap,
@@ -162,20 +162,18 @@ Game loadDebugGame() {
     }
 }
 
-BoardOverlay boardOverlay = BoardOverlay(g);
-
 shared void clear() {
     g.clear();
 }
 
 shared void drawActivePlayers() {
     clear();
-    boardOverlay.drawActivePlayers(game);
+    boardOverlay.drawActivePlayers(g, game);
 }
 
 shared void colorNodes() {
     clear();
-    boardOverlay.colorNodes(game, getParameter());
+    boardOverlay.colorNodes(g, game, getParameter());
 }
 
 shared void drawAllowedMoves() {
@@ -183,7 +181,7 @@ shared void drawAllowedMoves() {
     value paths = allowedMoves(game.board, game.playerLocation(player), getParameter());
     
     clear();
-    boardOverlay.drawPaths(player, paths);
+    boardOverlay.drawPaths(g, player, paths);
 }
 
 variable Integer nodeAreaX = 0;
@@ -203,7 +201,7 @@ shared void drawNodeAreas() {
 }
 
 void calculateNodeAreas(JsContext context, Integer width, Integer height) {
-    boardOverlay.drawClosestNode(game, nodeAreaX, nodeAreaY, nodeAreaRadius, nodeAreaRadius);
+    boardOverlay.drawClosestNode(g, game, nodeAreaX, nodeAreaY, nodeAreaRadius, nodeAreaRadius);
     
     nodeAreaX += nodeAreaRadius;
     
@@ -250,8 +248,6 @@ shared void setImages() {
         
         canvas.style.background = "url(``resourcePath``/foreground.png)";
         
-        boardOverlay.drawOwnedNodes(game);
-        boardOverlay.drawPlacedFuelStations(game);
-        boardOverlay.drawActivePlayers(game);
+        boardOverlay.draw(g, game);
     }
 }

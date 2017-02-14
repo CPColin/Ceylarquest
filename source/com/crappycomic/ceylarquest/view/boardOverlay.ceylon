@@ -5,7 +5,7 @@ import ceylon.numeric.float {
 }
 
 import com.crappycomic.ceylarquest.model {
-    Board,
+    ChoosingAllowedMove,
     Color,
     Game,
     Location,
@@ -14,13 +14,12 @@ import com.crappycomic.ceylarquest.model {
     Path,
     Player
 }
-
 import com.crappycomic.ceylarquest.model.logic {
     destinations
 }
 
-"A visual representation of a [[Game]] state. Does not include the background of the [[Board]]."
-shared class BoardOverlay(GraphicsContext g) {
+"A visual representation of a [[Game]] state."
+shared object boardOverlay {
     Color fuelStationColor = Color(192, 192, 192);
     
     // TODO: It would be nice to define all of these dimensions in terms of the board image size.
@@ -37,8 +36,23 @@ shared class BoardOverlay(GraphicsContext g) {
     
     Integer playerStroke = playerRadius / 5;
     
+    "Draws the overlay."
+    shared void draw(GraphicsContext g, Game game) {
+        value phase = game.phase;
+        
+        drawOwnedNodes(g, game);
+        //highlightNodes(g, game);
+        drawPlacedFuelStations(g, game);
+        
+        if (is ChoosingAllowedMove phase) {
+            drawPaths(g, game.currentPlayer, phase.paths);
+        }
+        
+        drawActivePlayers(g, game);
+    }
+    
     "Draws every [[active player|Game.activePlayers]] at their current locations."
-    shared void drawActivePlayers(Game game) {
+    shared void drawActivePlayers(GraphicsContext g, Game game) {
         value locations = game.activePlayers.group((player) => game.playerLocation(player));
         
         for (node -> players in locations) {
@@ -54,7 +68,7 @@ shared class BoardOverlay(GraphicsContext g) {
     }
     
     "Colors every [[owned node|Game.owners]] according to the player who owns it."
-    shared void drawOwnedNodes(Game game) {
+    shared void drawOwnedNodes(GraphicsContext g, Game game) {
         for (node -> owner in game.owners) {
             if (is Player owner) {
                 g.fillCircle(node.location, owner.color.withAlpha(128), nodeRadius);
@@ -63,7 +77,7 @@ shared class BoardOverlay(GraphicsContext g) {
     }
     
     "Draws every fuel station that has been placed on the board."
-    shared void drawPlacedFuelStations(Game game) {
+    shared void drawPlacedFuelStations(GraphicsContext g, Game game) {
         for (node in game.placedFuelStations) {
             g.drawCircle(node.location, fuelStationColor, nodeRadius, fuelStationStroke);
         }
@@ -87,7 +101,7 @@ shared class BoardOverlay(GraphicsContext g) {
     
     // Temporary stuff, for debugging
     
-    shared void colorNodes(Game game, Integer width = 20) {
+    shared void colorNodes(GraphicsContext g, Game game, Integer width = 20) {
         value nodes = game.board.nodes.keys;
         
         for (node in nodes) {
@@ -103,7 +117,8 @@ shared class BoardOverlay(GraphicsContext g) {
         }
     }
     
-    shared void drawClosestNode(Game game, Integer x, Integer y, Integer width, Integer height) {
+    shared void drawClosestNode(GraphicsContext g, Game game, Integer x, Integer y, Integer width,
+            Integer height) {
         value closestNode = calculateClosestNode(game.board, x, y);
         value nodeHash = closestNode.hash;
         value color = Color(255 - (nodeHash * 2), (nodeHash * 37) % 256, nodeHash * 3);
@@ -111,14 +126,14 @@ shared class BoardOverlay(GraphicsContext g) {
         g.fillRect([x, y], color, width, height);
     }
     
-    shared void drawPaths(Player player, {Path*} paths) {
+    shared void drawPaths(GraphicsContext g, Player player, {Path*} paths) {
         paths.each((path) => g.drawPath(path.map(Node.location), player.color.withSaturation(0.75),
             13, roundCap, roundJoin));
         paths.each((path) => g.drawPath(path.map(Node.location), player.color.withValue(0.75),
             7, roundCap, roundJoin));
     }
     
-    shared void highlightNodes(Game game) {
+    shared void highlightNodes(GraphicsContext g, Game game) {
         for (node in game.board.nodes.keys) {
             g.drawCircle(node.location, white, highlightRadius, highlightStroke);
         }

@@ -5,12 +5,9 @@ import ceylon.language {
     cprint=print
 }
 
-import com.crappycomic.ceylarquest.model {
-    Path
-}
 import com.crappycomic.ceylarquest.view {
-    BoardOverlay,
-    black
+    black,
+    boardOverlay
 }
 
 import java.awt {
@@ -30,10 +27,6 @@ import javax.swing {
 }
 
 class BoardPanel() extends JPanel() {
-    // TODO: this should probably be an attribute of BoardOverlay and the sequence of drawing
-    // should be maintained by that class, instead of this one
-    shared variable [Path+]? paths = null;
-    
     BufferedImage? loadImage(String name) {
         try {
             value resource = javaClassFromInstance(game.board).getResourceAsStream(name);
@@ -74,17 +67,7 @@ class BoardPanel() extends JPanel() {
                 context.drawImage(foregroundImage);
             }
             
-            value boardOverlay = BoardOverlay(context);
-            
-            boardOverlay.drawOwnedNodes(game);
-            //boardOverlay.highlightNodes(game);
-            boardOverlay.drawPlacedFuelStations(game);
-            
-            if (exists paths = paths) {
-                boardOverlay.drawPaths(game.currentPlayer, paths);
-            }
-            
-            boardOverlay.drawActivePlayers(game);
+            boardOverlay.draw(context, game);
         }
     }
 }

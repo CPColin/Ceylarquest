@@ -8,7 +8,6 @@ import com.crappycomic.ceylarquest.model {
     DrewCard,
     Game,
     InvalidSave,
-    PreLand,
     Result,
     loadGame,
     preRoll,
@@ -91,11 +90,8 @@ void updateView(Result result) {
         
         value phase = game.phase;
         
-        boardPanel.paths = null;
-        
         switch (phase)
         case (is ChoosingAllowedMove) {
-            boardPanel.paths = phase.paths;
             userActionPanel.showChoosingAllowedMovePanel(phase.paths, phase.fuel);
         }
         case (is DrewCard) {
