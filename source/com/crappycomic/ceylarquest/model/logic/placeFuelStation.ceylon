@@ -1,46 +1,29 @@
 import com.crappycomic.ceylarquest.model {
-    FuelStationable,
     Game,
     InvalidMove,
     Node,
-    Player,
     Result,
     incorrectPhase,
-    preRoll,
-    postLand
+    postLand,
+    preRoll
 }
 
-"Alters the state of the given [[game]] to have the given [[player]] place a fuel station on the
- given [[node]]."
-shared Result placeFuelStation(Game game, Player player, Node node) {
+"Alters the state of the given [[game]] to have the current player place a fuel station on the given
+ [[node]]."
+shared Result placeFuelStation(Game game, Node node) {
     if (game.phase != preRoll && game.phase != postLand) {
         return incorrectPhase;
     }
     
-    if (!is FuelStationable node) {
-        return InvalidMove("``node.name`` may not have a fuel station.");
-    }
+    value player = game.currentPlayer;
     
-    if (game.placedFuelStation(node)) {
-        return InvalidMove("``node.name`` already has a fuel station.");
-    }
-    
-    value playerFuelStationCount = game.playerFuelStationCount(player);
-    value playerName => game.playerName(player);
-    
-    if (playerFuelStationCount < 1) {
-        return InvalidMove("``playerName`` does not have a fuel station to place.");
-    }
-    
-    value owner = game.owner(node);
-    
-    if (owner != player) {
+    if (!canPlaceFuelStation(game, node)) {
         return InvalidMove(
-            "``playerName`` doesn't own ``node.name`` and can't place a fuel station on it.");
+            "``game.playerName(player)`` may not place a fuel station on ``node.name``.");
     }
     
     return game.with {
-        playerFuelStationCounts = { player -> playerFuelStationCount - 1 };
+        playerFuelStationCounts = { player -> game.playerFuelStationCount(player) - 1 };
         placedFuelStations = { node };
     };
 }

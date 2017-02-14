@@ -2,26 +2,17 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Node,
     Ownable,
-    Player
+    unowned
 }
 
-// TODO: target appropriate purchaseNode tests at this function
-shared Boolean canPurchaseNode(Game game, Player player = game.currentPlayer,
-        Node node = game.playerLocation(player)) {
+"Returns `true` if, considering the state of the given [[game]], the current player can purchase the
+ given [[node]]. That is, the node is [[Ownable]], is not currently owned, and costs no more than
+ the amount of cash the player has."
+shared Boolean canPurchaseNode(Game game, Node node = game.playerLocation(game.currentPlayer)) {
     if (!is Ownable node) {
         return false;
     }
     
-    if (game.owner(node) is Player) {
-        return false;
-    }
-    
-    value playerCash = game.playerCash(player);
-    value nodePrice = package.nodePrice(game, node);
-    
-    if (playerCash < nodePrice) {
-        return false;
-    }
-    
-    return true;
+    return game.owner(node) == unowned
+        && game.playerCash(game.currentPlayer) >= nodePrice(game, node);
 }

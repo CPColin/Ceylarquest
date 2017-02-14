@@ -1,7 +1,6 @@
 import ceylon.test {
     assertEquals,
     assertFalse,
-    assertTrue,
     fail,
     test
 }
@@ -9,7 +8,6 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     Game,
     Player,
-    incorrectPhase,
     postLand
 }
 import com.crappycomic.ceylarquest.model.logic {
@@ -25,53 +23,7 @@ import test.com.crappycomic.ceylarquest.model {
 }
 
 test
-shared void purchaseOwnedNode() {
-    value node = tropicHopBoard.testOwnablePort;
-    value player = testGame.currentPlayer;
-    value game = testGame.with {
-        owners = { node -> player };
-        phase = postLand;
-    };
-    
-    assertTrue(game.owner(node) is Player, "Node is unexpectedly not owned.");
-    
-    value result = purchaseNode(game, player, node);
-    
-    if (is Game result) {
-        fail("Purchase of node that was already owned should have failed.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
-}
-
-test
-shared void purchaseUnownableNode() {
-    value node = tropicHopBoard.testUnownablePort;
-    value game = testGame.with {
-        phase = postLand;
-    };
-    
-    assertFalse(game.owner(node) is Player, "Node is unexpectedly owned.");
-    
-    value result = purchaseNode(game, game.currentPlayer, node);
-    
-    if (is Game result) {
-        fail("Purchase of node that was not able to be owned should have failed.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
-}
-
-test
-shared void purchaseUnownedNode() {
+shared void purchaseNodeTest() {
     value node = tropicHopBoard.testOwnablePort;
     value game = testGame.with {
         phase = postLand;
@@ -81,7 +33,7 @@ shared void purchaseUnownedNode() {
     
     assertFalse(game.owner(node) is Player, "Node is unexpectedly owned.");
     
-    value result = purchaseNode(game, player, node);
+    value result = purchaseNode(game, node);
     
     if (is Game result) {
         value owner = result.owner(node);
@@ -97,32 +49,8 @@ shared void purchaseUnownedNode() {
 }
 
 test
-shared void purchaseWithInsufficientFunds() {
-    value node = tropicHopBoard.testOwnablePort;
-    value player = testGame.currentPlayer;
-    value game = testGame.with {
-        phase = postLand;
-        playerCashes = { player -> 0 };
-    };
-    
-    assertFalse(game.owner(node) is Player, "Node is unexpectedly owned.");
-    
-    value result = purchaseNode(game, player, node);
-    
-    if (is Game result) {
-        fail("Purchase of node with insufficient funds should have failed.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
-}
-
-test
 shared void purchaseNodeWrongPhase() {
     value node = tropicHopBoard.testOwnablePort;
     
-    wrongPhaseTest((game) => purchaseNode(game, game.currentPlayer, node), postLand);
+    wrongPhaseTest((game) => purchaseNode(game, node), postLand);
 }
