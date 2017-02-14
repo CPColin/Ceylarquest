@@ -2,16 +2,21 @@ import com.crappycomic.ceylarquest.model {
     Card,
     Game,
     Node,
+    Ownable,
     Path,
-    Player
+    Player,
+    preRoll
 }
 import com.crappycomic.ceylarquest.model.logic {
     applyCard,
     applyRoll,
     drawCard,
     landOnNode,
+    nodePrice,
     rollDice,
-    traversePath
+    traversePath,
+    canPurchaseNode,
+    purchaseNode
 }
 import com.crappycomic.ceylarquest.view {
     UserActionPanel
@@ -71,6 +76,47 @@ object userActionPanel extends JPanel() satisfies UserActionPanel {
         });
         
         panel.add(button);
+        
+        showPanel(panel);
+    }
+    
+    shared void showPostLandPanel(Game game) {
+        value panel = JPanel();
+        value node = game.playerLocation(game.currentPlayer);
+        value nodeName = this.nodeName(game, node);
+        
+        panel.add(JLabel("``playerName(game)`` is at ``nodeName``."));
+        
+        if (is Ownable node) {
+            value purchaseNodeButton = JButton("Purchase This Node ($``nodePrice(game, node)``)");
+            
+            purchaseNodeButton.enabled = canPurchaseNode(game);
+            
+            purchaseNodeButton.addActionListener(void(_) {
+                updateView(purchaseNode(game));
+            });
+            
+            panel.add(purchaseNodeButton);
+        }
+        else {
+            value purchaseNodeButton = JButton("Purchase This Node");
+            
+            purchaseNodeButton.enabled = false;
+            
+            panel.add(purchaseNodeButton);
+        }
+        
+        value endTurnButton = JButton("End Turn");
+        
+        endTurnButton.addActionListener(void(_) {
+            // TODO: temporary, for testing
+            updateView(game.with {
+                currentPlayer = game.nextPlayer;
+                phase = preRoll;
+            });
+        });
+        
+        panel.add(endTurnButton);
         
         showPanel(panel);
     }

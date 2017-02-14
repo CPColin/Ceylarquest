@@ -10,26 +10,20 @@ import com.crappycomic.ceylarquest.model {
 }
 
 "Alters the state of the given [[game]] so the given [[player]] has purchased the given [[node]]."
-shared Result purchaseNode(Game game, Player player, Node node) {
+shared Result purchaseNode(Game game, Player player = game.currentPlayer,
+        Node node = game.playerLocation(player)) {
     if (game.phase != postLand) {
         return incorrectPhase;
     }
     
-    if (!is Ownable node) {
+    if (!canPurchaseNode(game, player, node)) {
         return InvalidMove("``node.name`` may not be purchased.");
     }
     
-    if (game.owner(node) is Player) {
-        return InvalidMove("``node.name`` is already owned.");
-    }
+    assert (is Ownable node);
     
     value playerCash = game.playerCash(player);
     value nodePrice = package.nodePrice(game, node);
-    
-    if (playerCash < nodePrice) {
-        return InvalidMove(
-            "``game.playerName(player)`` cannot afford to purchase ``node.name``.");
-    }
     
     return game.with {
         owners = { node -> player };

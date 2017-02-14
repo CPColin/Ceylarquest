@@ -10,7 +10,9 @@ import com.crappycomic.ceylarquest.model {
     InvalidSave,
     PreLand,
     Result,
+    SettlingDebts,
     loadGame,
+    postLand,
     preRoll,
     drawingCard
 }
@@ -101,8 +103,18 @@ void updateView(Result result) {
         case (is PreLand) {
             userActionPanel.showPreLandPanel(game);
         }
+        case (is SettlingDebts) {
+            game = game.with {
+                phase = postLand;
+            };
+            userActionPanel.showPostLandPanel(game);
+            //userActionLanel.showSettlingDebtsPanel(game, phase.debts); TODO
+        }
         case (drawingCard) {
             userActionPanel.showDrawingCardPanel(game);
+        }
+        case (postLand) {
+            userActionPanel.showPostLandPanel(game);
         }
         case (preRoll) {
             userActionPanel.showPreRollPanel(game);
