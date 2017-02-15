@@ -1,3 +1,7 @@
+import ceylon.language {
+    cprint=print
+}
+
 import com.crappycomic.ceylarquest.model {
     Card,
     Game,
@@ -10,13 +14,13 @@ import com.crappycomic.ceylarquest.model {
 import com.crappycomic.ceylarquest.model.logic {
     applyCard,
     applyRoll,
+    canPurchaseNode,
     drawCard,
     landOnNode,
     nodePrice,
+    purchaseNode,
     rollDice,
-    traversePath,
-    canPurchaseNode,
-    purchaseNode
+    traversePath
 }
 import com.crappycomic.ceylarquest.view {
     UserActionPanel
@@ -29,17 +33,17 @@ import javax.swing {
 }
 
 object userActionPanel extends JPanel() satisfies UserActionPanel {
-    shared actual void showChoosingAllowedMovePanel([Path+] paths, Integer fuel) {
+    shared actual void showChoosingAllowedMovePanel(Game game, [Path+] paths, Integer fuel) {
         value panel = JPanel();
         
-        panel.add(JLabel("Choose a Move"));
+        panel.add(JLabel("``playerName(game)`` must choose a move."));
         
         for (path in paths) {
             value node = path.last;
             value button = JButton(node.name);
             
             button.addActionListener(void(_) {
-                updateView(traversePath(game, game.currentPlayer, path, fuel));
+                controller.updateGame(traversePath(game, game.currentPlayer, path, fuel));
             });
             
             panel.add(button);
@@ -56,7 +60,7 @@ object userActionPanel extends JPanel() satisfies UserActionPanel {
         value button = JButton("Draw a Card");
         
         button.addActionListener(void(_) {
-            updateView(drawCard(game));
+            controller.updateGame(drawCard(game));
         });
         
         panel.add(button);
@@ -64,15 +68,15 @@ object userActionPanel extends JPanel() satisfies UserActionPanel {
         showPanel(panel);
     }
     
-    shared void showDrewCardPanel(Game game, Card card) {
+    shared actual void showDrewCardPanel(Game game, Card card) {
         value panel = JPanel();
         
-        panel.add(JLabel("Drew \"``card.description``\""));
+        panel.add(JLabel("``playerName(game)`` drew \"``card.description``\""));
         
         value button = JButton("OK");
         
         button.addActionListener(void(_) {
-            updateView(applyCard(game, card));
+            controller.updateGame(applyCard(game, card));
         });
         
         panel.add(button);
@@ -80,7 +84,11 @@ object userActionPanel extends JPanel() satisfies UserActionPanel {
         showPanel(panel);
     }
     
-    shared void showPostLandPanel(Game game) {
+    shared actual void showError(String message) {
+        cprint(message);
+    }
+    
+    shared actual void showPostLandPanel(Game game) {
         value panel = JPanel();
         value node = game.playerLocation(game.currentPlayer);
         value nodeName = this.nodeName(game, node);
@@ -93,7 +101,7 @@ object userActionPanel extends JPanel() satisfies UserActionPanel {
             purchaseNodeButton.enabled = canPurchaseNode(game);
             
             purchaseNodeButton.addActionListener(void(_) {
-                updateView(purchaseNode(game));
+                controller.updateGame(purchaseNode(game));
             });
             
             panel.add(purchaseNodeButton);
@@ -110,7 +118,7 @@ object userActionPanel extends JPanel() satisfies UserActionPanel {
         
         endTurnButton.addActionListener(void(_) {
             // TODO: temporary, for testing
-            updateView(game.with {
+            controller.updateGame(game.with {
                 currentPlayer = game.nextPlayer;
                 phase = preRoll;
             });
@@ -129,7 +137,7 @@ object userActionPanel extends JPanel() satisfies UserActionPanel {
         value continueButton = JButton("Continue");
         
         continueButton.addActionListener(void(_) {
-            updateView(landOnNode(game));
+            controller.updateGame(landOnNode(game));
         });
         
         panel.add(continueButton);
@@ -162,7 +170,7 @@ object userActionPanel extends JPanel() satisfies UserActionPanel {
     void rollDiceAndApplyRoll(Game game)(Anything _)  {
         value roll = rollDice(game.rules);
         
-        updateView(applyRoll(game, game.currentPlayer, roll));
+        controller.updateGame(applyRoll(game, game.currentPlayer, roll));
     }
     
     void showPanel(JPanel panel) {

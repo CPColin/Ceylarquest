@@ -2,19 +2,15 @@ import ceylon.interop.java {
     javaString
 }
 
+import com.crappycomic.ceylarquest.controller {
+    Controller
+}
 import com.crappycomic.ceylarquest.model {
-    ChoosingAllowedMove,
+    Board,
     Color,
-    DrewCard,
     Game,
     InvalidSave,
-    PreLand,
-    Result,
-    SettlingDebts,
-    loadGame,
-    postLand,
-    preRoll,
-    drawingCard
+    loadGame
 }
 import com.crappycomic.ceylarquest.view {
     black,
@@ -42,7 +38,7 @@ import javax.swing {
     JScrollPane
 }
 
-late variable Game game;
+late Controller controller;
 
 shared void run() {
     value game = loadGame(debugGameJson);
@@ -52,20 +48,23 @@ shared void run() {
         print("Invalid save: " + game.string);
     }
     case (is Game) {
-        package.game = game;
+        value boardPanel = BoardPanel(game.board);
         
-        overlay();
+        controller = Controller(game, userActionPanel, () => boardPanel.repaint());
+        
+        value frame = overlay(game, boardPanel);
+        
+        controller.updateGame(game);
+        
+        frame.visible = true;
     }
 }
 
 variable BufferedImage? closestNodes = null;
 
-late BoardPanel boardPanel;
-
-void overlay() {
+JFrame overlay(Game game, BoardPanel boardPanel) {
     value frame = JFrame();
     
-    boardPanel = BoardPanel();
     boardPanel.preferredSize = Dimension(1280, 1280);
     
     frame.title = "Ceylarquest Debug Stuff";
@@ -78,65 +77,14 @@ void overlay() {
     frame.add(userActionPanel, javaString(BorderLayout.north));
     frame.add(JScrollPane(boardPanel), javaString(BorderLayout.center));
     
-    userActionPanel.showPreRollPanel(game);
-
-    frame.visible = true;
-    
     //value executorService = Executors.newSingleThreadExecutor();
     //
-    //executorService.submit(calculateClosestNodes);
+    //executorService.submit(calculateClosestNodes(game.board, boardPanel));
+    
+    return frame;
 }
 
-void updateView(Result result) {
-    if (is Game result) {
-        game = result;
-        
-        value phase = game.phase;
-        
-        switch (phase)
-        case (is ChoosingAllowedMove) {
-            userActionPanel.showChoosingAllowedMovePanel(phase.paths, phase.fuel);
-        }
-        case (is DrewCard) {
-            userActionPanel.showDrewCardPanel(game, phase.card);
-        }
-        case (is PreLand) {
-            userActionPanel.showPreLandPanel(game);
-        }
-        case (is SettlingDebts) {
-            game = game.with {
-                phase = postLand;
-            };
-            userActionPanel.showPostLandPanel(game);
-            //userActionLanel.showSettlingDebtsPanel(game, phase.debts); TODO
-        }
-        case (drawingCard) {
-            userActionPanel.showDrawingCardPanel(game);
-        }
-        case (postLand) {
-            userActionPanel.showPostLandPanel(game);
-        }
-        case (preRoll) {
-            userActionPanel.showPreRollPanel(game);
-        }
-        else {
-            // TODO: temporary, for testing
-            game = game.with {
-                currentPlayer = game.nextPlayer;
-                phase = preRoll;
-            };
-            userActionPanel.showPreRollPanel(game);
-            // TODO: remove this block once the above cases are exhaustive
-        }
-        
-        boardPanel.repaint();
-    }
-    else {
-        print(result.message);
-    }
-}
-
-void calculateClosestNodes() {
+void calculateClosestNodes(Board board, BoardPanel boardPanel)() {
     value start = system.milliseconds;
     value image = BufferedImage(1280, 1280, BufferedImage.typeIntRgb);
     value graphics = image.createGraphics();
@@ -152,7 +100,7 @@ void calculateClosestNodes() {
     
     for (x in 0..image.width) {
         for (y in 0..image.height) {
-            value closestNode = calculateClosestNode(game.board, x, y);
+            value closestNode = calculateClosestNode(board, x, y);
             value nodeHash = closestNode.id.hash.magnitude;
             
             value color = Color(

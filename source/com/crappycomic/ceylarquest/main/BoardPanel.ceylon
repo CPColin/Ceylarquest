@@ -5,6 +5,10 @@ import ceylon.language {
     cprint=print
 }
 
+
+import com.crappycomic.ceylarquest.model {
+    Board
+}
 import com.crappycomic.ceylarquest.view {
     black,
     boardOverlay
@@ -26,10 +30,10 @@ import javax.swing {
     JPanel
 }
 
-class BoardPanel() extends JPanel() {
-    BufferedImage? loadImage(String name) {
+class BoardPanel extends JPanel {
+    BufferedImage? loadImage(Board board, String name) {
         try {
-            value resource = javaClassFromInstance(game.board).getResourceAsStream(name);
+            value resource = javaClassFromInstance(board).getResourceAsStream(name);
            
             if (exists resource) {
                 return ImageIO.read(resource);
@@ -42,9 +46,14 @@ class BoardPanel() extends JPanel() {
         return null;
     }
     
-    BufferedImage? backgroundImage = loadImage("background.png");
+    BufferedImage? backgroundImage;
     
-    BufferedImage? foregroundImage = loadImage("foreground.png");
+    BufferedImage? foregroundImage;
+    
+    shared new(Board board) extends JPanel() {
+        backgroundImage = loadImage(board, "background.png");
+        foregroundImage = loadImage(board, "foreground.png");
+    }
     
     shared actual void paint(Graphics g) {
         assert (is Graphics2D g);
@@ -67,7 +76,7 @@ class BoardPanel() extends JPanel() {
                 context.drawImage(foregroundImage);
             }
             
-            boardOverlay.draw(context, game);
+            boardOverlay.draw(context, controller.game);
         }
     }
 }
