@@ -76,6 +76,14 @@ shared object boardOverlay {
         }
     }
     
+    "Draws each of the given [[paths]], using colors similar to that of the given [[player]]."
+    shared void drawPaths(GraphicsContext g, Player player, {Path*} paths) {
+        paths.each((path) => g.drawPath(path.map(Node.location), player.color.withSaturation(0.75),
+            13, roundCap, roundJoin));
+        paths.each((path) => g.drawPath(path.map(Node.location), player.color.withValue(0.75),
+            7, roundCap, roundJoin));
+    }
+    
     "Draws every fuel station that has been placed on the board."
     shared void drawPlacedFuelStations(GraphicsContext g, Game game) {
         for (node in game.placedFuelStations) {
@@ -124,13 +132,6 @@ shared object boardOverlay {
         value color = Color(255 - (nodeHash * 2), (nodeHash * 37) % 256, nodeHash * 3);
         
         g.fillRect([x, y], color, width, height);
-    }
-    
-    shared void drawPaths(GraphicsContext g, Player player, {Path*} paths) {
-        paths.each((path) => g.drawPath(path.map(Node.location), player.color.withSaturation(0.75),
-            13, roundCap, roundJoin));
-        paths.each((path) => g.drawPath(path.map(Node.location), player.color.withValue(0.75),
-            7, roundCap, roundJoin));
     }
     
     shared void highlightNodes(GraphicsContext g, Game game) {
