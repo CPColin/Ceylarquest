@@ -38,7 +38,7 @@ shared interface Node
     
     shared formal Location location;
     
-    shared actual String string => id;
+    string => name;
 }
 
 "A node that can be purchased by players."

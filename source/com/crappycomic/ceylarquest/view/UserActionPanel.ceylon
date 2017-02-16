@@ -5,13 +5,27 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Path,
     PreLand,
+    RollingWithMultiplier,
+    SettlingDebts,
+    choosingNodeLostToLeague,
+    choosingNodeWonFromLeague,
+    choosingNodeWonFromPlayer,
+    currentPlayerEliminated,
     drawingCard,
+    gameOver,
     postLand,
-    preRoll
+    preRoll,
+    trading
 }
 
 shared interface UserActionPanel {
     shared formal void showChoosingAllowedMovePanel(Game game, [Path+] paths, Integer fuel);
+    
+    shared formal void showChoosingNodeLostToLeaguePanel(Game game);
+    
+    shared formal void showChoosingNodeWonFromLeaguePanel(Game game);
+    
+    shared formal void showChoosingNodeWonFromPlayerPanel(Game game);
     
     shared formal void showDrawingCardPanel(Game game);
     
@@ -36,11 +50,32 @@ shared interface UserActionPanel {
         case (is DrewCard) {
             showDrewCardPanel(game, phase.card);
         }
+        case (is RollingWithMultiplier) {
+            return false; // TODO
+        }
         case (is PreLand) {
             showPreLandPanel(game);
         }
+        case (is SettlingDebts) {
+            return false; // TODO
+        }
+        case (choosingNodeLostToLeague) {
+            showChoosingNodeLostToLeaguePanel(game);
+        }
+        case (choosingNodeWonFromLeague) {
+            showChoosingNodeWonFromLeaguePanel(game);
+        }
+        case (choosingNodeWonFromPlayer) {
+            showChoosingNodeWonFromPlayerPanel(game);
+        }
+        case (currentPlayerEliminated) {
+            return false; // TODO
+        }
         case (drawingCard) {
             showDrawingCardPanel(game);
+        }
+        case (gameOver) {
+            return false; // TODO
         }
         case (postLand) {
             showPostLandPanel(game);
@@ -48,9 +83,8 @@ shared interface UserActionPanel {
         case (preRoll) {
             showPreRollPanel(game);
         }
-        else {
-            // TODO: remove this block once the above cases are exhaustive
-            return false;
+        case (trading) {
+            return false; // TODO
         }
         
         return true;
