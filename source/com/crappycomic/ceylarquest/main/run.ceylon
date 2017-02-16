@@ -50,7 +50,7 @@ shared void run() {
     case (is Game) {
         value boardPanel = BoardPanel(game.board);
         
-        controller = Controller(game, userActionPanel, () => boardPanel.repaint());
+        controller = Controller(game, userActionPanel, boardPanel.updateBoardImage);
         
         value frame = overlay(game, boardPanel);
         

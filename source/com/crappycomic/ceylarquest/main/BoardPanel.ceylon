@@ -7,7 +7,8 @@ import ceylon.language {
 
 
 import com.crappycomic.ceylarquest.model {
-    Board
+    Board,
+    Game
 }
 import com.crappycomic.ceylarquest.view {
     black,
@@ -29,6 +30,9 @@ import javax.imageio {
 import javax.swing {
     JPanel
 }
+import java.awt.geom {
+    AffineTransform
+}
 
 class BoardPanel extends JPanel {
     BufferedImage? loadImage(Board board, String name) {
@@ -48,14 +52,33 @@ class BoardPanel extends JPanel {
     
     BufferedImage? backgroundImage;
     
-    BufferedImage? foregroundImage;
+    variable BufferedImage? boardImage = null;
+    
+    BufferedImage foregroundImage;
     
     shared new(Board board) extends JPanel() {
         backgroundImage = loadImage(board, "background.png");
-        foregroundImage = loadImage(board, "foreground.png");
+        
+        assert (exists foregroundImage = loadImage(board, "foreground.png"));
+        
+        this.foregroundImage = foregroundImage;
     }
     
     shared actual void paint(Graphics g) {
+        if (!exists boardImage = boardImage) {
+            return;
+        }
+        
+        assert (is Graphics2D g);
+        
+        g.drawImage(boardImage, AffineTransform(), null);
+    }
+    
+    shared void updateBoardImage(Game game) {
+        value boardImage = BufferedImage(foregroundImage.width, foregroundImage.height,
+            BufferedImage.typeIntRgb);
+        value g = boardImage.graphics;
+        
         assert (is Graphics2D g);
         
         g.setRenderingHint(RenderingHints.keyAntialiasing, RenderingHints.valueAntialiasOn);
@@ -72,11 +95,15 @@ class BoardPanel extends JPanel {
                 context.drawImage(backgroundImage);
             }
             
-            if (exists foregroundImage) {
-                context.drawImage(foregroundImage);
-            }
+            context.drawImage(foregroundImage);
             
-            boardOverlay.draw(context, controller.game);
+            boardOverlay.draw(context, game);
         }
+        
+        g.dispose();
+        
+        this.boardImage = boardImage;
+        
+        repaint();
     }
 }

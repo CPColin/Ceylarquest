@@ -9,9 +9,7 @@ import com.crappycomic.ceylarquest.view {
     UserActionPanel
 }
 
-// TODO: don't want to share game, want to pass it to draw()
-shared class Controller(shared variable Game game, UserActionPanel userActionPanel,
-        Anything() draw) {
+shared class Controller(variable Game game, UserActionPanel userActionPanel, Anything(Game) draw) {
     shared void updateGame(Result result) {
         if (is Game result) {
             game = result;
@@ -35,7 +33,7 @@ shared class Controller(shared variable Game game, UserActionPanel userActionPan
                 userActionPanel.showPhase(game);
             }
             
-            draw();
+            draw(game);
         }
         else {
             userActionPanel.showError(result.message);
