@@ -89,37 +89,58 @@ Type loadObject<Type>(JsonObject jsonObject) {
 
 throws(`class AssertionError`)
 throws(`class InvalidTypeException`)
-{<Node -> Player>*} loadOwners(JsonObject jsonObject, Board board) {
-    value owners = jsonObject.getObject("owners");
+{<Node -> Player>*}? loadOwners(JsonObject jsonObject, Board board) {
+    value owners = jsonObject.getObjectOrNull("owners");
     
-    return owners.map((nodeKey -> _)
-        => resolveNode(board, nodeKey) -> resolvePlayer(owners.getString(nodeKey)));
+    if (exists owners) {
+        return owners.map((nodeKey -> _)
+            => resolveNode(board, nodeKey) -> resolvePlayer(owners.getString(nodeKey)));
+    }
+    else {
+        return null;
+    }
 }
 
 throws(`class AssertionError`)
 throws(`class InvalidTypeException`)
-{Node*} loadPlacedFuelStations(JsonObject jsonObject, Board board) {
-    value placedFuelStations = jsonObject.getArray("placedFuelStations");
+{Node*}? loadPlacedFuelStations(JsonObject jsonObject, Board board) {
+    value placedFuelStations = jsonObject.getArrayOrNull("placedFuelStations");
     
-    return placedFuelStations.narrow<String>().map((nodeKey) => resolveNode(board, nodeKey));
+    if (exists placedFuelStations) {
+        return placedFuelStations.narrow<String>().map((nodeKey) => resolveNode(board, nodeKey));
+    }
+    else {
+        return null;
+    }
 }
 
 throws(`class AssertionError`)
 throws(`class InvalidTypeException`)
-{<Player -> Integer>*} loadPlayerFuels(JsonObject jsonObject) {
-    value playerFuels = jsonObject.getObject("playerFuels");
+{<Player -> Integer>*}? loadPlayerFuels(JsonObject jsonObject) {
+    value playerFuels = jsonObject.getObjectOrNull("playerFuels");
     
-    return playerFuels.map((playerKey -> _)
-        => resolvePlayer(playerKey) -> playerFuels.getInteger(playerKey));
+    if (exists playerFuels) {
+        return playerFuels.map((playerKey -> _)
+            => resolvePlayer(playerKey) -> playerFuels.getInteger(playerKey));
+    }
+    else {
+        return null;
+    }
 }
 
 throws(`class AssertionError`)
 throws(`class InvalidTypeException`)
-{<Player -> Node>*} loadPlayerLocations(JsonObject jsonObject, Board board) {
-    value playerLocations = jsonObject.getObject("playerLocations");
+{<Player -> Node>*}? loadPlayerLocations(JsonObject jsonObject, Board board) {
+    value playerLocations = jsonObject.getObjectOrNull("playerLocations");
     
-    return playerLocations.map((playerKey -> _)
-        => resolvePlayer(playerKey) -> resolveNode(board, playerLocations.getString(playerKey)));
+    if (exists playerLocations) {
+        return playerLocations.map((playerKey -> _)
+            => resolvePlayer(playerKey)
+                -> resolveNode(board, playerLocations.getString(playerKey)));
+    }
+    else {
+        return null;
+    }
 }
 
 throws(`class AssertionError`)

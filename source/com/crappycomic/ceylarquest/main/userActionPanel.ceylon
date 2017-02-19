@@ -11,7 +11,6 @@ import com.crappycomic.ceylarquest.model {
     Node,
     Ownable,
     Path,
-    Player,
     Result,
     preRoll
 }
@@ -185,14 +184,6 @@ object userActionPanel extends JPanel() satisfies UserActionPanel {
         panel.add(rollDiceButton);
         
         showPanel(panel);
-    }
-    
-    String nodeName(Game game, Node node = game.playerLocation(game.currentPlayer)) {
-        return node.name;
-    }
-    
-    String playerName(Game game, Player player = game.currentPlayer) {
-        return game.playerName(player);
     }
     
     void rollDiceAndApplyRoll(Game game)(Anything _)  {

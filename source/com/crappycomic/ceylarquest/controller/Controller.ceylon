@@ -10,7 +10,7 @@ import com.crappycomic.ceylarquest.view {
 }
 
 shared class Controller(variable Game game, UserActionPanel userActionPanel, Anything(Game) draw) {
-    shared void updateGame(Result result) {
+    shared void updateGame(Result result = game) {
         if (is Game result) {
             game = result;
             

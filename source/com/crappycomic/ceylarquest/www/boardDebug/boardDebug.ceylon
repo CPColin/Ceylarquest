@@ -5,15 +5,25 @@ import ceylon.numeric.float {
     pi
 }
 
+import com.crappycomic.ceylarquest.controller {
+    Controller
+}
 import com.crappycomic.ceylarquest.model {
+    ChoosingAllowedMove,
     Color,
+    DrewCard,
     Game,
     InvalidSave,
     Location,
     loadGame
 }
 import com.crappycomic.ceylarquest.model.logic {
-    allowedMoves
+    allowedMoves,
+    applyCard,
+    applyRoll,
+    landOnNode,
+    rollDice,
+    traversePath
 }
 import com.crappycomic.ceylarquest.view {
     GraphicsContext,
@@ -142,7 +152,7 @@ object g satisfies GraphicsContext {
         => "rgba(``color.red``, ``color.green``, ``color.blue``, ``color.alpha.float / 255``)";
 }
 
-Game game = loadDebugGame();
+variable Game game = loadDebugGame();
 
 Game loadDebugGame() {
     /*
@@ -162,8 +172,53 @@ Game loadDebugGame() {
     }
 }
 
+late Controller controller;
+
 shared void clear() {
     g.clear();
+}
+
+shared void createController() {
+    controller = Controller(game, userActionPanel, (game) {
+        g.clear();
+        boardOverlay.draw(g, game);
+    });
+    
+    controller.updateGame();
+}
+
+shared void doApplyCard() {
+    value phase = game.phase;
+    
+    assert (is DrewCard phase);
+    
+    controller.updateGame(applyCard(game, phase.card));
+}
+
+shared void doLandOnNode() {
+    controller.updateGame(landOnNode(game));
+}
+
+shared void doRollDice() {
+    value roll = rollDice(game.rules);
+    
+    controller.updateGame(applyRoll(game, game.currentPlayer, roll));
+}
+
+shared void doTraversePath(String nodeId) {
+    value phase = game.phase;
+    
+    assert (is ChoosingAllowedMove phase);
+    
+    value node = game.board.node(nodeId);
+    
+    assert (exists node);
+    
+    value path = phase.paths.find((path) => path.last == node);
+    
+    assert (exists path);
+    
+    controller.updateGame(traversePath(game, game.currentPlayer, path, phase.fuel));
 }
 
 shared void drawActivePlayers() {
@@ -247,7 +302,5 @@ shared void setImages() {
         dynamic canvas = getCanvas();
         
         canvas.style.background = "url(``resourcePath``/foreground.png)";
-        
-        boardOverlay.draw(g, game);
     }
 }

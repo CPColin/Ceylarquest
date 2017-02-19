@@ -3,7 +3,9 @@ import com.crappycomic.ceylarquest.model {
     ChoosingAllowedMove,
     DrewCard,
     Game,
+    Node,
     Path,
+    Player,
     PreLand,
     RollingWithMultiplier,
     SettlingDebts,
@@ -39,8 +41,16 @@ shared interface UserActionPanel {
     
     shared formal void showPreRollPanel(Game game);
     
+    shared String nodeName(Game game, Node node = game.playerLocation(game.currentPlayer)) {
+        return node.name;
+    }
+    
+    shared String playerName(Game game, Player player = game.currentPlayer) {
+        return game.playerName(player);
+    }
+    
     // TODO: returns Boolean temporarily so calling code knows if all phases are handled yet
-    shared Boolean showPhase(Game game) {
+    shared default Boolean showPhase(Game game) {
         value phase = game.phase;
         
         switch (phase)
