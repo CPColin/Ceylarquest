@@ -4,6 +4,7 @@ import com.crappycomic.ceylarquest.model {
     DrewCard,
     Game,
     Node,
+    Ownable,
     Path,
     Player,
     PreLand,
@@ -19,27 +20,95 @@ import com.crappycomic.ceylarquest.model {
     preRoll,
     trading
 }
+import com.crappycomic.ceylarquest.model.logic {
+    allowedNodesToLoseToLeague,
+    allowedNodesToWinFromLeague,
+    allowedNodesToWinFromPlayer,
+    canPurchaseNode,
+    nodePrice
+}
 
-shared interface UserActionPanel {
-    shared formal void showChoosingAllowedMovePanel(Game game, [Path+] paths, Integer fuel);
+shared interface UserActionPanel<Child, ChooseNodeParameter> {
+    shared formal Child createApplyCardButton(Game game, Card card);
     
-    shared formal void showChoosingNodeLostToLeaguePanel(Game game);
+    shared formal Child createChooseNodeLostToLeagueButton(Game game,
+        ChooseNodeParameter? parameter);
     
-    shared formal void showChoosingNodeWonFromLeaguePanel(Game game);
+    shared formal Child createChooseNodeWonFromLeagueButton(Game game,
+        ChooseNodeParameter? parameter);
     
-    shared formal void showChoosingNodeWonFromPlayerPanel(Game game);
+    shared formal Child createChooseNodeWonFromPlayerButton(Game game,
+        ChooseNodeParameter? parameter);
     
-    shared formal void showDrawingCardPanel(Game game);
+    shared formal Child createDrawCardButton(Game game);
     
-    shared formal void showDrewCardPanel(Game game, Card card);
+    shared formal Child createEndTurnButton(Game game);
+    
+    shared formal Child createLandOnNodeButton(Game game);
+    
+    shared formal Child[] createNodeSelect(Game game, [Node*] nodes,
+        Child(Game, ChooseNodeParameter?) createButton);
+    
+    shared formal void createPanel(String label, Child* children);
+    
+    shared formal Child createPurchaseNodeButton(Game game, Boolean canPurchaseNode, Integer price);
+    
+    shared formal Child createRollDiceButton(Game game);
+    
+    shared formal Child createTraversePathButton(Game game, Path path, Integer fuel);
+    
+    shared void showChoosingAllowedMovePanel(Game game, [Path+] paths, Integer fuel) {
+        createPanel("``playerName(game)`` must choose a move.",
+            *[ for (path in paths) createTraversePathButton(game, path, fuel) ]);
+    }
+    
+    shared void showChoosingNodeLostToLeaguePanel(Game game) {
+        // TODO: localize "League"
+        showChoosingNodePanel(game, "``playerName(game)`` lost a property to the League.",
+            allowedNodesToLoseToLeague, createChooseNodeLostToLeagueButton);
+    }
+    
+    shared void showChoosingNodeWonFromLeaguePanel(Game game) {
+        // TODO: localize "League"
+        showChoosingNodePanel(game, "``playerName(game)`` won a property from the League.",
+            allowedNodesToWinFromLeague, createChooseNodeWonFromLeagueButton);
+    }
+    
+    shared void showChoosingNodeWonFromPlayerPanel(Game game) {
+        showChoosingNodePanel(game, "``playerName(game)`` won a property from another player.",
+            allowedNodesToWinFromPlayer, createChooseNodeWonFromPlayerButton);
+    }
+    
+    shared void showDrawingCardPanel(Game game) {
+        createPanel("``playerName(game)`` must draw a card.",
+            createDrawCardButton(game));
+    }
+    
+    shared void showDrewCardPanel(Game game, Card card) {
+        createPanel("``playerName(game)`` drew \"``card.description``\"",
+            createApplyCardButton(game, card));
+    }
     
     shared formal void showError(String message);
     
-    shared formal void showPostLandPanel(Game game);
+    shared void showPostLandPanel(Game game) {
+        value node = game.playerLocation(game.currentPlayer);
+        value price = if (is Ownable node) then nodePrice(game, node) else 0;
+        
+        createPanel("``playerName(game)`` is at ``nodeName(game, node)``.",
+            createPurchaseNodeButton(game, canPurchaseNode(game, node), price),
+            createEndTurnButton(game));
+    }
     
-    shared formal void showPreLandPanel(Game game);
+    shared void showPreLandPanel(Game game) {
+        createPanel("``playerName(game)`` has arrived at ``nodeName(game)``.",
+            createLandOnNodeButton(game));
+    }
     
-    shared formal void showPreRollPanel(Game game);
+    shared void showPreRollPanel(Game game) {
+        createPanel("``playerName(game)``'s turn!",
+            createRollDiceButton(game));
+    }
     
     shared String nodeName(Game game, Node node = game.playerLocation(game.currentPlayer)) {
         return node.name;
@@ -98,5 +167,14 @@ shared interface UserActionPanel {
         }
         
         return true;
+    }
+    
+    void showChoosingNodePanel(Game game, String label, [Node*](Game) allowedNodes,
+            Child(Game, ChooseNodeParameter?) createButton) {
+        value nodes = allowedNodes(game)
+            .sort(byIncreasing(Node.name));
+        
+        createPanel(label,
+            *createNodeSelect(game, nodes, createButton));
     }
 }

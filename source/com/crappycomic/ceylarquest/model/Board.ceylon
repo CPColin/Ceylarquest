@@ -16,7 +16,8 @@ shared abstract class Board() {
     shared formal Node start;
     
     "Returns the [[Node]] with the given [[id]], if any."
-    shared Node? node(String id) => nodes.keys.find((node) => node.id == id);
+    shared Node? node(String? id)
+        => if (exists id) then nodes.keys.find((node) => node.id == id) else null;
 }
 
 "Converts the given stream of [[nodes]] into a form that matches the [[Board.nodes]] attribute."

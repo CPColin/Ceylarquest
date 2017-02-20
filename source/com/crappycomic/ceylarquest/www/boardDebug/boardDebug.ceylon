@@ -15,15 +15,21 @@ import com.crappycomic.ceylarquest.model {
     Game,
     InvalidSave,
     Location,
-    loadGame
+    loadGame,
+    preRoll
 }
 import com.crappycomic.ceylarquest.model.logic {
     allowedMoves,
     applyCard,
     applyRoll,
+    drawCard,
     landOnNode,
+    loseNodeToLeague,
+    purchaseNode,
     rollDice,
-    traversePath
+    traversePath,
+    winNodeFromLeague,
+    winNodeFromPlayer
 }
 import com.crappycomic.ceylarquest.view {
     GraphicsContext,
@@ -195,8 +201,27 @@ shared void doApplyCard() {
     controller.updateGame(applyCard(game, phase.card));
 }
 
+shared void doDrawCard() {
+    controller.updateGame(drawCard(game));
+}
+
+shared void doEndTurn() {
+    controller.updateGame(game.with {
+        currentPlayer = game.nextPlayer;
+        phase = preRoll;
+    });
+}
+
 shared void doLandOnNode() {
     controller.updateGame(landOnNode(game));
+}
+
+shared void doLoseNodeToLeague(String? nodeId) {
+    controller.updateGame(loseNodeToLeague(game, game.board.node(nodeId)));
+}
+
+shared void doPurchaseNode() {
+    controller.updateGame(purchaseNode(game));
 }
 
 shared void doRollDice() {
@@ -219,6 +244,14 @@ shared void doTraversePath(String nodeId) {
     assert (exists path);
     
     controller.updateGame(traversePath(game, game.currentPlayer, path, phase.fuel));
+}
+
+shared void doWinNodeFromLeague(String? nodeId) {
+    controller.updateGame(winNodeFromLeague(game, game.board.node(nodeId)));
+}
+
+shared void doWinNodeFromPlayer(String? nodeId) {
+    controller.updateGame(winNodeFromPlayer(game, game.board.node(nodeId)));
 }
 
 shared void drawActivePlayers() {
