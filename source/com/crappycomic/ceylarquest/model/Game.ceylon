@@ -16,7 +16,7 @@ shared class Game {
     shared Set<Player> activePlayers;
     
     "All the players in the game, in the order they'll take turns."
-    [Player+] allPlayers;
+    shared [Player+] allPlayers;
     
     shared Board board;
     

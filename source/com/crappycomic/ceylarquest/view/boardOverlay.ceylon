@@ -53,7 +53,11 @@ shared object boardOverlay {
     
     "Draws every [[active player|Game.activePlayers]] at their current locations."
     shared void drawActivePlayers(GraphicsContext g, Game game) {
-        value locations = game.activePlayers.group((player) => game.playerLocation(player));
+        // Base the stream on Game.allPlayers so the ordering is well-defined.
+        // Game.activePlayers does not specify any ordering.
+        value locations = game.allPlayers
+            .filter(game.activePlayers.contains)
+            .group((player) => game.playerLocation(player));
         
         for (node -> players in locations) {
             value playerCount = players.size;
