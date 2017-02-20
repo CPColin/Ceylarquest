@@ -116,15 +116,7 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
     }
     
     shared actual JButton createTraversePathButton(Game game, Path path, Integer fuel) {
-        value node = path.last;
-        value button = JButton(node.name);
-        
-        button.addActionListener(void(_) {
-            controller.updateGame(traversePath(game, game.currentPlayer, path, fuel));
-        });
-        
-        return actionButton(path.last.name,
-            () => traversePath(game, game.currentPlayer, path, fuel));
+        return actionButton(path.last.name, () => traversePath(game, path));
     }
     
     shared actual void showError(String message) {

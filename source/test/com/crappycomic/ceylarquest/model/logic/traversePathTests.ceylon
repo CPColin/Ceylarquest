@@ -1,6 +1,7 @@
 import ceylon.test {
     assertEquals,
     assertFalse,
+    assertNotEquals,
     assertTrue,
     fail,
     test
@@ -10,6 +11,7 @@ import com.crappycomic.ceylarquest.model {
     ActionTrigger,
     ChoosingAllowedMove,
     Game,
+    Ownable,
     Well,
     WellOrbit,
     WellPull,
@@ -27,6 +29,7 @@ import com.crappycomic.tropichop {
 import test.com.crappycomic.ceylarquest.model {
     TestNode,
     testGame,
+    testNodes,
     wrongPhaseTest
 }
 
@@ -34,14 +37,38 @@ test
 shared void traversePathInsufficientFuel() {
     value player = testGame.currentPlayer;
     value path = [testGame.playerLocation(player)];
+    value playerFuel = testGame.playerFuel(player);
     value game = testGame.with {
-        phase = ChoosingAllowedMove([path], 0);
+        phase = ChoosingAllowedMove([path], playerFuel + 1);
     };
-    value playerFuel = game.playerFuel(player);
-    value result = traversePath(game, player, path, playerFuel + 1);
+    value result = traversePath(game, path);
     
     if (is Game result) {
         fail("Traversing a path with insufficient fuel should not have worked.");
+    }
+    else if (result == incorrectPhase) {
+        fail(result.message);
+    }
+    else {
+        print(result.message);
+    }
+}
+
+test
+shared void traversePathNotInPhase() {
+    value [node1, node2] = testNodes<Ownable>();
+    value path1 = [node1];
+    value path2 = [node2];
+    
+    assertNotEquals(path1, path2, "This test requires two different paths.");
+    
+    value game = testGame.with {
+        phase = ChoosingAllowedMove([path1], 0);
+    };
+    value result = traversePath(game, path2);
+    
+    if (is Game result) {
+        fail("Traversing path that was not in the phase should not have worked.");
     }
     else if (result == incorrectPhase) {
         fail(result.message);
@@ -63,7 +90,7 @@ shared void traversePathPassesStart() {
     
     assertTrue(passesStart(game.board, path), "Path needs to pass Start.");
     
-    value result = traversePath(game, player, path, 0);
+    value result = traversePath(game, path);
     
     if (is Game result) {
         assertEquals(result.playerLocation(player), path.last,
@@ -91,7 +118,7 @@ shared void traversePathRemainAtActionTrigger() {
     
     assertTrue(actionGame.playerCash(player) > playerCash, "Action didn't increase player's cash.");
     
-    value result = traversePath(game, player, path, 0);
+    value result = traversePath(game, path);
     
     if (is Game result) {
         assertEquals(result.playerCash(player), playerCash, "Player should not have earned cash.");
@@ -112,7 +139,7 @@ shared void traversePathSkipStart() {
     
     assertFalse(passesStart(game.board, path), "Path incorrectly passes Start.");
     
-    value result = traversePath(game, player, path, 0);
+    value result = traversePath(game, path);
     
     if (is Game result) {
         assertEquals(result.playerLocation(player), path.last,
@@ -139,8 +166,7 @@ void traversePathToWell(Well node) {
     value game = testGame.with {
         phase = ChoosingAllowedMove([path], 0);
     };
-    value player = game.currentPlayer;
-    value result = traversePath(game, player, path, 0);
+    value result = traversePath(game, path);
     
     if (is Game result) {
         fail("Traversing a path ending on a Well should not have worked.");
@@ -158,6 +184,5 @@ shared void traversePathWrongPhase() {
     object node extends TestNode() {}
     value path = [node];
     
-    wrongPhaseTest((game)
-        => traversePath(game, game.currentPlayer, path, 0), ChoosingAllowedMove([path], 0));
+    wrongPhaseTest((game) => traversePath(game, path), ChoosingAllowedMove([path], 0));
 }

@@ -238,7 +238,7 @@ shared void doTraversePath(String nodeId) {
     
     assert (exists path);
     
-    controller.updateGame(traversePath(game, game.currentPlayer, path, phase.fuel));
+    controller.updateGame(traversePath(game, path));
 }
 
 shared void doWinNodeFromLeague(String? nodeId) {

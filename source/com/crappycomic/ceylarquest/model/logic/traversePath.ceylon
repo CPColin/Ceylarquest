@@ -3,18 +3,23 @@ import com.crappycomic.ceylarquest.model {
     Game,
     InvalidMove,
     Path,
-    Player,
     PreLand,
     Result,
     Well,
     incorrectPhase
 }
 
-"Alters the state of the given [[game]] to have the given [[player]] traverse the given [[path]],
- using the given amount of [[fuel]]."
-shared Result traversePath(variable Game game, Player player, Path path, Integer fuel) {
-    if (!game.phase is ChoosingAllowedMove) {
+"Alters the state of the given [[game]] to have the current player traverse the given [[path]],
+ using the given amount of fuel specified in the current phase."
+shared Result traversePath(variable Game game, Path path) {
+    value phase = game.phase;
+    
+    if (!is ChoosingAllowedMove phase) {
         return incorrectPhase;
+    }
+    
+    if (!phase.paths.contains(path)) {
+        return InvalidMove("Current phase does not contain requested path.");
     }
     
     value node = path.last;
@@ -22,6 +27,9 @@ shared Result traversePath(variable Game game, Player player, Path path, Integer
     if (is Well node) {
         return InvalidMove("It is not possible to end a path on ``node.name``.");
     }
+    
+    value player = game.currentPlayer;
+    value fuel = phase.fuel;
     
     if (fuel > game.playerFuel(player)) {
         return InvalidMove("Required fuel use is more than the player has left.");
