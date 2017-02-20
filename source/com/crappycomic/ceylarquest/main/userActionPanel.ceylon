@@ -6,7 +6,6 @@ import ceylon.language {
 }
 
 import com.crappycomic.ceylarquest.model {
-    Card,
     Game,
     Node,
     Path,
@@ -41,7 +40,7 @@ import javax.swing {
 }
 
 object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JComboBox<Node>> {
-    shared actual JButton createApplyCardButton(Game game, Card card) {
+    shared actual JButton createApplyCardButton(Game game) {
         return actionButton("OK", () => applyCard(game));
     }
     
@@ -115,7 +114,7 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
         return actionButton("Roll Dice", () => rollDiceAndApplyRoll(game));
     }
     
-    shared actual JButton createTraversePathButton(Game game, Path path, Integer fuel) {
+    shared actual JButton createTraversePathButton(Game game, Path path) {
         return actionButton(path.last.name, () => traversePath(game, path));
     }
     

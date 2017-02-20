@@ -11,7 +11,6 @@ import ceylon.html {
 }
 
 import com.crappycomic.ceylarquest.model {
-    Card,
     Game,
     Node,
     Path
@@ -23,7 +22,7 @@ import com.crappycomic.ceylarquest.view {
 shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, String> {
     String panelContainerId = "userActions";
     
-    shared actual Button createApplyCardButton(Game game, Card card) {
+    shared actual Button createApplyCardButton(Game game) {
         return actionButton("OK", "doApplyCard");
     }
     
@@ -103,7 +102,7 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
         return actionButton("Roll Dice", "doRollDice");
     }
     
-    shared actual Button createTraversePathButton(Game game, Path path, Integer fuel) {
+    shared actual Button createTraversePathButton(Game game, Path path) {
         return let (node = path.last)
             actionButton(node.name, "doTraversePath", "'``node.id``'");
     }

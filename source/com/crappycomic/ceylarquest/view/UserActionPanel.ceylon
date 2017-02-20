@@ -29,7 +29,7 @@ import com.crappycomic.ceylarquest.model.logic {
 }
 
 shared interface UserActionPanel<Child, ChooseNodeParameter> {
-    shared formal Child createApplyCardButton(Game game, Card card);
+    shared formal Child createApplyCardButton(Game game);
     
     shared formal Child createChooseNodeLostToLeagueButton(Game game,
         ChooseNodeParameter? parameter);
@@ -55,11 +55,11 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     
     shared formal Child createRollDiceButton(Game game);
     
-    shared formal Child createTraversePathButton(Game game, Path path, Integer fuel);
+    shared formal Child createTraversePathButton(Game game, Path path);
     
-    shared void showChoosingAllowedMovePanel(Game game, [Path+] paths, Integer fuel) {
+    shared void showChoosingAllowedMovePanel(Game game, [Path+] paths) {
         createPanel("``playerName(game)`` must choose a move.",
-            *[ for (path in paths) createTraversePathButton(game, path, fuel) ]);
+            *[ for (path in paths) createTraversePathButton(game, path) ]);
     }
     
     shared void showChoosingNodeLostToLeaguePanel(Game game) {
@@ -86,7 +86,7 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     
     shared void showDrewCardPanel(Game game, Card card) {
         createPanel("``playerName(game)`` drew \"``card.description``\"",
-            createApplyCardButton(game, card));
+            createApplyCardButton(game));
     }
     
     shared formal void showError(String message);
@@ -124,7 +124,7 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
         
         switch (phase)
         case (is ChoosingAllowedMove) {
-            showChoosingAllowedMovePanel(game, phase.paths, phase.fuel);
+            showChoosingAllowedMovePanel(game, phase.paths);
         }
         case (is DrewCard) {
             showDrewCardPanel(game, phase.card);
