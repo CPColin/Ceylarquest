@@ -7,6 +7,7 @@ import ceylon.test {
 
 import com.crappycomic.ceylarquest.model {
     Card,
+    DrewCard,
     Game,
     postLand,
     preRoll
@@ -16,17 +17,22 @@ import com.crappycomic.ceylarquest.model.logic {
 }
 
 import test.com.crappycomic.ceylarquest.model {
-    testGame
+    testGame,
+    wrongPhaseTest
 }
 
 "Verifies that applying a card that does not change the [[phase of the game|Game.phase]] results in
  the game having the [[postLand]] phase, because the card consumed the player's turn."
 test
 shared void applyCardNoPhaseChange() {
-    assertNotEquals(testGame.phase, postLand);
-    
     value card = Card("No phase change", identity);
-    value result = applyCard(testGame, card);
+    value game = testGame.with {
+        phase = DrewCard(card);
+    };
+    
+    assertNotEquals(game.phase, postLand);
+    
+    value result = applyCard(game);
     
     if (is Game result) {
         assertEquals(result.phase, postLand);
@@ -41,11 +47,14 @@ shared void applyCardNoPhaseChange() {
 test
 shared void applyCardPhaseChange() {
     value phase = preRoll;
-
-    assertNotEquals(testGame.phase, phase);
-    
     value card = Card("Phase change", (game) => game.with { phase = phase; });
-    value result = applyCard(testGame, card);
+    value game = testGame.with {
+        phase = DrewCard(card);
+    };
+
+    assertNotEquals(game.phase, phase);
+    
+    value result = applyCard(game);
     
     if (is Game result) {
         assertEquals(result.phase, phase);
@@ -53,4 +62,11 @@ shared void applyCardPhaseChange() {
     else {
         fail(result.message);
     }
+}
+
+test
+shared void applyCardWrongPhase() {
+    value card = Card("Do nothing", identity);
+    
+    wrongPhaseTest((game) => applyCard(game), DrewCard(card));
 }

@@ -42,7 +42,7 @@ import javax.swing {
 
 object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JComboBox<Node>> {
     shared actual JButton createApplyCardButton(Game game, Card card) {
-        return actionButton("OK", () => applyCard(game, card));
+        return actionButton("OK", () => applyCard(game));
     }
     
     shared actual JButton createChooseNodeLostToLeagueButton(Game game, JComboBox<Node>? comboBox) {
@@ -160,13 +160,5 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
         value roll = rollDice(game.rules);
         
         return applyRoll(game, game.currentPlayer, roll);
-    }
-    
-    void showPanel(JPanel panel) {
-        removeAll();
-        add(panel);
-        
-        validate();
-        repaint();
     }
 }

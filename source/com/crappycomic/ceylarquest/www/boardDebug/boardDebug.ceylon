@@ -11,7 +11,6 @@ import com.crappycomic.ceylarquest.controller {
 import com.crappycomic.ceylarquest.model {
     ChoosingAllowedMove,
     Color,
-    DrewCard,
     Game,
     InvalidSave,
     Location,
@@ -194,11 +193,7 @@ shared void createController() {
 }
 
 shared void doApplyCard() {
-    value phase = game.phase;
-    
-    assert (is DrewCard phase);
-    
-    controller.updateGame(applyCard(game, phase.card));
+    controller.updateGame(applyCard(game));
 }
 
 shared void doDrawCard() {
