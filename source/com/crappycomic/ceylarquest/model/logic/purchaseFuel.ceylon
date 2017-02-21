@@ -2,7 +2,6 @@ import com.crappycomic.ceylarquest.model {
     FuelSalable,
     Game,
     InvalidMove,
-    Node,
     Ownable,
     Player,
     Result,
@@ -11,12 +10,15 @@ import com.crappycomic.ceylarquest.model {
     preRoll
 }
 
-"Alters the state of the given [[game]] so the given [[player]] has purchased the given amount of
- [[fuel]] at the given [[node]]."
-shared Result purchaseFuel(Game game, Player player, Node node, Integer fuel) {
+"Alters the state of the given [[game]] so the current player has purchased the given amount of
+ [[fuel]] at their current location."
+shared Result purchaseFuel(Game game, Integer fuel) {
     if (game.phase != preRoll && game.phase != postLand) {
         return incorrectPhase;
     }
+    
+    value player = game.currentPlayer;
+    value node = game.playerLocation(player);
     
     if (!fuelAvailable(game, node)) {
         return InvalidMove("Fuel is not available for purchase at ``node.name``.");
@@ -28,7 +30,7 @@ shared Result purchaseFuel(Game game, Player player, Node node, Integer fuel) {
         return InvalidMove("Fuel to purchase must be greater than zero.");
     }
     else if (fuel > maximumPurchaseableFuel(game, player, node)) {
-        return InvalidMove("Fuel to purchase may not exceed what player can afford.");
+        return InvalidMove("Fuel to purchase may not exceed what player can afford or hold.");
     }
     
     value unitCost = fuelFee(game, player, node);

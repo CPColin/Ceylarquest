@@ -24,16 +24,17 @@ import test.com.crappycomic.ceylarquest.model {
 
 test
 shared void purchaseNodeTest() {
+    value player = testGame.currentPlayer;
     value node = tropicHopBoard.testOwnablePort;
     value game = testGame.with {
         phase = postLand;
+        playerLocations = { player -> node };
     };
-    value player = game.currentPlayer;
     value playerCash = game.playerCash(player);
     
     assertFalse(game.owner(node) is Player, "Node is unexpectedly owned.");
     
-    value result = purchaseNode(game, node);
+    value result = purchaseNode(game);
     
     if (is Game result) {
         value owner = result.owner(node);
@@ -50,7 +51,5 @@ shared void purchaseNodeTest() {
 
 test
 shared void purchaseNodeWrongPhase() {
-    value node = tropicHopBoard.testOwnablePort;
-    
-    wrongPhaseTest((game) => purchaseNode(game, node), postLand);
+    wrongPhaseTest((game) => purchaseNode(game), postLand);
 }

@@ -30,7 +30,7 @@ shared void purchaseFuelStationInsufficientFunds() {
     
     assertEquals(game.playerCash(player), 0, "Player cash didn't initialie to zero.");
     
-    value result = purchaseFuelStation(game, player);
+    value result = purchaseFuelStation(game);
     
     if (is Game result) {
         fail("Player was able to purchase fuel station with no money.");
@@ -55,7 +55,7 @@ shared void purchaseFuelStationNoneRemain() {
     
     assertEquals(game.fuelStationsRemaining, 0, "Fuel stations remaining isn't zero.");
     
-    value result = purchaseFuelStation(game, player);
+    value result = purchaseFuelStation(game);
     
     if (is Game result) {
         fail("Purchasing a fuel station when none remained should have failed.");
@@ -81,7 +81,7 @@ shared void purchaseFuelStationSuccess() {
     assertTrue(fuelStationsRemaining > 0,
         "At least one fuel station needs to be remaining at the start of this test.");
     
-    value result = purchaseFuelStation(game, player);
+    value result = purchaseFuelStation(game);
     
     if (is Game result) {
         assertEquals(result.fuelStationsRemaining, fuelStationsRemaining - 1,
@@ -98,5 +98,5 @@ shared void purchaseFuelStationSuccess() {
 
 test
 shared void purchaseFuelStationWrongPhase() {
-    wrongPhaseTest((game) => purchaseFuelStation(game, game.currentPlayer), preRoll, postLand);
+    wrongPhaseTest((game) => purchaseFuelStation(game), preRoll, postLand);
 }

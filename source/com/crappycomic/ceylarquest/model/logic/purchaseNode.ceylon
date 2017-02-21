@@ -1,18 +1,21 @@
 import com.crappycomic.ceylarquest.model {
     Game,
     InvalidMove,
-    Node,
     Ownable,
     Result,
     incorrectPhase,
     postLand
 }
 
-"Alters the state of the given [[game]] to have the current player purchase the given [[node]]."
-shared Result purchaseNode(Game game, Node node = game.playerLocation(game.currentPlayer)) {
+"Alters the state of the given [[game]] to have the current player purchase the node that player is
+ currently on."
+shared Result purchaseNode(Game game) {
     if (game.phase != postLand) {
         return incorrectPhase;
     }
+    
+    value player = game.currentPlayer;
+    value node = game.playerLocation(player);
     
     if (!canPurchaseNode(game, node)) {
         return InvalidMove("``node.name`` may not be purchased.");
@@ -20,7 +23,6 @@ shared Result purchaseNode(Game game, Node node = game.playerLocation(game.curre
     
     assert (is Ownable node);
     
-    value player = game.currentPlayer;
     value playerCash = game.playerCash(player);
     value nodePrice = package.nodePrice(game, node);
     

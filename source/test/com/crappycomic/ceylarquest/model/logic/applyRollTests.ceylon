@@ -9,11 +9,10 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     ChoosingAllowedMove,
     Game,
-    RollingWithMultiplier,
+    Rolled,
     Rules,
     drawingCard,
     incorrectPhase,
-    preRoll,
     rollTypeAlways,
     rollTypeNever
 }
@@ -34,12 +33,13 @@ test
 shared void applyRollDrawCard() {
     value game = Game {
         board = tropicHopBoard;
+        phase = Rolled([1, 2], null);
         playerNames = testPlayerNames;
         rules = object extends Rules() {
             cardRollType = rollTypeAlways;
         };
     };
-    value result = applyRoll(game, game.currentPlayer, [1, 2]);
+    value result = applyRoll(game);
     
     if (is Game result) {
         assertEquals(result.phase, drawingCard, "Phase isn't DrawingCard");
@@ -50,19 +50,18 @@ shared void applyRollDrawCard() {
 }
 
 test
-shared void applyRollingAgainDontCheckFuel() {
+shared void applyRolledWithMultiplierDontCheckFuel() {
     value player = testGame.currentPlayer;
     value node = tropicHopBoard.testAfterStart;
     value game = testGame.with {
-        phase = RollingWithMultiplier(1);
+        phase = Rolled([1, 2], 1);
         playerFuels = { player -> 0 };
         playerLocations = { player -> node };
     };
     
-    assertTrue(game.phase is RollingWithMultiplier,
-        "Phase needs to be RollingWithMultiplier for this test.");
+    assertTrue(game.phase is Rolled, "Phase needs to be Rolled for this test.");
     
-    value result = applyRoll(game, player, [1, 2]);
+    value result = applyRoll(game);
     
     if (is Game result) {
         value phase = result.phase;
@@ -79,12 +78,12 @@ shared void applyRollingAgainDontCheckFuel() {
 }
 
 test
-shared void applyRollingAgainDontDrawCard() {
+shared void applyRolledWithMultiplierDontDrawCard() {
     value player = testGame.currentPlayer;
     value node = tropicHopBoard.testAfterStart;
     value game = Game {
         board = tropicHopBoard;
-        phase = RollingWithMultiplier(1);
+        phase = Rolled([1, 1], 1);
         playerLocations = { player -> node };
         playerNames = testPlayerNames;
         rules = object extends Rules() {
@@ -92,10 +91,9 @@ shared void applyRollingAgainDontDrawCard() {
         };
     };
     
-    assertTrue(game.phase is RollingWithMultiplier,
-        "Phase needs to be RollingWithMultiplier for this test.");
+    assertTrue(game.phase is Rolled, "Phase needs to be Rolled for this test.");
     
-    value result = applyRoll(game, player, [1, 1]);
+    value result = applyRoll(game);
     
     if (is Game result) {
         value phase = result.phase;
@@ -112,23 +110,22 @@ shared void applyRollingAgainDontDrawCard() {
 }
 
 test
-shared void applyRollingAgainMultiplier() {
+shared void applyRolledWithMultiplier() {
     value player = testGame.currentPlayer;
     value node = tropicHopBoard.testAfterStart;
+    value roll = [3, 4];
     value multiplier = 4;
     value game = testGame.with {
-        phase = RollingWithMultiplier(multiplier);
+        phase = Rolled(roll, multiplier);
         playerLocations = { player -> node };
     };
     
-    assertTrue(game.phase is RollingWithMultiplier,
-        "Phase needs to be RollingWithMultiplier for this test.");
+    assertTrue(game.phase is Rolled, "Phase needs to be Rolled for this test.");
     
-    value roll = [3, 4];
     value totalRoll = roll.fold(0)(plus);
     // This would be (totalRoll * multiplier) exactly, if we were sure of no WellPull nodes.
     value expectedPathSize = totalRoll * (multiplier - 1) + 1;
-    value result = applyRoll(game, player, roll);
+    value result = applyRoll(game);
     
     if (is Game result) {
         value phase = result.phase;
@@ -150,11 +147,11 @@ shared void applyRollInsufficientFuel() {
     value player = testGame.currentPlayer;
     value node = tropicHopBoard.testAfterStart;
     value game = testGame.with {
-        phase = preRoll;
+        phase = Rolled([1, 2], null);
         playerFuels = { player -> 0 };
         playerLocations = { player -> node };
     };
-    value result = applyRoll(game, player, [1, 2]);
+    value result = applyRoll(game);
     
     if (is Game result) {
         value phase = result.phase;
@@ -176,9 +173,9 @@ shared void applyRollInsufficientFuel() {
 test
 shared void applyRollInvalidRollTooHigh() {
     value game = testGame.with {
-        phase = preRoll;
+        phase = Rolled([1, testGame.rules.diePips + 1], null);
     };
-    value result = applyRoll(game, game.currentPlayer, [1, game.rules.diePips + 1]);
+    value result = applyRoll(game);
     
     if (is Game result) {
         fail("Too-high roll should have failed.");
@@ -195,9 +192,9 @@ shared void applyRollInvalidRollTooHigh() {
 test
 shared void applyRollInvalidRollZero() {
     value game = testGame.with {
-        phase = preRoll;
+        phase = Rolled([0, 1], null);
     };
-    value result = applyRoll(game, game.currentPlayer, [0, 1]);
+    value result = applyRoll(game);
     
     if (is Game result) {
         fail("Zero in roll should have failed.");
@@ -218,14 +215,15 @@ shared void applyRollSuccess() {
     value endNode = tropicHopBoard.testAfterStart;
     value game = Game {
         board = tropicHopBoard;
-        phase = preRoll;
+        currentPlayer = player;
+        phase = Rolled([1, 1], null);
         playerLocations = { player -> startNode };
         playerNames = testPlayerNames;
         rules = object extends Rules() {
             cardRollType = rollTypeNever;
         };
     };
-    value result = applyRoll(game, player, [1, 1]);
+    value result = applyRoll(game);
     
     if (is Game result) {
         value phase = result.phase;
@@ -236,10 +234,10 @@ shared void applyRollSuccess() {
         
         assertEquals(phase.paths.size, 1, "Wrong number of allowed paths.");
         
-        value paths = phase.paths;
+        value path = phase.paths.first;
         
-        assertEquals(paths.first.first, startNode, "Path didn't start at the right node.");
-        assertEquals(paths.first.last, endNode, "Path didn't end at the right node.");
+        assertEquals(path.first, startNode, "Path didn't start at the right node.");
+        assertEquals(path.last, endNode, "Path didn't end at the right node.");
     }
     else {
         fail(result.message);
@@ -248,6 +246,5 @@ shared void applyRollSuccess() {
 
 test
 shared void applyRollWrongPhase() {
-    wrongPhaseTest((game)
-        => applyRoll(game, game.currentPlayer, [0, 0]), preRoll, RollingWithMultiplier(1));
+    wrongPhaseTest((game) => applyRoll(game), Rolled([1, 1], 1));
 }

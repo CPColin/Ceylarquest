@@ -1,46 +1,46 @@
 import com.crappycomic.ceylarquest.model {
     ChoosingAllowedMove,
+    CostsFuelToLeave,
     Game,
     InvalidMove,
-    Player,
     Result,
-    Roll,
-    RollingWithMultiplier,
+    Rolled,
     drawingCard,
-    incorrectPhase,
-    preRoll,
-    CostsFuelToLeave
+    incorrectPhase
 }
 
-"Applies the given [[roll]] to the given [[game]] and returns a Game [[with|Game.with]] the
+"Applies the latest [[roll]] to the given [[game]] and returns a Game [[with|Game.with]] the
  [[phase|Game.phase]] updated to reflect the outcome of the roll, which may be that the player is
  now [[drawing a card|drawingCard]] or the player is now
  [[choosing an allowed move|ChoosingAllowedMove]] from those available, depending on the
  [[player's fuel|Game.playerFuel]].
  
- If the player is currently [[rolling with a multiplier|RollingWithMultiplier]] because of an action
- or when bypassing a node, this function will never result in drawing a card and will skip the fuel
- check."
-shared Result applyRoll(Game game, Player player, Roll roll) {
+ If the player rolled with a [[multiplier|Rolled.multiplier]] because of an action or when bypassing
+ a node, this function will never result in drawing a card and will skip the fuel check."
+shared Result applyRoll(Game game) {
     value phase = game.phase;
     
-    if (phase != preRoll && !phase is RollingWithMultiplier) {
+    if (!is Rolled phase) {
         return incorrectPhase;
     }
+    
+    value player = game.currentPlayer;
+    value roll = phase.roll;
     
     if (!roll.every((die) => 0 < die <= game.rules.diePips)) {
         return InvalidMove("Invalid roll: ``roll``");
     }
     
     value totalRoll = roll.fold(0)(plus);
-    value fuel = phase is RollingWithMultiplier
+    value multiplier = phase.multiplier;
+    value fuel = multiplier exists
         then 0
         else (game.playerLocation(player) is CostsFuelToLeave then totalRoll else 0);
     Integer distance;
     
-    if (is RollingWithMultiplier phase) {
-        // Don't draw cards or check fuel when rolling with a multiplier.
-        distance = totalRoll * phase.multiplier;
+    if (exists multiplier) {
+        // Don't draw cards or check fuel when roll was with a multiplier.
+        distance = totalRoll * multiplier;
     }
     else {
         if (game.rules.cardRollType(roll)) {

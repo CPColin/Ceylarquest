@@ -8,6 +8,8 @@ import com.crappycomic.ceylarquest.model {
     Path,
     Player,
     PreLand,
+    Roll,
+    Rolled,
     RollingWithMultiplier,
     SettlingDebts,
     choosingNodeLostToLeague,
@@ -30,6 +32,8 @@ import com.crappycomic.ceylarquest.model.logic {
 
 shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared formal Child createApplyCardButton(Game game);
+    
+    shared formal Child createApplyRollButton(Game game);
     
     shared formal Child createChooseNodeLostToLeagueButton(Game game,
         ChooseNodeParameter? parameter);
@@ -110,6 +114,11 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
             createRollDiceButton(game));
     }
     
+    shared void showRolledPanel(Game game, Roll roll) {
+        createPanel("``playerName(game)`` rolled ``roll``.",
+            createApplyRollButton(game));
+    }
+    
     shared String nodeName(Game game, Node node = game.playerLocation(game.currentPlayer)) {
         return node.name;
     }
@@ -128,6 +137,9 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
         }
         case (is DrewCard) {
             showDrewCardPanel(game, phase.card);
+        }
+        case (is Rolled) {
+            showRolledPanel(game, phase.roll);
         }
         case (is RollingWithMultiplier) {
             return false; // TODO

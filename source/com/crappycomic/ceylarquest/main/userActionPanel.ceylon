@@ -44,6 +44,10 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
         return actionButton("OK", () => applyCard(game));
     }
     
+    shared actual JButton createApplyRollButton(Game game) {
+        return actionButton("OK", () => applyRoll(game));
+    }
+    
     shared actual JButton createChooseNodeLostToLeagueButton(Game game, JComboBox<Node>? comboBox) {
         return chooseNodeButton(game, comboBox, loseNodeToLeague);
     }
@@ -111,7 +115,7 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
     }
     
     shared actual JButton createRollDiceButton(Game game) {
-        return actionButton("Roll Dice", () => rollDiceAndApplyRoll(game));
+        return actionButton("Roll Dice", () => rollDice(game));
     }
     
     shared actual JButton createTraversePathButton(Game game, Path path) {
@@ -144,12 +148,5 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
         else {
             return actionButton("None Available", () => chooseNode(game, null));
         }
-    }
-    
-    // TODO: may be broken up into two separate actions
-    Result rollDiceAndApplyRoll(Game game) {
-        value roll = rollDice(game.rules);
-        
-        return applyRoll(game, game.currentPlayer, roll);
     }
 }

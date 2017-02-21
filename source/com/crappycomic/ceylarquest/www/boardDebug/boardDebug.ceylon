@@ -196,6 +196,10 @@ shared void doApplyCard() {
     controller.updateGame(applyCard(game));
 }
 
+shared void doApplyRoll() {
+    controller.updateGame(applyRoll(game));
+}
+
 shared void doDrawCard() {
     controller.updateGame(drawCard(game));
 }
@@ -220,9 +224,7 @@ shared void doPurchaseNode() {
 }
 
 shared void doRollDice() {
-    value roll = rollDice(game.rules);
-    
-    controller.updateGame(applyRoll(game, game.currentPlayer, roll));
+    controller.updateGame(rollDice(game));
 }
 
 shared void doTraversePath(String nodeId) {

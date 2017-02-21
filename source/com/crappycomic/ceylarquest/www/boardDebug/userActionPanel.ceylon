@@ -26,6 +26,10 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
         return actionButton("OK", "doApplyCard");
     }
     
+    shared actual Button createApplyRollButton(Game game) {
+        return actionButton("OK", "doApplyRoll");
+    }
+    
     shared actual Button createChooseNodeLostToLeagueButton(Game game, String? selectId) {
         return chooseNodeButton(selectId, "doLoseNodeToLeague");
     }

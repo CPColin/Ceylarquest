@@ -38,11 +38,12 @@ shared void purchaseFuelNoFuelStation() {
     value game = testGame.with {
         phase = preRoll;
         playerFuels = { player -> 0 };
+        playerLocations = { player -> node };
     };
     
     assertFalse(game.placedFuelStations.contains(node), "Fuel station was unexpectedly present.");
     
-    value result = purchaseFuel(game, player, node, 1);
+    value result = purchaseFuel(game, 1);
     
     if (is Game result) {
         fail("Attempt to purchase fuel with no fuel station present should have failed.");
@@ -63,6 +64,7 @@ shared void purchaseFuelNoMoney() {
         phase = preRoll;
         playerCashes = { player -> 0 };
         playerFuels = { player -> 0 };
+        playerLocations = { player -> node };
     };
     value playerCash = game.playerCash(player);
     value playerFuel = game.playerFuel(player);
@@ -71,7 +73,7 @@ shared void purchaseFuelNoMoney() {
     assertEquals(playerFuel, 0, "Player's fuel tank is not empty.");
     assertTrue(fuelFee(game, player, node) > 0, "Fuel needs to cost something for this test.");
     
-    value result = purchaseFuel(game, player, node, 1);
+    value result = purchaseFuel(game, 1);
     
     if (is Game result) {
         fail("Purchase with insufficient funds should have failed.");
@@ -94,8 +96,9 @@ shared void purchaseFuelNotFuelSalable() {
     value game = testGame.with {
         phase = preRoll;
         playerFuels = { player -> 0 };
+        playerLocations = { player -> node };
     };
-    value result = purchaseFuel(game, player, node, 1);
+    value result = purchaseFuel(game, 1);
     
     if (is Game result) {
         fail("Purchasing fuel when node isn't FuelSalable should have failed.");
@@ -121,6 +124,7 @@ shared void purchaseFuelSomeMoney() {
         phase = preRoll;
         playerCashes = { player -> fuelUnitFee };
         playerFuels = { player -> 0 };
+        playerLocations = { player -> node };
     };
     value playerCash = game.playerCash(player);
     value playerFuel = game.playerFuel(player);
@@ -128,7 +132,7 @@ shared void purchaseFuelSomeMoney() {
     assertEquals(playerCash, fuelUnitFee, "Player has wrong amount of money.");
     assertEquals(playerFuel, 0, "Player's fuel tank is not empty.");
     
-    value result = purchaseFuel(game, player, node, 2);
+    value result = purchaseFuel(game, 2);
     
     if (is Game result) {
         fail("Purchase with insufficient funds should have failed.");
@@ -154,6 +158,7 @@ shared void purchaseFuelSuccess() {
         phase = preRoll;
         playerCashes = { player -> fuelUnitFee * fuel };
         playerFuels = { player -> 0 };
+        playerLocations = { player -> node };
     };
     value playerCash = game.playerCash(player);
     value playerFuel = game.playerFuel(player);
@@ -161,7 +166,7 @@ shared void purchaseFuelSuccess() {
     assertEquals(playerCash, fuelUnitFee * fuel, "Player has wrong amount of money.");
     assertEquals(playerFuel, 0, "Player's fuel tank is not empty.");
     
-    value result = purchaseFuel(game, player, node, fuel);
+    value result = purchaseFuel(game, fuel);
     
     if (is Game result) {
         assertEquals(result.playerCash(player), playerCash - fuelUnitFee,
@@ -184,6 +189,7 @@ shared void purchaseFuelWithFullTank() {
     value game = testGame.with {
         phase = preRoll;
         playerCashes = { player -> runtime.maxIntegerValue };
+        playerLocations = { player -> node };
     };
     value playerCash = game.playerCash(player);
     value playerFuel = game.playerFuel(player);
@@ -192,7 +198,7 @@ shared void purchaseFuelWithFullTank() {
     assertTrue(playerCash >= fuelFee(game, player, node) * game.rules.maximumFuel,
         "Player does not have enough cash for this test.");
     
-    value result = purchaseFuel(game, player, node, game.rules.maximumFuel);
+    value result = purchaseFuel(game, game.rules.maximumFuel);
     
     if (is Game result) {
         fail("Purchase with full tank should have failed.");
@@ -207,7 +213,5 @@ shared void purchaseFuelWithFullTank() {
 
 test
 shared void purchaseFuelWrongPhase() {
-    value node = tropicHopBoard.testFuelSalableNotStationable;
-    
-    wrongPhaseTest((game) => purchaseFuel(game, game.currentPlayer, node, 1), preRoll, postLand);
+    wrongPhaseTest((game) => purchaseFuel(game, 1), preRoll, postLand);
 }
