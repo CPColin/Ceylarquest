@@ -7,7 +7,6 @@ import ceylon.test {
 
 import com.crappycomic.ceylarquest.model {
     Game,
-    incorrectPhase,
     postLand,
     preRoll
 }
@@ -30,17 +29,8 @@ shared void purchaseFuelStationInsufficientFunds() {
     
     assertEquals(game.playerCash(player), 0, "Player cash didn't initialie to zero.");
     
-    value result = purchaseFuelStation(game);
-    
-    if (is Game result) {
-        fail("Player was able to purchase fuel station with no money.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
+    assertInvalidMove(purchaseFuelStation(game),
+        "Player was able to purchase fuel station with no money.");
 }
 
 test
@@ -55,17 +45,8 @@ shared void purchaseFuelStationNoneRemain() {
     
     assertEquals(game.fuelStationsRemaining, 0, "Fuel stations remaining isn't zero.");
     
-    value result = purchaseFuelStation(game);
-    
-    if (is Game result) {
-        fail("Purchasing a fuel station when none remained should have failed.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
+    assertInvalidMove(purchaseFuelStation(game),
+        "Purchasing a fuel station when none remained should have failed.");
 }
 
 test

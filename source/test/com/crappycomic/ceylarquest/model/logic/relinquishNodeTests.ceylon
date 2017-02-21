@@ -9,8 +9,7 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     Game,
     Ownable,
-    Player,
-    incorrectPhase
+    Player
 }
 import com.crappycomic.ceylarquest.model.logic {
     nodePrice,
@@ -57,17 +56,8 @@ shared void relinquishNodeWrongOwner() {
     
     assertEquals(game.owner(node), owner, "Node must be owned for this test.");
     
-    value result = relinquishNode(game, player, node, false);
-    
-    if (is Game result) {
-        fail("Relinquishing node owned by somebody else should not have worked.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
+    assertInvalidMove(relinquishNode(game, player, node, false),
+        "Relinquishing node owned by somebody else should not have worked.");
 }
 
 test
@@ -76,17 +66,8 @@ shared void relinquishUnownableNode() {
     
     assertFalse(node is Ownable, "Node may not be Ownable for this test.");
     
-    value result = relinquishNode(testGame, testGame.currentPlayer, node, false);
-    
-    if (is Game result) {
-        fail("Relinquishing unownable node should not have worked.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
+    assertInvalidMove(relinquishNode(testGame, testGame.currentPlayer, node, false),
+        "Relinquishing unownable node should not have worked.");
 }
 
 test
@@ -96,17 +77,8 @@ shared void relinquishUnownedNode() {
     
     assertTrue(node is Ownable, "Node must be Ownable for this test.");
     
-    value result = relinquishNode(testGame, testGame.currentPlayer, node, false);
-    
-    if (is Game result) {
-        fail("Relinquishing unowned node should not have worked.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
+    assertInvalidMove(relinquishNode(testGame, testGame.currentPlayer, node, false),
+        "Relinquishing unowned node should not have worked.");
 }
 
 test

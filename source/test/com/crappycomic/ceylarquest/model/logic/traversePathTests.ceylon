@@ -15,8 +15,7 @@ import com.crappycomic.ceylarquest.model {
     Well,
     WellOrbit,
     WellPull,
-    collectCash,
-    incorrectPhase
+    collectCash
 }
 import com.crappycomic.ceylarquest.model.logic {
     passesStart,
@@ -41,17 +40,9 @@ shared void traversePathInsufficientFuel() {
     value game = testGame.with {
         phase = ChoosingAllowedMove([path], playerFuel + 1);
     };
-    value result = traversePath(game, path);
     
-    if (is Game result) {
-        fail("Traversing a path with insufficient fuel should not have worked.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
+    assertInvalidMove(traversePath(game, path),
+        "Traversing a path with insufficient fuel should not have worked.");
 }
 
 test
@@ -65,17 +56,9 @@ shared void traversePathNotInPhase() {
     value game = testGame.with {
         phase = ChoosingAllowedMove([path1], 0);
     };
-    value result = traversePath(game, path2);
     
-    if (is Game result) {
-        fail("Traversing path that was not in the phase should not have worked.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
+    assertInvalidMove(traversePath(game, path2),
+        "Traversing path that was not in the phase should not have worked.");
 }
 
 test
@@ -166,17 +149,9 @@ void traversePathToWell(Well node) {
     value game = testGame.with {
         phase = ChoosingAllowedMove([path], 0);
     };
-    value result = traversePath(game, path);
     
-    if (is Game result) {
-        fail("Traversing a path ending on a Well should not have worked.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
+    assertInvalidMove(traversePath(game, path),
+        "Traversing a path ending on a Well should not have worked.");
 }
 
 test

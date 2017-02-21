@@ -10,7 +10,6 @@ import com.crappycomic.ceylarquest.model {
     FuelSalable,
     FuelStationable,
     Game,
-    incorrectPhase,
     postLand,
     preRoll
 }
@@ -43,17 +42,8 @@ shared void purchaseFuelNoFuelStation() {
     
     assertFalse(game.placedFuelStations.contains(node), "Fuel station was unexpectedly present.");
     
-    value result = purchaseFuel(game, 1);
-    
-    if (is Game result) {
-        fail("Attempt to purchase fuel with no fuel station present should have failed.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
+    assertInvalidMove(purchaseFuel(game, 1),
+        "Attempt to purchase fuel with no fuel station present should have failed.");
 }
 
 test
@@ -73,17 +63,8 @@ shared void purchaseFuelNoMoney() {
     assertEquals(playerFuel, 0, "Player's fuel tank is not empty.");
     assertTrue(fuelFee(game, player, node) > 0, "Fuel needs to cost something for this test.");
     
-    value result = purchaseFuel(game, 1);
-    
-    if (is Game result) {
-        fail("Purchase with insufficient funds should have failed.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
+    assertInvalidMove(purchaseFuel(game, 1),
+        "Purchase with insufficient funds should have failed.");
 }
 
 test
@@ -98,17 +79,9 @@ shared void purchaseFuelNotFuelSalable() {
         playerFuels = { player -> 0 };
         playerLocations = { player -> node };
     };
-    value result = purchaseFuel(game, 1);
     
-    if (is Game result) {
-        fail("Purchasing fuel when node isn't FuelSalable should have failed.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
+    assertInvalidMove(purchaseFuel(game, 1),
+        "Purchasing fuel when node isn't FuelSalable should have failed.");
 }
 
 "Attempts to purchase two units of fuel when the player has only enough cash to purchase one unit."
@@ -132,17 +105,8 @@ shared void purchaseFuelSomeMoney() {
     assertEquals(playerCash, fuelUnitFee, "Player has wrong amount of money.");
     assertEquals(playerFuel, 0, "Player's fuel tank is not empty.");
     
-    value result = purchaseFuel(game, 2);
-    
-    if (is Game result) {
-        fail("Purchase with insufficient funds should have failed.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
+    assertInvalidMove(purchaseFuel(game, 2),
+        "Purchase with insufficient funds should have failed.");
 }
 
 test
@@ -174,11 +138,8 @@ shared void purchaseFuelSuccess() {
         assertEquals(result.playerFuel(player), playerFuel + fuel,
             "Player's fuel didn't change by the expected amount.");
     }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
     else {
-        print(result.message);
+        fail(result.message);
     }
 }
 
@@ -198,17 +159,8 @@ shared void purchaseFuelWithFullTank() {
     assertTrue(playerCash >= fuelFee(game, player, node) * game.rules.maximumFuel,
         "Player does not have enough cash for this test.");
     
-    value result = purchaseFuel(game, game.rules.maximumFuel);
-    
-    if (is Game result) {
-        fail("Purchase with full tank should have failed.");
-    }
-    else if (result == incorrectPhase) {
-        fail(result.message);
-    }
-    else {
-        print(result.message);
-    }
+    assertInvalidMove(purchaseFuel(game, game.rules.maximumFuel),
+        "Purchase with full tank should have failed.");
 }
 
 test
