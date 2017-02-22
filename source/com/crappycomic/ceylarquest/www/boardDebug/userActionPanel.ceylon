@@ -93,6 +93,18 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
         }
     }
     
+    shared actual Button createPlaceFuelStationButton(Game game, Boolean canPlaceFuelStation) {
+        // TODO: current node only, for now
+        return actionButton("Place Fuel Station", "doPlaceFuelStation", null, canPlaceFuelStation);
+    }
+    
+    shared actual Button createPurchaseFuelButton(Game game, Boolean fuelAvailable, Integer price) {
+        value label = fuelAvailable then "Refuel ($``price``)" else "Refuel";
+        
+        return actionButton(label, "userActionPanel().showPurchaseFuelPanel", null,
+            fuelAvailable);
+    }
+    
     shared actual Button createPurchaseNodeButton(Game game, Boolean canPurchaseNode,
             Integer price) {
         value label = canPurchaseNode
@@ -100,6 +112,10 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
             else "Purchase Property";
         
         return actionButton(label, "doPurchaseNode", null, canPurchaseNode);
+    }
+    
+    shared actual Button createResignButton(Game game) {
+        return actionButton("Resign", "doResign");
     }
     
     shared actual Button createRollDiceButton(Game game) {

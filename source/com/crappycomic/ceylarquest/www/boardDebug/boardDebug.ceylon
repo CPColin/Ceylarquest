@@ -24,6 +24,7 @@ import com.crappycomic.ceylarquest.model.logic {
     drawCard,
     landOnNode,
     loseNodeToLeague,
+    placeFuelStation,
     purchaseNode,
     rollDice,
     traversePath,
@@ -219,8 +220,17 @@ shared void doLoseNodeToLeague(String? nodeId) {
     controller.updateGame(loseNodeToLeague(game, game.board.node(nodeId)));
 }
 
+shared void doPlaceFuelStation() {
+    controller.updateGame(placeFuelStation(game, game.playerLocation(game.currentPlayer)));
+}
+
 shared void doPurchaseNode() {
     controller.updateGame(purchaseNode(game));
+}
+
+shared void doResign() {
+    // TODO: proper resign() function
+    controller.updateGame(game.without(game.currentPlayer));
 }
 
 shared void doRollDice() {

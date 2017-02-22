@@ -35,9 +35,13 @@ shared Game|InvalidSave loadGame(String json) {
             allPlayers = allPlayers;
             currentPlayer = currentPlayer;
             owners = owners;
+            phase = null; // TODO
+            playerCashes = null; // TODO
             playerFuels = playerFuels;
             placedFuelStations = placedFuelStations;
+            playerFuelStationCounts = null; // TODO
             playerLocations = playerLocations;
+            rules = null; // TODO
         };
     }
     catch (AssertionError | InvalidTypeException e) {

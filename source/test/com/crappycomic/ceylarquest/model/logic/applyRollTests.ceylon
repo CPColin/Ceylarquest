@@ -31,7 +31,7 @@ import test.com.crappycomic.ceylarquest.model {
 
 test
 shared void applyRollDrawCard() {
-    value game = Game {
+    value game = Game.test {
         board = tropicHopBoard;
         phase = Rolled([1, 2], null);
         playerNames = testPlayerNames;
@@ -81,7 +81,7 @@ test
 shared void applyRolledWithMultiplierDontDrawCard() {
     value player = testGame.currentPlayer;
     value node = tropicHopBoard.testAfterStart;
-    value game = Game {
+    value game = Game.test {
         board = tropicHopBoard;
         phase = Rolled([1, 1], 1);
         playerLocations = { player -> node };
@@ -213,7 +213,7 @@ shared void applyRollSuccess() {
     value player = testGame.currentPlayer;
     value startNode = tropicHopBoard.testBeforeStart;
     value endNode = tropicHopBoard.testAfterStart;
-    value game = Game {
+    value game = Game.test {
         board = tropicHopBoard;
         currentPlayer = player;
         phase = Rolled([1, 1], null);

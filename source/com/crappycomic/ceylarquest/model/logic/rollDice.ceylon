@@ -9,6 +9,7 @@ import com.crappycomic.ceylarquest.model {
     Rolled,
     RollingWithMultiplier,
     Rules,
+    currentPlayerEliminated,
     incorrectPhase,
     preRoll
 }
@@ -26,6 +27,12 @@ shared Result rollDice(Game game) {
     
     if (phase != preRoll && !phase is RollingWithMultiplier) {
         return incorrectPhase;
+    }
+    
+    if (game.playerFuel(game.currentPlayer) <= 1) {
+        return game.with {
+            phase = currentPlayerEliminated;
+        };
     }
     
     return game.with {

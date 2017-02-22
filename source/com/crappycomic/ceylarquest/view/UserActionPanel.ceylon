@@ -2,6 +2,7 @@ import com.crappycomic.ceylarquest.model {
     Card,
     ChoosingAllowedMove,
     DrewCard,
+    FuelSalable,
     Game,
     Node,
     Ownable,
@@ -26,7 +27,10 @@ import com.crappycomic.ceylarquest.model.logic {
     allowedNodesToLoseToLeague,
     allowedNodesToWinFromLeague,
     allowedNodesToWinFromPlayer,
+    canPlaceFuelStation,
     canPurchaseNode,
+    fuelAvailable,
+    fuelFee,
     nodePrice
 }
 
@@ -55,11 +59,19 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     
     shared formal void createPanel(String label, Child* children);
     
+    shared formal Child createPlaceFuelStationButton(Game game, Boolean canPlaceFuelStation);
+    
+    shared formal Child createPurchaseFuelButton(Game game, Boolean fuelAvailable, Integer price);
+    
     shared formal Child createPurchaseNodeButton(Game game, Boolean canPurchaseNode, Integer price);
+    
+    shared formal Child createResignButton(Game game);
     
     shared formal Child createRollDiceButton(Game game);
     
     shared formal Child createTraversePathButton(Game game, Path path);
+    
+    shared formal void showError(String message);
     
     shared void showChoosingAllowedMovePanel(Game game, [Path+] paths) {
         createPanel("``playerName(game)`` must choose a move.",
@@ -83,6 +95,11 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
             allowedNodesToWinFromPlayer, createChooseNodeWonFromPlayerButton);
     }
     
+    shared void showCurrentPlayerEliminatedPanel(Game game) {
+        createPanel("``playerName(game)`` has been eliminated.",
+            createResignButton(game));
+    }
+    
     shared void showDrawingCardPanel(Game game) {
         createPanel("``playerName(game)`` must draw a card.",
             createDrawCardButton(game));
@@ -93,14 +110,25 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
             createApplyCardButton(game));
     }
     
-    shared formal void showError(String message);
+    shared void showGameOverPanel(Game game) {
+        value winner = game.activePlayers.first;
+        value label
+            = if (exists winner) then "``playerName(game, winner)`` wins!" else "Everybody loses!";
+        
+        createPanel("Game over! ``label``");
+    }
     
     shared void showPostLandPanel(Game game) {
-        value node = game.playerLocation(game.currentPlayer);
-        value price = if (is Ownable node) then nodePrice(game, node) else 0;
+        value player = game.currentPlayer;
+        value node = game.playerLocation(player);
         
         createPanel("``playerName(game)`` is at ``nodeName(game, node)``.",
-            createPurchaseNodeButton(game, canPurchaseNode(game, node), price),
+            createPurchaseNodeButton(game, canPurchaseNode(game, node),
+                if (is Ownable node) then nodePrice(game, node) else 0),
+            createPurchaseFuelButton(game, fuelAvailable(game, node),
+                if (is FuelSalable node) then fuelFee(game, player, node) else 0),
+            createPlaceFuelStationButton(game,
+                game.board.nodes.keys.any((node) => canPlaceFuelStation(game, node))),
             createEndTurnButton(game));
     }
     
@@ -114,9 +142,23 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
             createRollDiceButton(game));
     }
     
-    shared void showRolledPanel(Game game, Roll roll) {
-        createPanel("``playerName(game)`` rolled ``roll``.",
+    shared void showPurchaseFuelPanel(Game game) {
+        // TODO
+        showError("TODO");
+    }
+    
+    shared void showRolledPanel(Game game, Roll roll, Integer? multiplier) {
+        value label = if (exists multiplier)
+            then "``playerName(game)`` rolled ``roll`` (x``multiplier``)."
+            else "``playerName(game)`` rolled ``roll``.";
+        
+        createPanel(label,
             createApplyRollButton(game));
+    }
+    
+    shared void showRollingWithMultiplierPanel(Game game, Integer multiplier) {
+        createPanel("``playerName(game)`` is rolling with a multiplier of ``multiplier``.",
+            createRollDiceButton(game));
     }
     
     shared String nodeName(Game game, Node node = game.playerLocation(game.currentPlayer)) {
@@ -139,10 +181,10 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
             showDrewCardPanel(game, phase.card);
         }
         case (is Rolled) {
-            showRolledPanel(game, phase.roll);
+            showRolledPanel(game, phase.roll, phase.multiplier);
         }
         case (is RollingWithMultiplier) {
-            return false; // TODO
+            showRollingWithMultiplierPanel(game, phase.multiplier);
         }
         case (is PreLand) {
             showPreLandPanel(game);
@@ -160,13 +202,13 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
             showChoosingNodeWonFromPlayerPanel(game);
         }
         case (currentPlayerEliminated) {
-            return false; // TODO
+            showCurrentPlayerEliminatedPanel(game);
         }
         case (drawingCard) {
             showDrawingCardPanel(game);
         }
         case (gameOver) {
-            return false; // TODO
+            showGameOverPanel(game);
         }
         case (postLand) {
             showPostLandPanel(game);

@@ -6,7 +6,7 @@ import com.crappycomic.tropichop {
     tropicHopBoard
 }
 
-shared Game testGame = Game {
+shared Game testGame = Game.test {
     board = tropicHopBoard;
     phase = gameOver;
     playerNames = testPlayerNames;

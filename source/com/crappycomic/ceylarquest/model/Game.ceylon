@@ -42,18 +42,21 @@ shared class Game {
      the [[board]]."
     shared Rules rules;
     
-    shared new(Board board, {<Player -> String>*} playerNames,
-            {Player*}? activePlayers = null,
-            {Player*}? allPlayers = null,
-            Player? currentPlayer = null,
-            {<Node -> Owner>*}? owners = null,
-            Phase? phase = null,
-            {Node*}? placedFuelStations = null,
-            {<Player -> Integer>*}? playerCashes = null,
-            {<Player -> Integer>*}? playerFuels = null,
-            {<Player -> Integer>*}? playerFuelStationCounts = null,
-            {<Player -> Node>*}? playerLocations = null,
-            Rules? rules = null) {
+    "General-use constructor."
+    shared new(
+            Board board,
+            {<Player -> String>*} playerNames,
+            {Player*}? activePlayers,
+            {Player*}? allPlayers,
+            Player? currentPlayer,
+            {<Node -> Owner>*}? owners,
+            Phase? phase,
+            {Node*}? placedFuelStations,
+            {<Player -> Integer>*}? playerCashes,
+            {<Player -> Integer>*}? playerFuels,
+            {<Player -> Integer>*}? playerFuelStationCounts,
+            {<Player -> Node>*}? playerLocations,
+            Rules? rules) {
         this.board = board;
         this.playerNames = map(playerNames);
         
@@ -162,6 +165,36 @@ shared class Game {
         }
     }
     
+    "Special constructor with default values, for use in unit tests."
+    shared new test(
+            Board board,
+            {<Player -> String>*} playerNames,
+            {Player*}? activePlayers = null,
+            {Player*}? allPlayers = null,
+            Player? currentPlayer = null,
+            {<Node -> Owner>*}? owners = null,
+            Phase? phase = null,
+            {Node*}? placedFuelStations = null,
+            {<Player -> Integer>*}? playerCashes = null,
+            {<Player -> Integer>*}? playerFuels = null,
+            {<Player -> Integer>*}? playerFuelStationCounts = null,
+            {<Player -> Node>*}? playerLocations = null,
+            Rules? rules = null)
+        extends Game(
+            board,
+            playerNames,
+            activePlayers,
+            allPlayers,
+            currentPlayer,
+            owners,
+            phase,
+            placedFuelStations,
+            playerCashes,
+            playerFuels,
+            playerFuelStationCounts,
+            playerLocations,
+            rules) {}
+    
     shared Integer fuelStationsRemaining {
         return rules.totalFuelStationCount
             - placedFuelStations.size
@@ -221,6 +254,7 @@ shared class Game {
             playerNames = this.playerNames;
             activePlayers = this.activePlayers;
             allPlayers = this.allPlayers;
+            rules = this.rules;
             
             currentPlayer = currentPlayer else this.currentPlayer;
             owners = owners?.chain(this.owners) else this.owners;
@@ -236,5 +270,37 @@ shared class Game {
         };
     }
     
-    // TODO: shared Game without(Player player) {}
+    "Returns a copy of this object with the given [[player]] removed from the set of
+     [[active players|activePlayers]]."
+    shared Game without(Player player) {
+        value activePlayers = this.activePlayers ~ set { player };
+        Phase phase;
+        
+        if (activePlayers.size <= 1) {
+            phase = gameOver;
+        }
+        else if (player == currentPlayer) {
+            phase = preRoll;
+        }
+        else {
+            phase = this.phase;
+        }
+        
+        return Game {
+            allPlayers = this.allPlayers;
+            board = this.board;
+            owners = this.owners;
+            placedFuelStations = this.placedFuelStations;
+            playerCashes = this.playerCashes;
+            playerFuels = this.playerFuels;
+            playerFuelStationCounts = this.playerFuelStationCounts;
+            playerLocations = this.playerLocations;
+            playerNames = this.playerNames;
+            rules = this.rules;
+            
+            activePlayers = activePlayers;
+            currentPlayer = this.currentPlayer == player then nextPlayer else this.currentPlayer;
+            phase = phase;
+        };
+    }
 }

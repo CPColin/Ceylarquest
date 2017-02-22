@@ -1,9 +1,6 @@
 import ceylon.interop.java {
     createJavaObjectArray
 }
-import ceylon.language {
-    cprint=print
-}
 
 import com.crappycomic.ceylarquest.model {
     Game,
@@ -18,6 +15,7 @@ import com.crappycomic.ceylarquest.model.logic {
     drawCard,
     landOnNode,
     loseNodeToLeague,
+    placeFuelStation,
     purchaseNode,
     rollDice,
     traversePath,
@@ -36,6 +34,7 @@ import javax.swing {
     JButton,
     JComboBox,
     JLabel,
+    JOptionPane,
     JPanel
 }
 
@@ -102,16 +101,36 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
         repaint();
     }
     
+    shared actual JButton createPlaceFuelStationButton(Game game, Boolean canPlaceFuelStation) {
+        value button = actionButton("Place Fuel Station",
+            () => placeFuelStation(game, game.playerLocation(game.currentPlayer)),
+            canPlaceFuelStation);
+        
+        return button;
+    }
+    
+    shared actual JButton createPurchaseFuelButton(Game game, Boolean fuelAvailable,
+            Integer price) {
+        value label = fuelAvailable then "Refuel ($``price``)" else "Refuel";
+        value button = JButton(label);
+        
+        button.addActionListener((_) => showPurchaseFuelPanel(game));
+        button.enabled = fuelAvailable;
+        
+        return button;
+    }
+    
     shared actual JButton createPurchaseNodeButton(Game game, Boolean canPurchaseNode,
             Integer price) {
         value label = canPurchaseNode
             then "Purchase Property ($``price``)"
             else "Purchase Property";
-        value button = actionButton(label, () => purchaseNode(game));
         
-        button.enabled = canPurchaseNode;
-        
-        return button;
+        return actionButton(label, () => purchaseNode(game), canPurchaseNode);
+    }
+    
+    shared actual JButton createResignButton(Game game) {
+        return actionButton("Resign", () => game.without(game.currentPlayer));
     }
     
     shared actual JButton createRollDiceButton(Game game) {
@@ -123,13 +142,14 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
     }
     
     shared actual void showError(String message) {
-        cprint(message);
+        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.errorMessage);
     }
     
-    JButton actionButton(String label, Result() action) {
+    JButton actionButton(String label, Result() action, Boolean enabled = true) {
         value button = JButton(label);
         
         button.addActionListener((_) => controller.updateGame(action()));
+        button.enabled = enabled;
         
         return button;
     }

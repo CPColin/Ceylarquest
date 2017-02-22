@@ -13,7 +13,7 @@ import com.crappycomic.tropichop {
 
 test
 shared void nextPlayerTests() {
-    value game1 = Game {
+    value game1 = Game.test {
         board = tropicHopBoard;
         playerNames = testPlayerNames;
         activePlayers = testPlayers;

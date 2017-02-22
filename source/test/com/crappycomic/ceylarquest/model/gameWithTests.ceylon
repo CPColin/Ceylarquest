@@ -36,7 +36,7 @@ test
 shared void gameWithOwnersDecreasing() {
     value [node1, node2] = testNodes<Ownable>();
     value player = testPlayers[0];
-    value gameStart = Game {
+    value gameStart = Game.test {
         board = tropicHopBoard;
         playerNames = testPlayerNames;
         owners = { node1 -> player, node2 -> player };
@@ -57,7 +57,7 @@ test
 shared void gameWithOwnersIncreasing() {
     value [node1, node2] = testNodes<Ownable>();
     value player = testPlayers[0];
-    value gameStart = Game {
+    value gameStart = Game.test {
         board = tropicHopBoard;
         playerNames = testPlayerNames;
         owners = { node1 -> player };
@@ -78,7 +78,7 @@ shared void gameWithOwnersIncreasing() {
 test
 shared void gameWithPlacedFuelStations() {
     value [node1, node2] = testNodes<FuelStationable>();
-    value gameStart = Game {
+    value gameStart = Game.test {
         board = tropicHopBoard;
         playerNames = testPlayerNames;
         placedFuelStations = { node1 };
@@ -95,7 +95,7 @@ shared void gameWithPlacedFuelStations() {
 
 test
 shared void gameWithPlayerCashes() {
-    value gameStart = Game {
+    value gameStart = Game.test {
         board = tropicHopBoard;
         playerNames = testPlayerNames;
         playerCashes = { for (player -> _ in testPlayerNames) player -> 1 };
@@ -110,7 +110,7 @@ shared void gameWithPlayerCashes() {
 
 test
 shared void gameWithPlayerFuels() {
-    value gameStart = Game {
+    value gameStart = Game.test {
         board = tropicHopBoard;
         playerNames = testPlayerNames;
         playerFuels = { for (player -> _ in testPlayerNames) player -> 1 };
@@ -125,7 +125,7 @@ shared void gameWithPlayerFuels() {
 
 test
 shared void gameWithPlayerFuelStationCounts() {
-    value gameStart = Game {
+    value gameStart = Game.test {
         board = tropicHopBoard;
         playerNames = testPlayerNames;
         playerFuelStationCounts = { for (player -> _ in testPlayerNames) player -> 1 };
@@ -142,7 +142,7 @@ test
 shared void gameWithPlayerLocations() {
     value node1 = tropicHopBoard.testOwnablePort;
     value node2 = tropicHopBoard.testNotFuelSalableOrStationable;
-    value gameStart = Game {
+    value gameStart = Game.test {
         board = tropicHopBoard;
         playerNames = testPlayerNames;
         playerLocations = { for (player -> _ in testPlayerNames) player -> node1 };
@@ -159,7 +159,7 @@ shared void gameWithPlayerLocations() {
 test
 shared void gameWithUnknownNode() {
     object node extends TestNode() satisfies FuelStationable {}
-    value gameStart = Game {
+    value gameStart = Game.test {
         board = tropicHopBoard;
         playerNames = testPlayerNames;
     };
