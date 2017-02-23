@@ -35,34 +35,6 @@ import com.crappycomic.ceylarquest.model.logic {
 }
 
 shared interface UserActionPanel<Child, ChooseNodeParameter> {
-    shared String applyCardButtonLabel => "OK";
-    
-    shared String applyRollButtonLabel => "OK";
-    
-    shared String chooseNodeButtonLabel => "Choose";
-    
-    shared String chooseNodeNoneAvailableButtonLabel => "None Available";
-    
-    shared String drawCardButtonLabel => "Draw a Card";
-    
-    shared String endTurnButtonLabel => "End Turn";
-    
-    shared String landOnNodeButtonLabel => "Continue";
-    
-    shared String placeFuelStationButtonLabel => "Place Fuel Station";
-    
-    shared String purchaseFuelButtonLabel(Boolean fuelAvailable, Integer price)
-        => fuelAvailable then "Refuel ($``price``)" else "Refuel";
-    
-    shared String purchaseFuelStationButtonLabel => "Purchase Fuel Station";
-    
-    shared String purchaseNodeButtonLabel(Boolean canPurchaseNode, Integer price)
-        => canPurchaseNode then "Purchase Property ($``price``)" else "Purchase Property";
-    
-    shared String resignButtonLabel => "Resign";
-    
-    shared String rollDiceButtonLabel => "Roll Dice";
-    
     shared formal Child createApplyCardButton(Game game);
     
     shared formal Child createApplyRollButton(Game game);
@@ -101,21 +73,54 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     
     shared formal void showError(String message);
     
+    shared String applyCardButtonLabel => "OK";
+    
+    shared String applyRollButtonLabel => "OK";
+    
+    shared String chooseNodeButtonLabel => "Choose";
+    
+    shared String chooseNodeNoneAvailableButtonLabel => "None Available";
+    
+    shared String drawCardButtonLabel => "Draw a Card";
+    
+    shared String endTurnButtonLabel => "End Turn";
+    
+    shared String landOnNodeButtonLabel => "Continue";
+    
+    shared String placeFuelStationButtonLabel(Game game)
+        => "Place ``game.board.strings.fuelStationCapitalized``";
+    
+    shared String purchaseFuelButtonLabel(Game game, Boolean fuelAvailable, Integer price)
+        => let (label = game.board.strings.purchaseFuel)
+            if (fuelAvailable) then "``label`` ($``price``)" else label;
+    
+    shared String purchaseFuelStationButtonLabel(Game game)
+        => "Purchase ``game.board.strings.fuelStationCapitalized``";
+    
+    shared String purchaseNodeButtonLabel(Boolean canPurchaseNode, Integer price)
+        => canPurchaseNode then "Purchase Property ($``price``)" else "Purchase Property";
+    
+    shared String resignButtonLabel => "Resign";
+    
+    shared String rollDiceButtonLabel => "Roll Dice";
+    
     shared void showChoosingAllowedMovePanel(Game game, [Path+] paths) {
         createPanel("``playerName(game)`` must choose a move.",
             *[ for (path in paths) createTraversePathButton(game, path) ]);
     }
     
     shared void showChoosingNodeLostToLeaguePanel(Game game) {
-        // TODO: localize "League"
-        showChoosingNodePanel(game, "``playerName(game)`` lost a property to the League.",
-            allowedNodesToLoseToLeague, createChooseNodeLostToLeagueButton);
+        showChoosingNodePanel(game,
+            "``playerName(game)`` lost a property to the ``game.board.strings.leagueShort``.",
+            allowedNodesToLoseToLeague,
+            createChooseNodeLostToLeagueButton);
     }
     
     shared void showChoosingNodeWonFromLeaguePanel(Game game) {
-        // TODO: localize "League"
-        showChoosingNodePanel(game, "``playerName(game)`` won a property from the League.",
-            allowedNodesToWinFromLeague, createChooseNodeWonFromLeagueButton);
+        showChoosingNodePanel(game,
+            "``playerName(game)`` won a property from the ``game.board.strings.leagueShort``.",
+            allowedNodesToWinFromLeague,
+            createChooseNodeWonFromLeagueButton);
     }
     
     shared void showChoosingNodeWonFromPlayerPanel(Game game) {

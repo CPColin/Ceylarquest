@@ -98,14 +98,14 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
     }
     
     shared actual JButton createPlaceFuelStationButton(Game game, Boolean canPlaceFuelStation) {
-        return actionButton(placeFuelStationButtonLabel,
+        return actionButton(placeFuelStationButtonLabel(game),
             () => placeFuelStation(game, game.playerLocation(game.currentPlayer)),
             canPlaceFuelStation);
     }
     
     shared actual JButton createPurchaseFuelButton(Game game, Boolean fuelAvailable,
             Integer price) {
-        return actionButton(purchaseFuelButtonLabel(fuelAvailable, price),
+        return actionButton(purchaseFuelButtonLabel(game, fuelAvailable, price),
             () => showPurchaseFuelPanel(game),
             fuelAvailable);
     }

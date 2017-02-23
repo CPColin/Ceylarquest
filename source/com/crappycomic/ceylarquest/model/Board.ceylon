@@ -15,6 +15,9 @@ shared abstract class Board() {
     "The [[Node]] that players start on."
     shared formal Node start;
     
+    "Strings that have been customized for this type of game."
+    shared formal Strings strings;
+    
     "Returns the [[Node]] with the given [[id]], if any."
     shared Node? node(String? id)
         => if (exists id) then nodes.keys.find((node) => node.id == id) else null;

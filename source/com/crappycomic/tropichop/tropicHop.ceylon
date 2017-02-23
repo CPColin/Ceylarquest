@@ -11,6 +11,7 @@ import com.crappycomic.ceylarquest.model {
     Node,
     Ownable,
     Rules,
+    Strings,
     WellOrbit,
     advanceToNode,
     collectCashAndRollAgain,
@@ -338,6 +339,16 @@ shared object tropicHopBoard extends Board() {
         initialCash = 1500;
         
         totalFuelStationCount = 20;
+    };
+    
+    strings = object extends Strings() {
+        fuelStationCapitalized = "Still";
+        
+        leagueLong = "TropicHop Island Company";
+        
+        leagueShort = "Company";
+        
+        purchaseFuel = "Buy Rum";
     };
     
     // Stuff below here is for supporting unit tests.
