@@ -6,13 +6,13 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Node,
     Path,
-    Result,
-    preRoll
+    Result
 }
 import com.crappycomic.ceylarquest.model.logic {
     applyCard,
     applyRoll,
     drawCard,
+    endTurn,
     landOnNode,
     loseNodeToLeague,
     placeFuelStation,
@@ -66,11 +66,7 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
     }
     
     shared actual JButton createEndTurnButton(Game game) {
-        // TODO: temporary, for testing
-        return actionButton("End Turn", () => game.with {
-            currentPlayer = game.nextPlayer;
-            phase = preRoll;
-        });
+        return actionButton("End Turn", () => endTurn(game));
     }
     
     shared actual JButton createLandOnNodeButton(Game game) {

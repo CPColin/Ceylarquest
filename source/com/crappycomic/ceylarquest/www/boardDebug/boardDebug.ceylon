@@ -14,14 +14,14 @@ import com.crappycomic.ceylarquest.model {
     Game,
     InvalidSave,
     Location,
-    loadGame,
-    preRoll
+    loadGame
 }
 import com.crappycomic.ceylarquest.model.logic {
     allowedMoves,
     applyCard,
     applyRoll,
     drawCard,
+    endTurn,
     landOnNode,
     loseNodeToLeague,
     placeFuelStation,
@@ -206,10 +206,7 @@ shared void doDrawCard() {
 }
 
 shared void doEndTurn() {
-    controller.updateGame(game.with {
-        currentPlayer = game.nextPlayer;
-        phase = preRoll;
-    });
+    controller.updateGame(endTurn(game));
 }
 
 shared void doLandOnNode() {

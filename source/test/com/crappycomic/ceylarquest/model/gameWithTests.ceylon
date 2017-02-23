@@ -18,7 +18,7 @@ import com.crappycomic.tropichop {
 }
 
 // These tests aim to make sure Game.with makes only the changes that are passed to it, without
-// affecting other players or and nodes.
+// affecting other players or nodes.
 
 test
 shared void gameWithCurrentPlayer() {
