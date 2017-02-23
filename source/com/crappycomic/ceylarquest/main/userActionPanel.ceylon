@@ -40,11 +40,11 @@ import javax.swing {
 
 object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JComboBox<Node>> {
     shared actual JButton createApplyCardButton(Game game) {
-        return actionButton("OK", () => applyCard(game));
+        return actionButton(applyCardButtonLabel, () => applyCard(game));
     }
     
     shared actual JButton createApplyRollButton(Game game) {
-        return actionButton("OK", () => applyRoll(game));
+        return actionButton(applyRollButtonLabel, () => applyRoll(game));
     }
     
     shared actual JButton createChooseNodeLostToLeagueButton(Game game, JComboBox<Node>? comboBox) {
@@ -62,15 +62,15 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
     }
     
     shared actual JButton createDrawCardButton(Game game) {
-        return actionButton("Draw a Card", () => drawCard(game));
+        return actionButton(drawCardButtonLabel, () => drawCard(game));
     }
     
     shared actual JButton createEndTurnButton(Game game) {
-        return actionButton("End Turn", () => endTurn(game));
+        return actionButton(endTurnButtonLabel, () => endTurn(game));
     }
     
     shared actual JButton createLandOnNodeButton(Game game) {
-        return actionButton("Continue", () => landOnNode(game));
+        return actionButton(landOnNodeButtonLabel, () => landOnNode(game));
     }
     
     shared actual Component[] createNodeSelect(Game game, [Node*] nodes,
@@ -98,39 +98,31 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
     }
     
     shared actual JButton createPlaceFuelStationButton(Game game, Boolean canPlaceFuelStation) {
-        value button = actionButton("Place Fuel Station",
+        return actionButton(placeFuelStationButtonLabel,
             () => placeFuelStation(game, game.playerLocation(game.currentPlayer)),
             canPlaceFuelStation);
-        
-        return button;
     }
     
     shared actual JButton createPurchaseFuelButton(Game game, Boolean fuelAvailable,
             Integer price) {
-        value label = fuelAvailable then "Refuel ($``price``)" else "Refuel";
-        value button = JButton(label);
-        
-        button.addActionListener((_) => showPurchaseFuelPanel(game));
-        button.enabled = fuelAvailable;
-        
-        return button;
+        return actionButton(purchaseFuelButtonLabel(fuelAvailable, price),
+            () => showPurchaseFuelPanel(game),
+            fuelAvailable);
     }
     
     shared actual JButton createPurchaseNodeButton(Game game, Boolean canPurchaseNode,
             Integer price) {
-        value label = canPurchaseNode
-            then "Purchase Property ($``price``)"
-            else "Purchase Property";
-        
-        return actionButton(label, () => purchaseNode(game), canPurchaseNode);
+        return actionButton(purchaseNodeButtonLabel(canPurchaseNode, price),
+            () => purchaseNode(game),
+            canPurchaseNode);
     }
     
     shared actual JButton createResignButton(Game game) {
-        return actionButton("Resign", () => game.without(game.currentPlayer));
+        return actionButton(resignButtonLabel, () => game.without(game.currentPlayer));
     }
     
     shared actual JButton createRollDiceButton(Game game) {
-        return actionButton("Roll Dice", () => rollDice(game));
+        return actionButton(rollDiceButtonLabel, () => rollDice(game));
     }
     
     shared actual JButton createTraversePathButton(Game game, Path path) {
@@ -141,19 +133,25 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.errorMessage);
     }
     
-    JButton actionButton(String label, Result() action, Boolean enabled = true) {
+    JButton actionButton(String label, Result()|Anything() action, Boolean enabled = true) {
         value button = JButton(label);
         
-        button.addActionListener((_) => controller.updateGame(action()));
+        if (is Result() action) {
+            button.addActionListener((_) => controller.updateGame(action()));
+        }
+        else {
+            button.addActionListener((_) => action());
+        }
+        
         button.enabled = enabled;
         
         return button;
     }
     
     JButton chooseNodeButton(Game game, JComboBox<Node>? comboBox,
-        Result(Game, Node?) chooseNode) {
+            Result(Game, Node?) chooseNode) {
         if (exists comboBox) {
-            return actionButton("Choose", () {
+            return actionButton(chooseNodeButtonLabel, () {
                 value node = comboBox.selectedItem;
                 
                 assert (is Node? node);
@@ -162,7 +160,7 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
             });
         }
         else {
-            return actionButton("None Available", () => chooseNode(game, null));
+            return actionButton(chooseNodeNoneAvailableButtonLabel, () => chooseNode(game, null));
         }
     }
 }

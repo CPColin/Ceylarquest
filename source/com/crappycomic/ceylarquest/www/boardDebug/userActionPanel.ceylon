@@ -23,11 +23,11 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
     String panelContainerId = "userActions";
     
     shared actual Button createApplyCardButton(Game game) {
-        return actionButton("OK", "doApplyCard");
+        return actionButton(applyCardButtonLabel, "doApplyCard");
     }
     
     shared actual Button createApplyRollButton(Game game) {
-        return actionButton("OK", "doApplyRoll");
+        return actionButton(applyRollButtonLabel, "doApplyRoll");
     }
     
     shared actual Button createChooseNodeLostToLeagueButton(Game game, String? selectId) {
@@ -43,15 +43,15 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
     }
     
     shared actual Button createDrawCardButton(Game game) {
-        return actionButton("Draw a Card", "doDrawCard");
+        return actionButton(drawCardButtonLabel, "doDrawCard");
     }
     
     shared actual Button createEndTurnButton(Game game) {
-        return actionButton("End Turn", "doEndTurn");
+        return actionButton(endTurnButtonLabel, "doEndTurn");
     }
     
     shared actual Button createLandOnNodeButton(Game game) {
-        return actionButton("Continue", "doLandOnNode");
+        return actionButton(landOnNodeButtonLabel, "doLandOnNode");
     }
     
     shared actual Content<FlowCategory>[] createNodeSelect(Game game, [Node*] nodes,
@@ -95,31 +95,27 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
     
     shared actual Button createPlaceFuelStationButton(Game game, Boolean canPlaceFuelStation) {
         // TODO: current node only, for now
-        return actionButton("Place Fuel Station", "doPlaceFuelStation", null, canPlaceFuelStation);
+        return actionButton(placeFuelStationButtonLabel, "doPlaceFuelStation", null,
+            canPlaceFuelStation);
     }
     
     shared actual Button createPurchaseFuelButton(Game game, Boolean fuelAvailable, Integer price) {
-        value label = fuelAvailable then "Refuel ($``price``)" else "Refuel";
-        
-        return actionButton(label, "userActionPanel().showPurchaseFuelPanel", null,
-            fuelAvailable);
+        return actionButton(purchaseFuelButtonLabel(fuelAvailable, price),
+            "userActionPanel().showPurchaseFuelPanel", null, fuelAvailable);
     }
     
     shared actual Button createPurchaseNodeButton(Game game, Boolean canPurchaseNode,
             Integer price) {
-        value label = canPurchaseNode
-            then "Purchase Property ($``price``)"
-            else "Purchase Property";
-        
-        return actionButton(label, "doPurchaseNode", null, canPurchaseNode);
+        return actionButton(purchaseNodeButtonLabel(canPurchaseNode, price),
+            "doPurchaseNode", null, canPurchaseNode);
     }
     
     shared actual Button createResignButton(Game game) {
-        return actionButton("Resign", "doResign");
+        return actionButton(resignButtonLabel, "doResign");
     }
     
     shared actual Button createRollDiceButton(Game game) {
-        return actionButton("Roll Dice", "doRollDice");
+        return actionButton(rollDiceButtonLabel, "doRollDice");
     }
     
     shared actual Button createTraversePathButton(Game game, Path path) {
@@ -159,11 +155,11 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
     
     Button chooseNodeButton(String? selectId, String functionName) {
         if (exists selectId) {
-            return actionButton("Choose", functionName,
+            return actionButton(chooseNodeButtonLabel, functionName,
                 "document.getElementById('``selectId``').value");
         }
         else {
-            return actionButton("None Available", functionName, "null");
+            return actionButton(chooseNodeNoneAvailableButtonLabel, functionName, "null");
         }
     }
 }

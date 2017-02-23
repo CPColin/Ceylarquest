@@ -35,6 +35,34 @@ import com.crappycomic.ceylarquest.model.logic {
 }
 
 shared interface UserActionPanel<Child, ChooseNodeParameter> {
+    shared String applyCardButtonLabel => "OK";
+    
+    shared String applyRollButtonLabel => "OK";
+    
+    shared String chooseNodeButtonLabel => "Choose";
+    
+    shared String chooseNodeNoneAvailableButtonLabel => "None Available";
+    
+    shared String drawCardButtonLabel => "Draw a Card";
+    
+    shared String endTurnButtonLabel => "End Turn";
+    
+    shared String landOnNodeButtonLabel => "Continue";
+    
+    shared String placeFuelStationButtonLabel => "Place Fuel Station";
+    
+    shared String purchaseFuelButtonLabel(Boolean fuelAvailable, Integer price)
+        => fuelAvailable then "Refuel ($``price``)" else "Refuel";
+    
+    shared String purchaseFuelStationButtonLabel => "Purchase Fuel Station";
+    
+    shared String purchaseNodeButtonLabel(Boolean canPurchaseNode, Integer price)
+        => canPurchaseNode then "Purchase Property ($``price``)" else "Purchase Property";
+    
+    shared String resignButtonLabel => "Resign";
+    
+    shared String rollDiceButtonLabel => "Roll Dice";
+    
     shared formal Child createApplyCardButton(Game game);
     
     shared formal Child createApplyRollButton(Game game);
