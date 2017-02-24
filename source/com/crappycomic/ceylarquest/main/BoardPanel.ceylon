@@ -83,9 +83,9 @@ class BoardPanel extends JPanel {
         
         g.setRenderingHint(RenderingHints.keyAntialiasing, RenderingHints.valueAntialiasOn);
         
-        value context = JavaGraphicsContext(g, width, height);
+        value context = JavaGraphicsContext(g, foregroundImage.width, foregroundImage.height);
         
-        context.fillRect([0, 0], black, width, height);
+        context.clear();
         
         if (exists closestNodes = closestNodes) {
             context.drawImage(closestNodes);

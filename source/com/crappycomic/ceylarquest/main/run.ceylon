@@ -22,8 +22,8 @@ import debug {
 }
 
 import java.awt {
-    Dimension,
-    BorderLayout
+    BorderLayout,
+    Dimension
 }
 import java.awt.image {
     BufferedImage
