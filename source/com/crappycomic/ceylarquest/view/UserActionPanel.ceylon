@@ -20,8 +20,7 @@ import com.crappycomic.ceylarquest.model {
     drawingCard,
     gameOver,
     postLand,
-    preRoll,
-    trading
+    preRoll
 }
 import com.crappycomic.ceylarquest.model.logic {
     allowedNodesToLoseToLeague,
@@ -248,9 +247,6 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
         }
         case (preRoll) {
             showPreRollPanel(game);
-        }
-        case (trading) {
-            return false; // TODO
         }
         
         return true;
