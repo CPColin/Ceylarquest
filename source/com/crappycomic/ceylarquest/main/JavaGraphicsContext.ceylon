@@ -45,7 +45,14 @@ class JavaGraphicsContext(Graphics2D g, Integer width, Integer height) satisfies
     }
     
     shared void drawImage(BufferedImage image) {
-        g.drawImage(image, AffineTransform(), null);
+        value scaleX = width.float / image.width;
+        value scaleY = height.float / image.height;
+        value scale = largest(scaleX, scaleY);
+        value transform = AffineTransform();
+        
+        transform.scale(scale, scale);
+        
+        g.drawImage(image, transform, null);
     }
     
     shared actual void drawLine(Location from, Location to, Color color, Integer width) {
