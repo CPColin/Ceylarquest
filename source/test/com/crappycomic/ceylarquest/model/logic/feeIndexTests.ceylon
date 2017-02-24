@@ -23,13 +23,14 @@ import test.com.crappycomic.ceylarquest.model {
 test
 shared void feeIndexTests() {
     value player = testPlayers[0];
-    value deedGroup = tropicHopBoard.testOwnablePort.deedGroup;
-    value nodes = tropicHopBoard.nodes.keys
+    value ownables = tropicHopBoard.nodes.keys
         .narrow<Ownable>()
-        .filter((node) => node.deedGroup == deedGroup);
+        .group(Ownable.deedGroup);
     
-    for (count in 1..nodes.size) {
-        checkFeeIndex(player, deedGroup, nodes, count);
+    for (deedGroup -> nodes in ownables) {
+        for (count in 1..nodes.size) {
+            checkFeeIndex(player, deedGroup, nodes, count);
+        }
     }
 }
 

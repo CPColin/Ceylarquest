@@ -9,8 +9,10 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     FuelStationable,
     Game,
+    Node,
     Ownable,
     Player,
+    Well,
     unowned
 }
 import com.crappycomic.tropichop {
@@ -140,8 +142,7 @@ shared void gameWithPlayerFuelStationCounts() {
 
 test
 shared void gameWithPlayerLocations() {
-    value node1 = tropicHopBoard.testOwnablePort;
-    value node2 = tropicHopBoard.testNotFuelSalableOrStationable;
+    value [node1, node2] = testNodes<Node, Well>();
     value gameStart = Game.test {
         board = tropicHopBoard;
         playerNames = testPlayerNames;

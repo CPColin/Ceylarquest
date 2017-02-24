@@ -10,6 +10,7 @@ import com.crappycomic.ceylarquest.model {
     FuelSalable,
     FuelStationable,
     Game,
+    Node,
     postLand,
     preRoll
 }
@@ -17,22 +18,17 @@ import com.crappycomic.ceylarquest.model.logic {
     fuelFee,
     purchaseFuel
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 import test.com.crappycomic.ceylarquest.model {
     testGame,
+    testNodes,
     wrongPhaseTest
 }
 
 test
-suppressWarnings("redundantNarrowing") // Making sure our test data has the right type.
 shared void purchaseFuelNoFuelStation() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testFuelStationable;
-    
-    assertTrue(node is FuelStationable, "Node must be FuelStationable for this test.");
+    value node = testNodes<FuelStationable>().first;
     
     value game = testGame.with {
         phase = preRoll;
@@ -49,7 +45,7 @@ shared void purchaseFuelNoFuelStation() {
 test
 shared void purchaseFuelNoMoney() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testFuelSalableNotStationable;
+    value node = testNodes<FuelSalable, FuelStationable>().first;
     value game = testGame.with {
         phase = preRoll;
         playerCashes = { player -> 0 };
@@ -70,7 +66,7 @@ shared void purchaseFuelNoMoney() {
 test
 shared void purchaseFuelNotFuelSalable() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testNotFuelSalableOrStationable;
+    value node = testNodes<Node, FuelSalable|FuelStationable>().first;
     
     assertFalse(node is FuelSalable, "Node can't be FuelSalable for this test.");
     
@@ -88,7 +84,7 @@ shared void purchaseFuelNotFuelSalable() {
 test
 shared void purchaseFuelSomeMoney() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testFuelSalableNotStationable;
+    value node = testNodes<FuelSalable, FuelStationable>().first;
     value fuelUnitFee = fuelFee(testGame, player, node);
     
     assertTrue(fuelUnitFee > 0, "Fuel needs to cost something for this test.");
@@ -112,7 +108,7 @@ shared void purchaseFuelSomeMoney() {
 test
 shared void purchaseFuelSuccess() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testFuelSalableNotStationable;
+    value node = testNodes<FuelSalable, FuelStationable>().first;
     value fuelUnitFee = fuelFee(testGame, player, node);
     value fuel = 1;
     
@@ -146,7 +142,7 @@ shared void purchaseFuelSuccess() {
 test
 shared void purchaseFuelWithFullTank() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testFuelSalableNotStationable;
+    value node = testNodes<FuelSalable, FuelStationable>().first;
     value game = testGame.with {
         phase = preRoll;
         playerCashes = { player -> runtime.maxIntegerValue };

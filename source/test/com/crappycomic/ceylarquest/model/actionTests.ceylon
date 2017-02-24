@@ -5,6 +5,7 @@ import ceylon.test {
 }
 
 import com.crappycomic.ceylarquest.model {
+    Administration,
     ChoosingAllowedMove,
     RollingWithMultiplier,
     advanceToNode,
@@ -23,14 +24,10 @@ import com.crappycomic.ceylarquest.model {
 import com.crappycomic.ceylarquest.model.logic {
     passesStart
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 test
 shared void advanceToNodeTest() {
-    value startNode = tropicHopBoard.testAfterStart;
-    value endNode = tropicHopBoard.testBeforeStart;
+    value [startNode, endNode] = testNodes<Administration>();
     value fuel = 5;
     value player = testGame.currentPlayer;
     value game = testGame.with {
@@ -69,8 +66,7 @@ shared void advanceToNodeEliminationTest() {
 
 test
 shared void advanceToNodePassStartTest() {
-    value startNode = tropicHopBoard.testBeforeStart;
-    value endNode = tropicHopBoard.testAfterStart;
+    value [startNode, endNode] = testNodesBeforeAndAfterStart;
     value player = testGame.currentPlayer;
     value game = testGame.with {
         playerLocations = { player -> startNode };
@@ -80,7 +76,7 @@ shared void advanceToNodePassStartTest() {
     
     assert (is ChoosingAllowedMove phase);
     
-    assertTrue(phase.paths.every((path) => passesStart(tropicHopBoard, path)));
+    assertTrue(phase.paths.every((path) => passesStart(game.board, path)));
 }
 
 test

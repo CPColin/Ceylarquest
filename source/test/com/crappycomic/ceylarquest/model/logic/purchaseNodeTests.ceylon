@@ -7,25 +7,24 @@ import ceylon.test {
 
 import com.crappycomic.ceylarquest.model {
     Game,
+    Ownable,
     Player,
     postLand
 }
 import com.crappycomic.ceylarquest.model.logic {
     purchaseNode
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 import test.com.crappycomic.ceylarquest.model {
     testGame,
+    testNodes,
     wrongPhaseTest
 }
 
 test
 shared void purchaseNodeTest() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testOwnablePort;
+    value node = testNodes<Ownable>().first;
     value game = testGame.with {
         phase = postLand;
         playerLocations = { player -> node };

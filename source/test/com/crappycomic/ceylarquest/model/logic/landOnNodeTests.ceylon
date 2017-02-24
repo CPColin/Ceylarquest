@@ -9,6 +9,7 @@ import com.crappycomic.ceylarquest.model {
     ActionTrigger,
     Debt,
     Game,
+    Ownable,
     PreLand,
     SettlingDebts,
     collectCash
@@ -17,13 +18,11 @@ import com.crappycomic.ceylarquest.model.logic {
     landOnNode,
     rentFee
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 import test.com.crappycomic.ceylarquest.model {
     TestNode,
     testGame,
+    testNodes,
     testPlayers,
     wrongPhaseTest
 }
@@ -31,7 +30,7 @@ import test.com.crappycomic.ceylarquest.model {
 test
 shared void landOnNodePayRent() {
     value [player, owner] = testPlayers;
-    value node = tropicHopBoard.testOwnablePort;
+    value node = testNodes<Ownable>().first;
     value game = testGame.with {
         currentPlayer = player;
         owners = { node -> owner };
@@ -94,7 +93,7 @@ void landOnNodeMaybeTriggeringAction(Boolean triggerAction) {
 
 test
 shared void landOnNodeWrongPhase() {
-    value node = tropicHopBoard.testAfterStart;
+    value node = testNodes<Ownable>().first;
     
     wrongPhaseTest((game) => landOnNode(game, node), PreLand(true));
 }

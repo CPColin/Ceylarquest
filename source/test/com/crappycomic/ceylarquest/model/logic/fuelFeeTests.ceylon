@@ -4,16 +4,19 @@ import ceylon.test {
     test
 }
 
+import com.crappycomic.ceylarquest.model {
+    FuelSalable,
+    FuelStationable,
+    Ownable
+}
 import com.crappycomic.ceylarquest.model.logic {
     fuelAvailable,
     fuelFee
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 import test.com.crappycomic.ceylarquest.model {
     testGame,
+    testNodes,
     testPlayers
 }
 
@@ -21,7 +24,7 @@ import test.com.crappycomic.ceylarquest.model {
 test
 shared void fuelFeeDifferentOwner() {
     value [player, owner] = testPlayers;
-    value node = tropicHopBoard.testFuelSalableNotStationable;
+    value node = testNodes<Ownable&FuelSalable, FuelStationable>().first;
     value game = testGame.with {
         owners = { node -> owner };
     };
@@ -37,7 +40,7 @@ shared void fuelFeeDifferentOwner() {
 test
 shared void fuelFeeSameOwner() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testFuelSalableNotStationable;
+    value node = testNodes<Ownable&FuelSalable, FuelStationable>().first;
     value game = testGame.with {
         owners = { node -> player };
     };
@@ -51,7 +54,7 @@ shared void fuelFeeSameOwner() {
 "Verifies the [[fuel fee|fuelFee]] matches the lowest possible fee when nobody owns the node."
 test
 shared void fuelFeeUnowned() {
-    value node = tropicHopBoard.testFuelSalableNotStationable;
+    value node = testNodes<FuelSalable, FuelStationable>().first;
     value game = testGame;
     
     assertTrue(fuelAvailable(game, node), "Fuel needs to be available for this test.");

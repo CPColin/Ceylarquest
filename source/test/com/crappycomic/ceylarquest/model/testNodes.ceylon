@@ -8,11 +8,17 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     Node
 }
+import com.crappycomic.ceylarquest.model.logic {
+    destinations
+}
 
-"Provides two different [[Node]] instances with the given [[Type]]."
-shared Type[2] testNodes<Type>()
+"Provides two different [[Node]] instances with the given [[Type]] that are not also instances of
+ the given [[NotType]]."
+shared Type[2] testNodes<Type, NotType=Nothing>()
         given Type satisfies Node {
-    value nodes = testGame.board.nodes.keys.narrow<Type>();
+    value nodes = testGame.board.nodes.keys
+        .narrow<Type>()
+        .filter((node) => !node is NotType);
     value node1 = nodes.first;
     value node2 = nodes.last;
     
@@ -23,4 +29,18 @@ shared Type[2] testNodes<Type>()
         "This function requires two different ``typeLiteral<Type>()`` nodes.");
     
     return [node1, node2];
+}
+
+"Provides two [[Node]] instances, the first of which leads to the
+ [[start node|com.crappycomic.ceylarquest.model::Board.start]] and the second of which can be
+ reached in one step from the start node. No guarantee is made for the types of the two nodes."
+shared Node[2] testNodesBeforeAndAfterStart {
+    value board = testGame.board;
+    value start = board.start;
+    value afterStart = destinations(board, start).first;
+    value beforeStart = board.nodes.keys.find((node) => destinations(board, node).contains(start));
+    
+    assert (exists beforeStart);
+    
+    return [beforeStart, afterStart];
 }

@@ -4,22 +4,25 @@ import ceylon.test {
     test
 }
 
+import com.crappycomic.ceylarquest.model {
+    FuelSalable,
+    FuelStationable,
+    Ownable
+}
 import com.crappycomic.ceylarquest.model.logic {
     fuelFee,
     maximumPurchaseableFuel
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 import test.com.crappycomic.ceylarquest.model {
-    testGame
+    testGame,
+    testNodes
 }
 
 test
 shared void maximumPurchaseableFuelLimitedCash() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testFuelSalableNotStationable;
+    value node = testNodes<FuelSalable, FuelStationable>().first;
     value unitCost = fuelFee(testGame, player, node);
     
     assertTrue(unitCost > 0, "Fuel must cost something for this test.");
@@ -38,7 +41,7 @@ shared void maximumPurchaseableFuelLimitedCash() {
 test
 shared void maximumPurchaseableFuelLimitedTank() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testFuelSalableNotStationable;
+    value node = testNodes<FuelSalable, FuelStationable>().first;
     value unitCost = fuelFee(testGame, player, node);
     
     assertTrue(unitCost > 0, "Fuel must cost something for this test.");
@@ -57,7 +60,7 @@ shared void maximumPurchaseableFuelLimitedTank() {
 test
 shared void maximumPurchaseableFuelNoCost() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testFuelSalableNotStationable;
+    value node = testNodes<Ownable&FuelSalable, FuelStationable>().first;
     value game1 = testGame.with {
         owners = { node -> player };
     };

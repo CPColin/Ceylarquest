@@ -6,6 +6,7 @@ import ceylon.test {
 }
 
 import com.crappycomic.ceylarquest.model {
+    FuelStationable,
     Game,
     postLand,
     preRoll
@@ -14,18 +15,16 @@ import com.crappycomic.ceylarquest.model.logic {
     canPlaceFuelStation,
     placeFuelStation
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 import test.com.crappycomic.ceylarquest.model {
     testGame,
+    testNodes,
     wrongPhaseTest
 }
 
 test
 shared void placeFuelStationTest() {
-    value node = tropicHopBoard.testFuelStationable;
+    value node = testNodes<FuelStationable>().first;
     value player = testGame.currentPlayer;
     value game = testGame.with {
         owners = { node -> player };
@@ -50,7 +49,7 @@ shared void placeFuelStationTest() {
 
 test
 shared void placeFuelStationWrongPhase() {
-    value node = tropicHopBoard.testOwnablePort;
+    value node = testNodes<FuelStationable>().first;
     
     wrongPhaseTest((game) => placeFuelStation(game, node), preRoll, postLand);
 }

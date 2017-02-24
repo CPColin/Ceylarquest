@@ -5,17 +5,16 @@ import ceylon.test {
 }
 
 import com.crappycomic.ceylarquest.model {
+    Ownable,
     unowned
 }
 import com.crappycomic.ceylarquest.model.logic {
     rentFee
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 import test.com.crappycomic.ceylarquest.model {
     testGame,
+    testNodes,
     testPlayers
 }
 
@@ -23,7 +22,7 @@ import test.com.crappycomic.ceylarquest.model {
 test
 shared void rentFeeDifferentOwner() {
     value [player, owner] = testPlayers;
-    value node = tropicHopBoard.testOwnablePort;
+    value node = testNodes<Ownable>().first;
     value game = testGame.with {
         owners = { node -> owner };
     };
@@ -38,7 +37,7 @@ shared void rentFeeDifferentOwner() {
 test
 shared void rentFeeSameOwner() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testOwnablePort;
+    value node = testNodes<Ownable>().first;
     value game = testGame.with {
         owners = { node -> player };
     };
@@ -51,7 +50,7 @@ shared void rentFeeSameOwner() {
 "Verifies the [[rent fee|rentFee]] is zero when nobody owns the node."
 test
 shared void rentFeeUnowned() {
-    value node = tropicHopBoard.testOwnablePort;
+    value node = testNodes<Ownable>().first;
     value game = testGame;
     
     assertEquals(game.owner(node), unowned, "Somebody owns the test node.");

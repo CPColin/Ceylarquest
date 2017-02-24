@@ -5,20 +5,22 @@ import ceylon.test {
     test
 }
 
+import com.crappycomic.ceylarquest.model {
+    FuelStationable,
+    Ownable
+}
 import com.crappycomic.ceylarquest.model.logic {
     nodePrice
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 import test.com.crappycomic.ceylarquest.model {
-    testGame
+    testGame,
+    testNodes
 }
 
 test
 shared void testNodePrice() {
-    value node = tropicHopBoard.testFuelStationable;
+    value node = testNodes<Ownable&FuelStationable>().first;
     
     assertFalse(testGame.placedFuelStations.contains(node), "Node already has a fuel station.");
     assertEquals(nodePrice(testGame, node), node.price, "Price without fuel station is wrong.");

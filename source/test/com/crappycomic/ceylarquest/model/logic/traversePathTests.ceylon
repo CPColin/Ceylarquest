@@ -29,6 +29,7 @@ import test.com.crappycomic.ceylarquest.model {
     TestNode,
     testGame,
     testNodes,
+    testNodesBeforeAndAfterStart,
     wrongPhaseTest
 }
 
@@ -63,8 +64,11 @@ shared void traversePathNotInPhase() {
 
 test
 shared void traversePathPassesStart() {
-    value path
-            = [tropicHopBoard.testBeforeStart, tropicHopBoard.start, tropicHopBoard.testAfterStart];
+    value path = [
+        testNodesBeforeAndAfterStart.first,
+        tropicHopBoard.start,
+        testNodesBeforeAndAfterStart.last
+    ];
     value game = testGame.with {
         phase = ChoosingAllowedMove([path], 0);
     };
@@ -113,7 +117,7 @@ shared void traversePathRemainAtActionTrigger() {
 
 test
 shared void traversePathSkipStart() {
-    value path = [tropicHopBoard.testBeforeStart, tropicHopBoard.testAfterStart];
+    value path = testNodesBeforeAndAfterStart.reversed;
     value game = testGame.with {
         phase = ChoosingAllowedMove([path], 0);
     };

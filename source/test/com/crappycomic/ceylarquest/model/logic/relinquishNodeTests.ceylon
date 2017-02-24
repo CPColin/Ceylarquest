@@ -1,13 +1,13 @@
 import ceylon.test {
     assertEquals,
     assertFalse,
-    assertTrue,
     fail,
     test
 }
 
 import com.crappycomic.ceylarquest.model {
     Game,
+    Node,
     Ownable,
     Player
 }
@@ -15,19 +15,17 @@ import com.crappycomic.ceylarquest.model.logic {
     nodePrice,
     relinquishNode
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 import test.com.crappycomic.ceylarquest.model {
     testGame,
+    testNodes,
     testPlayers
 }
 
 test
 shared void relinquishNodeSuccess() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testOwnablePort;
+    value node = testNodes<Ownable>().first;
     value game = testGame.with {
         owners = { node -> player };
     };
@@ -49,7 +47,7 @@ shared void relinquishNodeSuccess() {
 test
 shared void relinquishNodeWrongOwner() {
     value [player, owner] = testPlayers;
-    value node = tropicHopBoard.testOwnablePort;
+    value node = testNodes<Ownable>().first;
     value game = testGame.with {
         owners = { node -> owner };
     };
@@ -62,7 +60,7 @@ shared void relinquishNodeWrongOwner() {
 
 test
 shared void relinquishUnownableNode() {
-    value node = tropicHopBoard.testUnownablePort;
+    value node = testNodes<Node, Ownable>().first;
     
     assertFalse(node is Ownable, "Node may not be Ownable for this test.");
     
@@ -71,11 +69,8 @@ shared void relinquishUnownableNode() {
 }
 
 test
-suppressWarnings("redundantNarrowing") // Double-checking the node is Ownable
 shared void relinquishUnownedNode() {
-    value node = tropicHopBoard.testOwnablePort;
-    
-    assertTrue(node is Ownable, "Node must be Ownable for this test.");
+    value node = testNodes<Ownable>().first;
     
     assertInvalidMove(relinquishNode(testGame, testGame.currentPlayer, node, false),
         "Relinquishing unowned node should not have worked.");
@@ -84,7 +79,7 @@ shared void relinquishUnownedNode() {
 test
 shared void sellNodeSuccess() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testOwnablePort;
+    value node = testNodes<Ownable>().first;
     value game = testGame.with {
         owners = { node -> player };
     };

@@ -350,20 +350,4 @@ shared object tropicHopBoard extends Board() {
         
         purchaseFuel = "Buy Rum";
     };
-    
-    // Stuff below here is for supporting unit tests.
-    
-    shared Node testAfterStart = westA;
-    
-    shared Node testBeforeStart = westH;
-    
-    shared Ownable & FuelSalable testFuelSalableNotStationable = westRum;
-    
-    shared Ownable & FuelStationable testFuelStationable = eastD;
-    
-    shared Ownable testOwnablePort = westB;
-    
-    shared Node testNotFuelSalableOrStationable = westResort;
-    
-    shared Node testUnownablePort = eastFreeport;
 }

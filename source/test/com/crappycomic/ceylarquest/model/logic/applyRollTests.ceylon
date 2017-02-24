@@ -8,6 +8,7 @@ import ceylon.test {
 
 import com.crappycomic.ceylarquest.model {
     ChoosingAllowedMove,
+    CostsFuelToLeave,
     Game,
     Rolled,
     Rules,
@@ -25,6 +26,8 @@ import com.crappycomic.tropichop {
 
 import test.com.crappycomic.ceylarquest.model {
     testGame,
+    testNodes,
+    testNodesBeforeAndAfterStart,
     testPlayerNames,
     wrongPhaseTest
 }
@@ -52,7 +55,7 @@ shared void applyRollDrawCard() {
 test
 shared void applyRolledWithMultiplierDontCheckFuel() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testAfterStart;
+    value node = testNodes<CostsFuelToLeave>().first;
     value game = testGame.with {
         phase = Rolled([1, 2], 1);
         playerFuels = { player -> 0 };
@@ -79,17 +82,15 @@ shared void applyRolledWithMultiplierDontCheckFuel() {
 
 test
 shared void applyRolledWithMultiplierDontDrawCard() {
-    value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testAfterStart;
     value game = Game.test {
         board = tropicHopBoard;
         phase = Rolled([1, 1], 1);
-        playerLocations = { player -> node };
         playerNames = testPlayerNames;
         rules = object extends Rules() {
             cardRollType = rollTypeAlways;
         };
     };
+    value node = game.playerLocation(game.currentPlayer);
     
     assertTrue(game.phase is Rolled, "Phase needs to be Rolled for this test.");
     
@@ -111,13 +112,10 @@ shared void applyRolledWithMultiplierDontDrawCard() {
 
 test
 shared void applyRolledWithMultiplier() {
-    value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testAfterStart;
     value roll = [3, 4];
     value multiplier = 4;
     value game = testGame.with {
         phase = Rolled(roll, multiplier);
-        playerLocations = { player -> node };
     };
     
     assertTrue(game.phase is Rolled, "Phase needs to be Rolled for this test.");
@@ -145,7 +143,7 @@ shared void applyRolledWithMultiplier() {
 test
 shared void applyRollInsufficientFuel() {
     value player = testGame.currentPlayer;
-    value node = tropicHopBoard.testAfterStart;
+    value node = testNodes<CostsFuelToLeave>().first;
     value game = testGame.with {
         phase = Rolled([1, 2], null);
         playerFuels = { player -> 0 };
@@ -211,8 +209,7 @@ shared void applyRollInvalidRollZero() {
 test
 shared void applyRollSuccess() {
     value player = testGame.currentPlayer;
-    value startNode = tropicHopBoard.testBeforeStart;
-    value endNode = tropicHopBoard.testAfterStart;
+    value [startNode, endNode] = testNodesBeforeAndAfterStart;
     value game = Game.test {
         board = tropicHopBoard;
         currentPlayer = player;
