@@ -21,9 +21,6 @@ import com.crappycomic.ceylarquest.model.logic {
     passesStart,
     traversePath
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 import test.com.crappycomic.ceylarquest.model {
     TestNode,
@@ -66,7 +63,7 @@ test
 shared void traversePathPassesStart() {
     value path = [
         testNodesBeforeAndAfterStart.first,
-        tropicHopBoard.start,
+        testGame.board.start,
         testNodesBeforeAndAfterStart.last
     ];
     value game = testGame.with {

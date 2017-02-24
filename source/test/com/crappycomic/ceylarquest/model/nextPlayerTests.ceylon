@@ -7,14 +7,11 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     Game
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 test
 shared void nextPlayerTests() {
     value game1 = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         playerNames = testPlayerNames;
         activePlayers = testPlayers;
     };

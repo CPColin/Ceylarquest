@@ -12,9 +12,6 @@ import com.crappycomic.ceylarquest.model {
     postLand,
     preRoll
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 "Verifies that the game advances to the next player when the current player is eliminated and
  multiple players remain active."
@@ -37,7 +34,7 @@ test
 shared void gameWithoutCurrentPlayerGameOver() {
     value [player, winner] = testPlayers;
     value game = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         playerNames = testPlayerNames;
         activePlayers = testPlayers;
         currentPlayer = player;
@@ -55,7 +52,7 @@ test
 shared void gameWithoutLastPlayer() {
     value player = testGame.currentPlayer;
     value game = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         playerNames = testPlayerNames;
         activePlayers = { player };
     };
@@ -70,7 +67,7 @@ test
 shared void gameWithoutSecondPlace() {
     value [winner, loser] = testPlayers;
     value game = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         playerNames = testPlayerNames;
         activePlayers = testPlayers;
     };

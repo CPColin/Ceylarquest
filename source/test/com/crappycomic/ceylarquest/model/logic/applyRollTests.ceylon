@@ -20,9 +20,6 @@ import com.crappycomic.ceylarquest.model {
 import com.crappycomic.ceylarquest.model.logic {
     applyRoll
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 import test.com.crappycomic.ceylarquest.model {
     testGame,
@@ -35,7 +32,7 @@ import test.com.crappycomic.ceylarquest.model {
 test
 shared void applyRollDrawCard() {
     value game = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         phase = Rolled([1, 2], null);
         playerNames = testPlayerNames;
         rules = object extends Rules() {
@@ -83,7 +80,7 @@ shared void applyRolledWithMultiplierDontCheckFuel() {
 test
 shared void applyRolledWithMultiplierDontDrawCard() {
     value game = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         phase = Rolled([1, 1], 1);
         playerNames = testPlayerNames;
         rules = object extends Rules() {
@@ -211,7 +208,7 @@ shared void applyRollSuccess() {
     value player = testGame.currentPlayer;
     value [startNode, endNode] = testNodesBeforeAndAfterStart;
     value game = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         currentPlayer = player;
         phase = Rolled([1, 1], null);
         playerLocations = { player -> startNode };

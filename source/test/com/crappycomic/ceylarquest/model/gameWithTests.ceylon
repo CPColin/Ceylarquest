@@ -15,9 +15,6 @@ import com.crappycomic.ceylarquest.model {
     Well,
     unowned
 }
-import com.crappycomic.tropichop {
-    tropicHopBoard
-}
 
 // These tests aim to make sure Game.with makes only the changes that are passed to it, without
 // affecting other players or nodes.
@@ -39,7 +36,7 @@ shared void gameWithOwnersDecreasing() {
     value [node1, node2] = testNodes<Ownable>();
     value player = testPlayers[0];
     value gameStart = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         playerNames = testPlayerNames;
         owners = { node1 -> player, node2 -> player };
     };
@@ -60,7 +57,7 @@ shared void gameWithOwnersIncreasing() {
     value [node1, node2] = testNodes<Ownable>();
     value player = testPlayers[0];
     value gameStart = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         playerNames = testPlayerNames;
         owners = { node1 -> player };
     };
@@ -81,7 +78,7 @@ test
 shared void gameWithPlacedFuelStations() {
     value [node1, node2] = testNodes<FuelStationable>();
     value gameStart = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         playerNames = testPlayerNames;
         placedFuelStations = { node1 };
     };
@@ -98,7 +95,7 @@ shared void gameWithPlacedFuelStations() {
 test
 shared void gameWithPlayerCashes() {
     value gameStart = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         playerNames = testPlayerNames;
         playerCashes = { for (player -> _ in testPlayerNames) player -> 1 };
     };
@@ -113,7 +110,7 @@ shared void gameWithPlayerCashes() {
 test
 shared void gameWithPlayerFuels() {
     value gameStart = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         playerNames = testPlayerNames;
         playerFuels = { for (player -> _ in testPlayerNames) player -> 1 };
     };
@@ -128,7 +125,7 @@ shared void gameWithPlayerFuels() {
 test
 shared void gameWithPlayerFuelStationCounts() {
     value gameStart = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         playerNames = testPlayerNames;
         playerFuelStationCounts = { for (player -> _ in testPlayerNames) player -> 1 };
     };
@@ -144,7 +141,7 @@ test
 shared void gameWithPlayerLocations() {
     value [node1, node2] = testNodes<Node, Well>();
     value gameStart = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         playerNames = testPlayerNames;
         playerLocations = { for (player -> _ in testPlayerNames) player -> node1 };
     };
@@ -161,7 +158,7 @@ test
 shared void gameWithUnknownNode() {
     object node extends TestNode() satisfies FuelStationable {}
     value gameStart = Game.test {
-        board = tropicHopBoard;
+        board = testGame.board;
         playerNames = testPlayerNames;
     };
     value player = gameStart.currentPlayer;
@@ -173,7 +170,7 @@ shared void gameWithUnknownNode() {
     
     assertEquals(gameEnd.owner(node), unowned, "Unknown node shouldn't be owned.");
     assertFalse(gameEnd.placedFuelStation(node), "Unknown node shouldn't have a fuel station.");
-    assertEquals(gameEnd.playerLocation(player), tropicHopBoard.start,
+    assertEquals(gameEnd.playerLocation(player), testGame.board.start,
         "Player shouldn't be at unknown node.");
 }
 
