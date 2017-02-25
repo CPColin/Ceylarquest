@@ -6,19 +6,20 @@ import ceylon.test {
 }
 
 import com.crappycomic.ceylarquest.model {
-    Node
+    Node,
+    Well
 }
 import com.crappycomic.ceylarquest.model.logic {
     destinations
 }
 
 "Provides two different [[Node]] instances with the given [[Type]] that are not also instances of
- the given [[NotType]]."
+ the given [[NotType]]. The returned instances will never satisfy [[Well]]."
 shared Type[2] testNodes<Type, NotType=Nothing>()
         given Type satisfies Node {
     value nodes = testGame.board.nodes.keys
         .narrow<Type>()
-        .filter((node) => !node is NotType);
+        .filter((node) => !node is NotType && !node is Well);
     value node1 = nodes.first;
     value node2 = nodes.last;
     

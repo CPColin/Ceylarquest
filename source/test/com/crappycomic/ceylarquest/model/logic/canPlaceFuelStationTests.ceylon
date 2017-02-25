@@ -6,7 +6,7 @@ import ceylon.test {
 
 import com.crappycomic.ceylarquest.model {
     FuelStationable,
-    Well
+    Node
 }
 import com.crappycomic.ceylarquest.model.logic {
     canPlaceFuelStation
@@ -48,7 +48,7 @@ shared void canPlaceFuelStationNoFuelStationsRemaining() {
 test
 shared void canPlaceFuelStationNotFuelStationable() {
     value player = testGame.currentPlayer;
-    value node = testNodes<Well>().first;
+    value node = testNodes<Node, FuelStationable>().first;
     
     assertFalse(node is FuelStationable, "Node should not be FuelStationable for this test.");
     
