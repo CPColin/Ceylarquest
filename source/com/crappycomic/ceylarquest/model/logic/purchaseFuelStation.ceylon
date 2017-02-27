@@ -13,14 +13,10 @@ shared Result purchaseFuelStation(Game game) {
         return incorrectPhase;
     }
     
-    if (game.fuelStationsRemaining <= 0) {
-        return InvalidMove("No fuel stations remain for purchase.");
-    }
-    
     value player = game.currentPlayer;
     
-    if (game.playerCash(player) < game.rules.fuelStationPrice) {
-        return InvalidMove("``game.playerName(player)`` cannot afford to purchase a fuel station.");
+    if (!canPurchaseFuelStation(game)) {
+        return InvalidMove("``game.playerName(player)`` may not purchase a fuel station.");
     }
     
     return game.with {

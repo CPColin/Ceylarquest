@@ -6,61 +6,35 @@ import ceylon.test {
 }
 
 import com.crappycomic.ceylarquest.model {
+    Administration,
     Game,
     postLand,
     preRoll
 }
 import com.crappycomic.ceylarquest.model.logic {
+    canPurchaseFuelStation,
     purchaseFuelStation
 }
 
 import test.com.crappycomic.ceylarquest.model {
     testGame,
+    testNodes,
     wrongPhaseTest
 }
 
 test
-shared void purchaseFuelStationInsufficientFunds() {
+shared void purchaseFuelStationTest() {
     value player = testGame.currentPlayer;
+    value node = testNodes<Administration>().first;
     value game = testGame.with {
         phase = preRoll;
-        playerCashes = { player -> 0 };
-    };
-    
-    assertEquals(game.playerCash(player), 0, "Player cash didn't initialie to zero.");
-    
-    assertInvalidMove(purchaseFuelStation(game),
-        "Player was able to purchase fuel station with no money.");
-}
-
-test
-shared void purchaseFuelStationNoneRemain() {
-    value player = testGame.currentPlayer;
-    value game = testGame.with {
-        phase = preRoll;
-        playerFuelStationCounts = {
-            player -> testGame.playerFuelStationCount(player) + testGame.fuelStationsRemaining
-        };
-    };
-    
-    assertEquals(game.fuelStationsRemaining, 0, "Fuel stations remaining isn't zero.");
-    
-    assertInvalidMove(purchaseFuelStation(game),
-        "Purchasing a fuel station when none remained should have failed.");
-}
-
-test
-shared void purchaseFuelStationSuccess() {
-    value player = testGame.currentPlayer;
-    value game = testGame.with {
-        phase = preRoll;
+        playerLocations = { player -> node };
     };
     value fuelStationsRemaining = game.fuelStationsRemaining;
     value playerCash = game.playerCash(player);
     value playerFuelStationCount = game.playerFuelStationCount(player);
     
-    assertTrue(fuelStationsRemaining > 0,
-        "At least one fuel station needs to be remaining at the start of this test.");
+    assertTrue(canPurchaseFuelStation(game), "The test game was not set up properly.");
     
     value result = purchaseFuelStation(game);
     

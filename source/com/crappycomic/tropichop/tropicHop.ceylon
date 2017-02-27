@@ -49,7 +49,7 @@ shared object tropicHopBoard extends Board() {
     value distilleries = DeedGroup(Color(192, 192, 192));
     value resorts = DeedGroup(Color(96, 96, 96));
     
-    object companyHQ satisfies FreePort & FuelSalable {
+    object companyHQ satisfies ActionTrigger & FuelSalable {
         name = "Company HQ";
         location = [114, 787];
         fuels = [25];

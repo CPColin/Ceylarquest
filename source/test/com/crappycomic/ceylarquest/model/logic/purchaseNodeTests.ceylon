@@ -1,6 +1,6 @@
 import ceylon.test {
     assertEquals,
-    assertFalse,
+    assertTrue,
     fail,
     test
 }
@@ -8,10 +8,10 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     Game,
     Ownable,
-    Player,
     postLand
 }
 import com.crappycomic.ceylarquest.model.logic {
+    canPurchaseNode,
     purchaseNode
 }
 
@@ -31,7 +31,7 @@ shared void purchaseNodeTest() {
     };
     value playerCash = game.playerCash(player);
     
-    assertFalse(game.owner(node) is Player, "Node is unexpectedly owned.");
+    assertTrue(canPurchaseNode(game), "The test game was not set up properly.");
     
     value result = purchaseNode(game);
     

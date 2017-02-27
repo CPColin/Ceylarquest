@@ -16,6 +16,7 @@ import com.crappycomic.ceylarquest.model.logic {
     landOnNode,
     loseNodeToLeague,
     placeFuelStation,
+    purchaseFuelStation,
     purchaseNode,
     rollDice,
     traversePath,
@@ -108,6 +109,13 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
         return actionButton(purchaseFuelButtonLabel(game, fuelAvailable, price),
             () => showPurchaseFuelPanel(game),
             fuelAvailable);
+    }
+    
+    shared actual JButton createPurchaseFuelStationButton(Game game, Boolean canPurchaseFuelStation,
+            Integer price) {
+        return actionButton(purchaseFuelStationButtonLabel(game, price),
+            () => purchaseFuelStation(game),
+            canPurchaseFuelStation);
     }
     
     shared actual JButton createPurchaseNodeButton(Game game, Boolean canPurchaseNode,

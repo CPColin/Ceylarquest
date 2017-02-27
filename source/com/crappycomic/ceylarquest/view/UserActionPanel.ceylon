@@ -27,6 +27,7 @@ import com.crappycomic.ceylarquest.model.logic {
     allowedNodesToWinFromLeague,
     allowedNodesToWinFromPlayer,
     canPlaceFuelStation,
+    canPurchaseFuelStation,
     canPurchaseNode,
     fuelAvailable,
     fuelFee,
@@ -62,6 +63,9 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     
     shared formal Child createPurchaseFuelButton(Game game, Boolean fuelAvailable, Integer price);
     
+    shared formal Child createPurchaseFuelStationButton(Game game, Boolean canPurchaseFuelStation,
+        Integer price);
+    
     shared formal Child createPurchaseNodeButton(Game game, Boolean canPurchaseNode, Integer price);
     
     shared formal Child createResignButton(Game game);
@@ -93,8 +97,8 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
         => let (label = game.board.strings.purchaseFuel)
             if (fuelAvailable) then "``label`` ($``price``)" else label;
     
-    shared String purchaseFuelStationButtonLabel(Game game)
-        => "Purchase ``game.board.strings.fuelStationCapitalized``";
+    shared String purchaseFuelStationButtonLabel(Game game, Integer price)
+        => "Purchase ``game.board.strings.fuelStationCapitalized`` ($``price``)";
     
     shared String purchaseNodeButtonLabel(Boolean canPurchaseNode, Integer price)
         => canPurchaseNode then "Purchase Property ($``price``)" else "Purchase Property";
@@ -161,6 +165,8 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
                 if (is FuelSalable node) then fuelFee(game, player, node) else 0),
             createPlaceFuelStationButton(game,
                 game.board.nodes.keys.any((node) => canPlaceFuelStation(game, node))),
+            createPurchaseFuelStationButton(game, canPurchaseFuelStation(game),
+                game.rules.fuelStationPrice),
             createEndTurnButton(game));
     }
     
@@ -170,7 +176,16 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     }
     
     shared void showPreRollPanel(Game game) {
+        value player = game.currentPlayer;
+        value node = game.playerLocation(player);
+        
         createPanel("``playerName(game)``'s turn!",
+            createPurchaseFuelButton(game, fuelAvailable(game, node),
+                if (is FuelSalable node) then fuelFee(game, player, node) else 0),
+            createPlaceFuelStationButton(game,
+                game.board.nodes.keys.any((node) => canPlaceFuelStation(game, node))),
+            createPurchaseFuelStationButton(game, canPurchaseFuelStation(game),
+                game.rules.fuelStationPrice),
             createRollDiceButton(game));
     }
     
