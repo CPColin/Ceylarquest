@@ -26,19 +26,19 @@ import com.crappycomic.ceylarquest.model {
 }
 
 interface Port
-        satisfies Node & CostsFuelToLeave {}
+        satisfies Node & CostsFuelToLeave & FuelSalable {}
 
 interface Distillery
-        satisfies Port & Ownable & FuelSalable {}
+        satisfies Port & Ownable {}
 
 interface FreePort
-        satisfies Port & Administration & ActionTrigger {}
+        satisfies Node & Administration & ActionTrigger {}
 
 interface OpenWater
         satisfies WellOrbit {}
 
 interface OwnablePort
-        satisfies Port & Ownable & FuelSalable & FuelStationable {}
+        satisfies Port & Ownable & FuelStationable {}
 
 interface Resort
         satisfies Port & Ownable {}
@@ -106,6 +106,7 @@ shared object tropicHopBoard extends Board() {
         deedGroup = resorts;
         price = 250;
         rents = [75, 150];
+        fuels = [50, 75];
     }
     object westRum satisfies Distillery {
         name = "West Rum";
@@ -173,6 +174,7 @@ shared object tropicHopBoard extends Board() {
         deedGroup = resorts;
         price = 250;
         rents = [75, 150];
+        fuels = [50, 75];
     }
     object eastB satisfies OwnablePort {
         name = "East B";
