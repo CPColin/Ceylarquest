@@ -5,13 +5,11 @@ import ceylon.language {
     cprint=print
 }
 
-
 import com.crappycomic.ceylarquest.model {
     Board,
     Game
 }
 import com.crappycomic.ceylarquest.view {
-    black,
     boardOverlay
 }
 
@@ -19,6 +17,9 @@ import java.awt {
     Graphics,
     Graphics2D,
     RenderingHints
+}
+import java.awt.geom {
+    AffineTransform
 }
 import java.awt.image {
     BufferedImage
@@ -29,9 +30,6 @@ import javax.imageio {
 }
 import javax.swing {
     JPanel
-}
-import java.awt.geom {
-    AffineTransform
 }
 
 class BoardPanel extends JPanel {
