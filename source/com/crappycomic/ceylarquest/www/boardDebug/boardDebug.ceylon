@@ -28,6 +28,7 @@ import com.crappycomic.ceylarquest.model.logic {
     purchaseFuelStation,
     purchaseNode,
     rollDice,
+    sellFuelStation,
     traversePath,
     winNodeFromLeague,
     winNodeFromPlayer
@@ -237,6 +238,10 @@ shared void doResign() {
 
 shared void doRollDice() {
     controller.updateGame(rollDice(game));
+}
+
+shared void doSellFuelStation() {
+    controller.updateGame(sellFuelStation(game));
 }
 
 shared void doTraversePath(String nodeId) {

@@ -29,6 +29,7 @@ import com.crappycomic.ceylarquest.model.logic {
     canPlaceFuelStation,
     canPurchaseFuelStation,
     canPurchaseNode,
+    canSellFuelStation,
     fuelAvailable,
     fuelFee,
     nodePrice
@@ -72,6 +73,9 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     
     shared formal Child createRollDiceButton(Game game);
     
+    shared formal Child createSellFuelStationButton(Game game, Boolean canSellFuelStation,
+        Integer price);
+    
     shared formal Child createTraversePathButton(Game game, Path path);
     
     shared formal void showError(String message);
@@ -106,6 +110,9 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared String resignButtonLabel => "Resign";
     
     shared String rollDiceButtonLabel => "Roll Dice";
+    
+    shared String sellFuelStationButtonLabel(Game game, Integer price)
+        => "Sell ``game.board.strings.fuelStationCapitalized`` ($``price``)";
     
     shared void showChoosingAllowedMovePanel(Game game, [Path+] paths) {
         createPanel("``playerName(game)`` must choose a move.",
@@ -167,6 +174,8 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
                 game.board.nodes.keys.any((node) => canPlaceFuelStation(game, node))),
             createPurchaseFuelStationButton(game, canPurchaseFuelStation(game),
                 game.rules.fuelStationPrice),
+            createSellFuelStationButton(game, canSellFuelStation(game),
+                game.rules.fuelStationPrice),
             createEndTurnButton(game));
     }
     
@@ -185,6 +194,8 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
             createPlaceFuelStationButton(game,
                 game.board.nodes.keys.any((node) => canPlaceFuelStation(game, node))),
             createPurchaseFuelStationButton(game, canPurchaseFuelStation(game),
+                game.rules.fuelStationPrice),
+            createSellFuelStationButton(game, canSellFuelStation(game),
                 game.rules.fuelStationPrice),
             createRollDiceButton(game));
     }

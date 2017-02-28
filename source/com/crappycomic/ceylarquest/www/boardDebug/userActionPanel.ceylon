@@ -124,6 +124,11 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
         return actionButton(rollDiceButtonLabel, "doRollDice");
     }
     
+    shared actual Button createSellFuelStationButton(Game game, Boolean canSellFuelStation,
+            Integer price) {
+        return actionButton(sellFuelStationButtonLabel(game, price), "doSellFuelStation");
+    }
+    
     shared actual Button createTraversePathButton(Game game, Path path) {
         return let (node = path.last)
             actionButton(node.name, "doTraversePath", "'``node.id``'");
