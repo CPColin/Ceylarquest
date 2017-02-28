@@ -3,6 +3,7 @@ import ceylon.random {
 }
 
 import com.crappycomic.ceylarquest.model {
+    CostsFuelToLeave,
     Game,
     Result,
     Roll,
@@ -29,7 +30,10 @@ shared Result rollDice(Game game) {
         return incorrectPhase;
     }
     
-    if (game.playerFuel(game.currentPlayer) <= 1) {
+    value player = game.currentPlayer;
+    
+    if (game.playerLocation(player) is CostsFuelToLeave
+            && game.playerFuel(player) < game.rules.dieCount) {
         return game.with {
             phase = currentPlayerEliminated;
         };
