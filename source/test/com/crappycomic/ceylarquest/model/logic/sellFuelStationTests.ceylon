@@ -1,16 +1,14 @@
 import ceylon.test {
+    assertEquals,
     assertTrue,
     fail,
-    test,
-    assertEquals
+    test
 }
 
 import com.crappycomic.ceylarquest.model {
     Administration,
     Game,
-    SettlingDebts,
-    postLand,
-    preRoll
+    postLand
 }
 import com.crappycomic.ceylarquest.model.logic {
     canSellFuelStation,
@@ -19,8 +17,7 @@ import com.crappycomic.ceylarquest.model.logic {
 
 import test.com.crappycomic.ceylarquest.model {
     testGame,
-    testNodes,
-    wrongPhaseTest
+    testNodes
 }
 
 test
@@ -47,9 +44,4 @@ shared void sellFuelStationTest() {
     else {
         fail(result.message);
     }
-}
-
-test
-shared void sellFuelStationWrongPhase() {
-    wrongPhaseTest((game) => sellFuelStation(game), SettlingDebts({}, postLand), preRoll, postLand);
 }
