@@ -38,7 +38,8 @@ shared String debugGameJson => JsonObject {
         "westC" -> "green",
         "eastFreePort" -> "red", // Invalid because it's not Ownable
         "westRum" -> "cyan", // Invalid because Cyan is not active
-        "eastRum" -> "blue"
+        "eastRum" -> "blue",
+        "eastC" -> "magenta"
     },
     "placedFuelStations" -> JsonArray {
         "westC",
