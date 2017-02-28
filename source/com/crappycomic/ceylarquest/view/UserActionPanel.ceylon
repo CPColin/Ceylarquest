@@ -23,13 +23,14 @@ import com.crappycomic.ceylarquest.model {
     preRoll
 }
 import com.crappycomic.ceylarquest.model.logic {
-    allowedNodesToLoseToLeague,
+    allowedNodesToLoseOrSell,
     allowedNodesToWinFromLeague,
     allowedNodesToWinFromPlayer,
     canPlaceFuelStation,
     canPurchaseFuelStation,
     canPurchaseNode,
     canSellFuelStation,
+    canSellNode,
     fuelAvailable,
     fuelFee,
     nodePrice
@@ -41,6 +42,9 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared formal Child createApplyRollButton(Game game);
     
     shared formal Child createChooseNodeLostToLeagueButton(Game game,
+        ChooseNodeParameter? parameter);
+    
+    shared formal Child createChooseNodeToSellButton(Game game,
         ChooseNodeParameter? parameter);
     
     shared formal Child createChooseNodeWonFromLeagueButton(Game game,
@@ -55,7 +59,7 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     
     shared formal Child createLandOnNodeButton(Game game);
     
-    shared formal Child[] createNodeSelect(Game game, [Node*] nodes,
+    shared formal Child[] createNodeSelect(Game game, [Node*] nodes, Boolean showCancelButton,
         Child(Game, ChooseNodeParameter?) createButton);
     
     shared formal void createPanel(String label, Child* children);
@@ -76,6 +80,8 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared formal Child createSellFuelStationButton(Game game, Boolean canSellFuelStation,
         Integer price);
     
+    shared formal Child createSellNodeButton(Game game, Boolean canSellNode);
+    
     shared formal Child createTraversePathButton(Game game, Path path);
     
     shared formal void showError(String message);
@@ -83,6 +89,8 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared String applyCardButtonLabel => "OK";
     
     shared String applyRollButtonLabel => "OK";
+    
+    shared String cancelChoosingNodeButtonLabel => "Cancel";
     
     shared String chooseNodeButtonLabel => "Choose";
     
@@ -114,6 +122,8 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared String sellFuelStationButtonLabel(Game game, Integer price)
         => "Sell ``game.board.strings.fuelStationCapitalized`` ($``price``)";
     
+    shared String sellNodeButtonLabel => "Sell Property";
+    
     shared void showChoosingAllowedMovePanel(Game game, [Path+] paths) {
         createPanel("``playerName(game)`` must choose a move.",
             *[ for (path in paths) createTraversePathButton(game, path) ]);
@@ -122,20 +132,33 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared void showChoosingNodeLostToLeaguePanel(Game game) {
         showChoosingNodePanel(game,
             "``playerName(game)`` lost a property to the ``game.board.strings.leagueShort``.",
-            allowedNodesToLoseToLeague,
+            allowedNodesToLoseOrSell,
+            false,
             createChooseNodeLostToLeagueButton);
+    }
+    
+    shared void showChoosingNodeToSellPanel(Game game) {
+        showChoosingNodePanel(game,
+            "``playerName(game)`` is choosing a property to sell.",
+            allowedNodesToLoseOrSell,
+            true,
+            createChooseNodeToSellButton);
     }
     
     shared void showChoosingNodeWonFromLeaguePanel(Game game) {
         showChoosingNodePanel(game,
             "``playerName(game)`` won a property from the ``game.board.strings.leagueShort``.",
             allowedNodesToWinFromLeague,
+            false,
             createChooseNodeWonFromLeagueButton);
     }
     
     shared void showChoosingNodeWonFromPlayerPanel(Game game) {
-        showChoosingNodePanel(game, "``playerName(game)`` won a property from another player.",
-            allowedNodesToWinFromPlayer, createChooseNodeWonFromPlayerButton);
+        showChoosingNodePanel(game,
+            "``playerName(game)`` won a property from another player.",
+            allowedNodesToWinFromPlayer,
+            false,
+            createChooseNodeWonFromPlayerButton);
     }
     
     shared void showCurrentPlayerEliminatedPanel(Game game) {
@@ -176,6 +199,7 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
                 game.rules.fuelStationPrice),
             createSellFuelStationButton(game, canSellFuelStation(game),
                 game.rules.fuelStationPrice),
+            createSellNodeButton(game, canSellNode(game)),
             createEndTurnButton(game));
     }
     
@@ -197,6 +221,7 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
                 game.rules.fuelStationPrice),
             createSellFuelStationButton(game, canSellFuelStation(game),
                 game.rules.fuelStationPrice),
+            createSellNodeButton(game, canSellNode(game)),
             createRollDiceButton(game));
     }
     
@@ -279,11 +304,11 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     }
     
     void showChoosingNodePanel(Game game, String label, [Node*](Game) allowedNodes,
-            Child(Game, ChooseNodeParameter?) createButton) {
+            Boolean showCancelButton, Child(Game, ChooseNodeParameter?) createButton) {
         value nodes = allowedNodes(game)
             .sort(byIncreasing(Node.name));
         
         createPanel(label,
-            *createNodeSelect(game, nodes, createButton));
+            *createNodeSelect(game, nodes, showCancelButton, createButton));
     }
 }

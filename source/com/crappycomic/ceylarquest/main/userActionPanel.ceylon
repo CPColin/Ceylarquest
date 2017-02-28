@@ -5,6 +5,7 @@ import ceylon.interop.java {
 import com.crappycomic.ceylarquest.model {
     Game,
     Node,
+    Ownable,
     Path,
     Result
 }
@@ -20,6 +21,7 @@ import com.crappycomic.ceylarquest.model.logic {
     purchaseNode,
     rollDice,
     sellFuelStation,
+    sellNode,
     traversePath,
     winNodeFromLeague,
     winNodeFromPlayer
@@ -53,6 +55,17 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
         return chooseNodeButton(game, comboBox, loseNodeToLeague);
     }
     
+    shared actual JButton createChooseNodeToSellButton(Game game, JComboBox<Node>? comboBox) {
+        return chooseNodeButton(game, comboBox, (game, node) {
+            if (is Ownable node) {
+                return sellNode(game, game.currentPlayer, node);
+            }
+            else {
+                return game;
+            }
+        });
+    }
+    
     shared actual JButton createChooseNodeWonFromLeagueButton(Game game,
             JComboBox<Node>? comboBox) {
         return chooseNodeButton(game, comboBox, winNodeFromLeague);
@@ -76,12 +89,13 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
     }
     
     shared actual Component[] createNodeSelect(Game game, [Node*] nodes,
-            Component(Game, JComboBox<Node>?) createButton) {
+            Boolean showCancelButton, Component(Game, JComboBox<Node>?) createButton) {
         if (nonempty nodes) {
             value comboBox = JComboBox(createJavaObjectArray(nodes));
-            value button = createButton(game, comboBox);
+            value cancelButton = cancelChoosingNodeButton(game);
+            value chooseButton = createButton(game, comboBox);
             
-            return [comboBox, button];
+            return [comboBox, cancelButton, chooseButton];
         }
         else {
             return [createButton(game, null)];
@@ -141,6 +155,12 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
              canSellFuelStation);
     }
     
+    shared actual JButton createSellNodeButton(Game game, Boolean canSellNode) {
+        return actionButton(sellNodeButtonLabel,
+            () => showChoosingNodeToSellPanel(game),
+            canSellNode);
+    }
+    
     shared actual JButton createTraversePathButton(Game game, Path path) {
         return actionButton(path.last.name, () => traversePath(game, path));
     }
@@ -162,6 +182,10 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
         button.enabled = enabled;
         
         return button;
+    }
+    
+    JButton cancelChoosingNodeButton(Game game) {
+        return actionButton(cancelChoosingNodeButtonLabel, () => game);
     }
     
     JButton chooseNodeButton(Game game, JComboBox<Node>? comboBox,

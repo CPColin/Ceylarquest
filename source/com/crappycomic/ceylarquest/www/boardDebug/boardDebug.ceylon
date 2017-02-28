@@ -14,6 +14,7 @@ import com.crappycomic.ceylarquest.model {
     Game,
     InvalidSave,
     Location,
+    Ownable,
     loadGame
 }
 import com.crappycomic.ceylarquest.model.logic {
@@ -29,6 +30,7 @@ import com.crappycomic.ceylarquest.model.logic {
     purchaseNode,
     rollDice,
     sellFuelStation,
+    sellNode,
     traversePath,
     winNodeFromLeague,
     winNodeFromPlayer
@@ -160,7 +162,7 @@ object g satisfies GraphicsContext {
         => "rgba(``color.red``, ``color.green``, ``color.blue``, ``color.alpha.float / 255``)";
 }
 
-variable Game game = loadDebugGame();
+shared variable Game game = loadDebugGame();
 
 Game loadDebugGame() {
     /*
@@ -203,6 +205,10 @@ shared void doApplyRoll() {
     controller.updateGame(applyRoll(game));
 }
 
+shared void doCancelChoosingNode() {
+    controller.updateGame(game);
+}
+
 shared void doDrawCard() {
     controller.updateGame(drawCard(game));
 }
@@ -242,6 +248,17 @@ shared void doRollDice() {
 
 shared void doSellFuelStation() {
     controller.updateGame(sellFuelStation(game));
+}
+
+shared void doSellNode(String? nodeId) {
+    value node = game.board.node(nodeId);
+    
+    if (is Ownable node) {
+        controller.updateGame(sellNode(game, game.currentPlayer, node));
+    }
+    else {
+        controller.updateGame(game);
+    }
 }
 
 shared void doTraversePath(String nodeId) {

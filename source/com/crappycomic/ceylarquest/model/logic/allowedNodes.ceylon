@@ -6,7 +6,7 @@ import com.crappycomic.ceylarquest.model {
 }
 
 "Returns all nodes that are owned by the current player."
-shared [Node*] allowedNodesToLoseToLeague(Game game) {
+shared [Node*] allowedNodesToLoseOrSell(Game game) {
     return let (player = game.currentPlayer) [
         for (node in game.board.nodes.keys)
             if (game.owner(node) == player)

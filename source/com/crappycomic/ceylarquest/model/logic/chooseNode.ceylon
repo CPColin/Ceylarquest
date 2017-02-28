@@ -20,7 +20,7 @@ shared Boolean canChooseNode([Node*] allowedNodes, Node? node) {
 }
 
 shared Result loseNodeToLeague(Game game, Node? node) {
-    return chooseNode(game, allowedNodesToLoseToLeague, node, unowned);
+    return chooseNode(game, allowedNodesToLoseOrSell, node, unowned);
 }
 
 shared Result winNodeFromLeague(Game game, Node? node) {
