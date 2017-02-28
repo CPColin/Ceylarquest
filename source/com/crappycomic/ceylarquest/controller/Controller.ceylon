@@ -2,7 +2,6 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Result,
     SettlingDebts,
-    postLand,
     preRoll
 }
 import com.crappycomic.ceylarquest.view {
@@ -19,8 +18,9 @@ shared class Controller(variable Game game,
             
             // TODO: temporary, for testing
             if (is SettlingDebts phase) {
+                print("Skipping SettlingDebts phase");
                 game = game.with {
-                    phase = postLand;
+                    phase = phase.nextPhase;
                 };
             }
             
