@@ -9,7 +9,7 @@ import com.crappycomic.ceylarquest.model {
  on it, and is owned by the player. Additionally, the player has a fuel station available to place."
 shared Boolean canPlaceFuelStation(Game game, Node node) {
     return let (player = game.currentPlayer)
-    node is FuelStationable
+        node is FuelStationable
             && !game.placedFuelStation(node)
             && game.owner(node) == player
             && game.playerFuelStationCount(player) >= 1;

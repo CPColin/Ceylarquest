@@ -28,7 +28,7 @@ shared [Node*] allowedNodesToWinFromLeague(Game game) {
 shared [Node*] allowedNodesToWinFromPlayer(Game game) {
     return let (player = game.currentPlayer) [
         for (node in game.board.nodes.keys)
-        if (let (owner = game.owner(node)) owner != unowned && owner != player)
-        node
+            if (let (owner = game.owner(node)) owner != unowned && owner != player)
+                node    
     ];
 }

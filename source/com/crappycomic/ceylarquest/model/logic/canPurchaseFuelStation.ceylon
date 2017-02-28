@@ -10,6 +10,6 @@ import com.crappycomic.ceylarquest.model {
 shared Boolean canPurchaseFuelStation(Game game) {
     return let (player = game.currentPlayer)
         game.playerCash(player) >= game.rules.fuelStationPrice
-        && game.fuelStationsRemaining > 0
-        && game.playerLocation(player) is Administration;
+            && game.fuelStationsRemaining > 0
+            && game.playerLocation(player) is Administration;
 }
