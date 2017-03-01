@@ -80,7 +80,10 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
             value cancelButton = cancelChoosingNodeButton();
             value chooseButton = createButton(game, id);
             
-            return [select, cancelButton, chooseButton];
+            return showCancelButton
+                then [select, cancelButton, chooseButton]
+                else [select, chooseButton];
+
         }
         else {
             return [createButton(game, null)];

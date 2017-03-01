@@ -103,7 +103,9 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
             value cancelButton = cancelChoosingNodeButton(game);
             value chooseButton = createButton(game, comboBox);
             
-            return [comboBox, cancelButton, chooseButton];
+            return showCancelButton
+                then [comboBox, cancelButton, chooseButton]
+                else [comboBox, chooseButton];
         }
         else {
             return [createButton(game, null)];
