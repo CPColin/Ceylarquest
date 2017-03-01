@@ -30,6 +30,15 @@ shared void canCondemnNodeFuelStationPlaced() {
 }
 
 test
+shared void canCondemnNodeInsufficientFunds() {
+    value game = canCondemnNodeGame.with {
+        playerCashes = { canCondemnNodeGame.currentPlayer -> 0 };
+    };
+    
+    assertFalse(canCondemnNode(game), "Insufficient funds should prevent condemnation.");
+}
+
+test
 shared void canCondemnNodeNotFuelStationable() {
     value game = canCondemnNodeGame.with {
         playerLocations
