@@ -79,6 +79,7 @@ shared void canPlaceFuelStationWrongOwner() {
     value [player, owner] = testPlayers;
     value node = testNodes<FuelStationable>().first;
     value game = testGame.with {
+        currentPlayer = player;
         owners = { node -> owner };
         playerFuelStationCounts = { player -> 1 };
     };
