@@ -21,6 +21,7 @@ import com.crappycomic.ceylarquest.model.logic {
     allowedMoves,
     applyCard,
     applyRoll,
+    condemnNode,
     drawCard,
     endTurn,
     landOnNode,
@@ -207,6 +208,10 @@ shared void doApplyRoll() {
 
 shared void doCancelChoosingNode() {
     controller.updateGame(game);
+}
+
+shared void doCondemnNode() {
+    controller.updateGame(condemnNode(game));
 }
 
 shared void doDrawCard() {

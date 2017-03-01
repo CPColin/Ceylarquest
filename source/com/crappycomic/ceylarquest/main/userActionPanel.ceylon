@@ -12,6 +12,7 @@ import com.crappycomic.ceylarquest.model {
 import com.crappycomic.ceylarquest.model.logic {
     applyCard,
     applyRoll,
+    condemnNode,
     drawCard,
     endTurn,
     landOnNode,
@@ -74,6 +75,13 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
     shared actual JButton createChooseNodeWonFromPlayerButton(Game game,
             JComboBox<Node>? comboBox) {
         return chooseNodeButton(game, comboBox, winNodeFromPlayer);
+    }
+    
+    shared actual JButton createCondemnNodeButton(Game game, Boolean canCondemnNode,
+            Integer price) {
+        return actionButton(condemnNodeButtonLabel(canCondemnNode, price),
+            () => condemnNode(game),
+            canCondemnNode);
     }
     
     shared actual JButton createDrawCardButton(Game game) {

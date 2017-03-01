@@ -46,6 +46,11 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
         return chooseNodeButton(selectId, "doWinNodeFromPlayer");
     }
     
+    shared actual Button createCondemnNodeButton(Game game, Boolean canCondemnNode, Integer price) {
+        return actionButton(condemnNodeButtonLabel(canCondemnNode, price), "doCondemnNode", null,
+            canCondemnNode);
+    }
+    
     shared actual Button createDrawCardButton(Game game) {
         return actionButton(drawCardButtonLabel, "doDrawCard");
     }

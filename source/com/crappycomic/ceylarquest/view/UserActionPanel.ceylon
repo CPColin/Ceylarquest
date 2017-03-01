@@ -26,6 +26,7 @@ import com.crappycomic.ceylarquest.model.logic {
     allowedNodesToLoseOrSell,
     allowedNodesToWinFromLeague,
     allowedNodesToWinFromPlayer,
+    canCondemnNode,
     canPlaceFuelStation,
     canPurchaseFuelStation,
     canPurchaseNode,
@@ -52,6 +53,8 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     
     shared formal Child createChooseNodeWonFromPlayerButton(Game game,
         ChooseNodeParameter? parameter);
+    
+    shared formal Child createCondemnNodeButton(Game game, Boolean canCondemnNode, Integer price);
     
     shared formal Child createDrawCardButton(Game game);
     
@@ -95,6 +98,9 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared String chooseNodeButtonLabel => "Choose";
     
     shared String chooseNodeNoneAvailableButtonLabel => "None Available";
+    
+    shared String condemnNodeButtonLabel(Boolean canCondemnNode, Integer price)
+        => canCondemnNode then "Condemn Property ($``price``)" else "Condemn Property";
     
     shared String drawCardButtonLabel => "Draw a Card";
     
@@ -204,7 +210,11 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     }
     
     shared void showPreLandPanel(Game game) {
+        value node = game.playerLocation(game.currentPlayer);
+        value price = if (is Ownable node) then nodePrice(game, node) else 0;
+        
         createPanel("``playerName(game)`` has arrived at ``nodeName(game)``.",
+            createCondemnNodeButton(game, canCondemnNode(game), price),
             createLandOnNodeButton(game));
     }
     
