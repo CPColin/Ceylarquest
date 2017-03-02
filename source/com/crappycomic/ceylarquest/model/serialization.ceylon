@@ -1,9 +1,9 @@
 import ceylon.json {
-    JsonObject,
     InvalidTypeException,
+    JsonArray,
+    JsonObject,
     parse
 }
-
 import ceylon.language.meta {
     modules
 }
@@ -24,7 +24,7 @@ shared Game|InvalidSave loadGame(String json) {
             allPlayers = loadPlayers(jsonObject, "allPlayers");
             currentPlayer = loadCurrentPlayer(jsonObject);
             owners = loadOwners(jsonObject, board);
-            phase = loadPhase(jsonObject);
+            phase = loadPhase(jsonObject, "phase", board);
             playerCashes = loadPlayerCashes(jsonObject);
             playerFuels = loadPlayerFuels(jsonObject);
             placedFuelStations = loadPlacedFuelStations(jsonObject, board);
@@ -86,23 +86,76 @@ Type loadObject<Type>(JsonObject jsonObject) {
     }
 }
 
-Phase? loadPhase(JsonObject jsonObject) {
-    value phaseName = jsonObject.getStringOrNull("phase");
+Phase? loadPhase(JsonObject jsonObject, String key, Board board) {
+    value phaseObject = jsonObject.getObjectOrNull(key);
     
-    if (exists phaseName) {
-        value phaseDeclaration = `package`.getValue(phaseName);
+    if (exists phaseObject) {
+        value phaseName = phaseObject.getString("name");
         
-        assert (exists phaseDeclaration);
-        
-        value phaseValue = phaseDeclaration.get();
-        
-        assert (is Phase phaseValue);
-        
-        return phaseValue;
+        if (phaseName.first?.lowercase else false) {
+            value phaseDeclaration = `package`.getValue(phaseName);
+            
+            assert (exists phaseDeclaration);
+            
+            value phaseValue = phaseDeclaration.get();
+            
+            assert (is Phase phaseValue);
+            
+            return phaseValue;
+        }
+        else {
+            switch (phaseName)
+            // TODO: it'd be nice to be more type-safe, so file follow-up.
+            case ("ChoosingAllowedMove") {
+                value paths = [
+                    for (path in phaseObject.getArray("paths").arrays)
+                        resolvePath(path, board)
+                ];
+                
+                assert (nonempty paths);
+                
+                return ChoosingAllowedMove(paths, phaseObject.getInteger("fuel"));
+            }
+            case ("DrewCard") {
+                return DrewCard(resolveCard(board, phaseObject.getString("description")));
+            }
+            case ("PreLand") {
+                return PreLand(phaseObject.getBoolean("advancedToNode"));
+            }
+            case ("Rolled") {
+                return Rolled(phaseObject.getArray("roll").integers.sequence(),
+                    phaseObject.getIntegerOrNull("multiplier"));
+            }
+            case ("RollingWithMultiplier") {
+                return RollingWithMultiplier(phaseObject.getInteger("multiplier"));
+            }
+            case ("SettlingDebts") {
+                value debts = [
+                    for (debt in phaseObject.getArray("debts").objects)
+                        resolveDebt(debt)
+                ];
+                value nextPhase = loadPhase(phaseObject, "nextPhase", board);
+                
+                assert (exists nextPhase);
+                
+                return SettlingDebts(debts, nextPhase);
+            }
+            else {
+                throw InvalidTypeException("Unknown Phase class: ``phaseName``");
+            }
+        }
     }
-    else {
-        return null;
-    }
+    
+    value phase = preRoll;
+    
+    // Reminder to add functionality above when new Phase classes are added.
+    // Phase objects (anonymous classes) should work by default.
+    switch (phase)
+    case (is ChoosingAllowedMove|DrewCard|PreLand|Rolled|RollingWithMultiplier|SettlingDebts) {}
+    case (choosingNodeLostToLeague|choosingNodeWonFromLeague|choosingNodeWonFromPlayer
+        |currentPlayerEliminated|drawingCard|gameOver|postLand|preRoll) {}
+    
+    return null;
 }
 
 {Node*}? loadPlacedFuelStations(JsonObject jsonObject, Board board) {
@@ -166,6 +219,33 @@ Phase? loadPhase(JsonObject jsonObject) {
     else {
         return null;
     }
+}
+
+Card resolveCard(Board board, String description) {
+    value card = board.cards.find((card) => card.description == description);
+    
+    assert (exists card);
+    
+    return card;
+}
+
+Debt resolveDebt(JsonObject jsonObject) {
+    value debtor = resolvePlayer(jsonObject.getString("debtor"));
+    value amount = jsonObject.getInteger("amount");
+    value creditor = resolvePlayer(jsonObject.getString("creditor"));
+    
+    return Debt(debtor, amount, creditor);
+}
+
+Path resolvePath(JsonArray jsonArray, Board board) {
+    value path = [
+        for (nodeId in jsonArray.strings)
+            resolveNode(board, nodeId)
+    ];
+    
+    assert (nonempty path);
+    
+    return path;
 }
 
 Node resolveNode(Board board, String key) {

@@ -41,6 +41,47 @@ shared String debugGameJson => JsonObject {
         "eastRum" -> "blue",
         "eastC" -> "magenta"
     },
+    //"phase" -> JsonObject {
+    //    "name" -> "ChoosingAllowedMove",
+    //    "paths" -> JsonArray {
+    //        JsonArray { "companyHQ", "westA", "eastA" },
+    //        JsonArray { "westResort", "eastFreeport", "eastD" }
+    //    },
+    //    "fuel" -> 0
+    //},
+    //"phase" -> JsonObject {
+    //    "name" -> "DrewCard",
+    //    "description" -> "Bonus Contract"
+    //},
+    //"phase" -> JsonObject {
+    //    "name" -> "PreLand",
+    //    "advancedToNode" -> true
+    //},
+    //"phase" -> JsonObject {
+    //    "name" -> "Rolled",
+    //    "roll" -> JsonArray { 2, 3, 4 },
+    //    "multiplier" -> 2
+    //},
+    //"phase" -> JsonObject {
+    //    "name" -> "RollingWithMultiplier",
+    //    "multiplier" -> 5
+    //},
+    //"phase" -> JsonObject {
+    //    "name" -> "SettlingDebts",
+    //    "debts" -> JsonArray {
+    //        JsonObject {
+    //            "debtor" -> "yellow",
+    //            "amount" -> 100,
+    //            "creditor" -> "red"
+    //        }
+    //    },
+    //    "nextPhase" -> JsonObject {
+    //        "name" -> "postLand"
+    //    }
+    //},
+    "phase" -> JsonObject {
+        "name" -> "preRoll"
+    },
     "placedFuelStations" -> JsonArray {
         "westC",
         "eastD",
