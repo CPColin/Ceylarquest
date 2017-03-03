@@ -1,19 +1,18 @@
 import com.crappycomic.ceylarquest.model {
     Game,
-    Player,
     SettlingDebts
 }
 
-"Returns `true` if a debt is currently being settled by the given [[player]] and the player has
- enough cash on hand to settle it."
-shared Boolean canSettleDebtWithCash(Game game, Player player) {
+"Returns `true` if a debt is currently being settled and the first indebted player has enough cash
+ on hand to settle it."
+shared Boolean canSettleDebtWithCash(Game game) {
     value phase = game.phase;
     
     if (!is SettlingDebts phase) {
         return false;
     }
     
-    value debt = phase.debts.find((debt) => debt.debtor == player);
+    value debt = phase.debts.first;
     
     if (!exists debt) {
         return false;

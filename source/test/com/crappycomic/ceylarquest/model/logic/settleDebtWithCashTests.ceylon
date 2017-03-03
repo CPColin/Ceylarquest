@@ -28,9 +28,9 @@ shared void settleDebtWithCashTest() {
         phase = SettlingDebts([ Debt(debtor, amount, creditor) ], postLand);
     };
     
-    assertTrue(canSettleDebtWithCash(game, debtor), "Test game was not set up properly.");
+    assertTrue(canSettleDebtWithCash(game), "Test game was not set up properly.");
     
-    value result = settleDebtWithCash(game, debtor);
+    value result = settleDebtWithCash(game);
     
     if (is Game result) {
         value phase = result.phase;

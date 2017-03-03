@@ -26,7 +26,7 @@ shared void canSettleDebtWithCashInsufficientCash() {
         playerCashes = { canSettleDebtWithCashDebtor -> 0 };
     };
     
-    assertFalse(canSettleDebtWithCash(game, canSettleDebtWithCashDebtor),
+    assertFalse(canSettleDebtWithCash(game),
         "Should not be able to settle debt with insufficient cash.");
 }
 
@@ -36,13 +36,12 @@ shared void canSettleDebtWithCashNotInDebt() {
         phase = SettlingDebts(empty, postLand);
     };
     
-    assertFalse(canSettleDebtWithCash(game, canSettleDebtWithCashDebtor),
-        "Can't settle a debt when there's no debt to settle.");
+    assertFalse(canSettleDebtWithCash(game), "Can't settle a debt when there's no debt to settle.");
 }
 
 test
 shared void canSettleDebtWithCashTest() {
-    assertTrue(canSettleDebtWithCash(canSettleDebtWithCashGame, canSettleDebtWithCashDebtor));
+    assertTrue(canSettleDebtWithCash(canSettleDebtWithCashGame));
 }
 
 test
@@ -51,7 +50,7 @@ shared void canSettleDebtWithCashWrongPhase() {
         phase = postLand;
     };
     
-    assertFalse(canSettleDebtWithCash(game, canSettleDebtWithCashDebtor),
+    assertFalse(canSettleDebtWithCash(game),
         "Can't settle a debt when the phase isn't SettlingDebts.");
 }
 
@@ -65,8 +64,7 @@ Game canSettleDebtWithCashGame {
             [ Debt(canSettleDebtWithCashDebtor, 100, canSettleDebtWithCashCreditor) ], postLand);
     };
     
-    assertTrue(canSettleDebtWithCash(game, canSettleDebtWithCashDebtor),
-        "Test game was not set up properly.");
+    assertTrue(canSettleDebtWithCash(game), "Test game was not set up properly.");
     
     return game;
 }
