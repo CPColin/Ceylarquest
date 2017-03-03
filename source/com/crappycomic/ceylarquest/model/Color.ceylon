@@ -15,7 +15,7 @@ shared class Color {
     
     shared new(Integer red, Integer green, Integer blue, Integer alpha = maximum) {
         function clamp(Integer colorValue) {
-            return smallest(largest(minimum, colorValue), maximum);
+            return Integer.smallest(Integer.largest(minimum, colorValue), maximum);
         }
         
         this.red = clamp(red);

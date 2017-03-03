@@ -34,7 +34,7 @@ shared Game collectCashAndRollAgain(Integer amount)(Game game)
         };
 
 shared Game collectFuelStation(Integer amount)(Game game)
-    => let (fuelStations = smallest(amount, game.fuelStationsRemaining),
+    => let (fuelStations = Integer.smallest(amount, game.fuelStationsRemaining),
             player = game.currentPlayer)
         if (fuelStations > 0)
         then game.with {

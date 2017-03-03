@@ -47,7 +47,7 @@ class JavaGraphicsContext(Graphics2D g, Integer width, Integer height) satisfies
     shared void drawImage(BufferedImage image) {
         value scaleX = width.float / image.width;
         value scaleY = height.float / image.height;
-        value scale = largest(scaleX, scaleY);
+        value scale = Float.largest(scaleX, scaleY);
         value transform = AffineTransform();
         
         transform.scale(scale, scale);

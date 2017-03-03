@@ -31,7 +31,7 @@ shared Result applyRoll(Game game) {
         return InvalidMove("Invalid roll: ``roll``");
     }
     
-    value totalRoll = roll.fold(0)(plus);
+    value totalRoll = Integer.sum(roll);
     value multiplier = phase.multiplier;
     value fuel = multiplier exists
         then 0
@@ -61,7 +61,7 @@ shared Result applyRoll(Game game) {
     
     value paths = allowedMoves(game.board, game.playerLocation(player), distance);
     // The smaller value is used for cases where the player had to stay put.
-    value usedFuel = smallest(fuel, distance);
+    value usedFuel = Integer.smallest(fuel, distance);
     
     return game.with {
         phase = ChoosingAllowedMove(paths, usedFuel);

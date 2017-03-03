@@ -13,5 +13,5 @@ shared Integer maximumPurchaseableFuel(Game game, Player player, FuelSalable nod
     
     return if (unitCost == 0)
         then fuelTankSpace
-        else smallest(fuelTankSpace, game.playerCash(player) / unitCost);
+        else Integer.smallest(fuelTankSpace, game.playerCash(player) / unitCost);
 }

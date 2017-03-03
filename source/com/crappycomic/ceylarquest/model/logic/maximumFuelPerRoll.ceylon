@@ -10,7 +10,7 @@ import com.crappycomic.ceylarquest.model {
 shared Integer maximumFuelPerRoll(Game game) {
     value cardRollType = game.rules.cardRollType;
     value maximumRoll = [game.rules.diePips].repeat(game.rules.dieCount);
-    value totalRoll = maximumRoll.fold(0)(plus);
+    value totalRoll = Integer.sum(maximumRoll);
     
     if (cardRollType(maximumRoll)) {
         return totalRoll - 1;

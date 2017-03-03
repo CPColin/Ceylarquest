@@ -118,7 +118,7 @@ shared void applyRolledWithMultiplier() {
     
     assertTrue(game.phase is Rolled, "Phase needs to be Rolled for this test.");
     
-    value totalRoll = roll.fold(0)(plus);
+    value totalRoll = Integer.sum(roll);
     // This would be (totalRoll * multiplier) exactly, if we were sure of no WellPull nodes.
     value expectedPathSize = totalRoll * (multiplier - 1) + 1;
     value result = applyRoll(game);
