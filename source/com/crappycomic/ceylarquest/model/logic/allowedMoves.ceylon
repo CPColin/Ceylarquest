@@ -115,7 +115,7 @@ shared Path[] matchingPaths([Path+] paths, Integer index) {
         return [ for (path in paths) if (exists node = path[index]) if (node == target) path ];
     }
     else {
-        return [];
+        return empty;
     }
 }
 

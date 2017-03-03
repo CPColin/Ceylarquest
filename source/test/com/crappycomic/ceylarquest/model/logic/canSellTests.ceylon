@@ -47,7 +47,7 @@ test shared void canSellOnWrongNode() {
 test shared void canSellSettlingDebt() {
     value [debtor, creditor] = testPlayers;
     value game = testGame.with {
-        phase = SettlingDebts({ Debt(debtor, 2, creditor) }, postLand);
+        phase = SettlingDebts([ Debt(debtor, 2, creditor) ], postLand);
         playerCashes = { debtor -> 1 };
     };
     
@@ -57,7 +57,7 @@ test shared void canSellSettlingDebt() {
 test shared void canSellSettlingDebtNotDebtor() {
     value player = testGame.currentPlayer;
     value game = testGame.with {
-        phase = SettlingDebts({}, postLand);
+        phase = SettlingDebts(empty, postLand);
     };
     
     assertFalse(canSell(game, player), "Should not be able to sell when not a debtor.");
@@ -66,7 +66,7 @@ test shared void canSellSettlingDebtNotDebtor() {
 test shared void canSellSettlingDebtTooLow() {
     value [debtor, creditor] = testPlayers;
     value game = testGame.with {
-        phase = SettlingDebts({ Debt(debtor, 1, creditor) }, postLand);
+        phase = SettlingDebts([ Debt(debtor, 1, creditor) ], postLand);
         playerCashes = { debtor -> 2 };
     };
     

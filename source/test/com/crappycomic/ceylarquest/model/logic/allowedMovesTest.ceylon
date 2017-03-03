@@ -60,7 +60,7 @@ shared void findBranchesTest() {
     value path2 = [testNode1, testNode2, testNode4];
     value path3 = [testNode1, testNode5];
     
-    assertEquals(findBranches([]), finished);
+    assertEquals(findBranches(empty), finished);
     assertEquals(findBranches([path1, path2, path3]), [[path1, path2], 1]);
     assertEquals(findBranches([path1, path3]), [[path1, path3], 0]);
 }
@@ -79,7 +79,7 @@ shared void matchingPathsTest() {
     assertEquals(matchingPaths([path1, path2, path3], 0), [path1, path2, path3]);
     assertEquals(matchingPaths([path1, path2, path3], 1), [path1, path3]);
     assertEquals(matchingPaths([path3, path2, path1], 2), [path3]);
-    assertEquals(matchingPaths([path1, path2, path3], 3), []);
+    assertEquals(matchingPaths([path1, path2, path3], 3), empty);
 }
 
 test

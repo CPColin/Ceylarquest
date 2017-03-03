@@ -30,20 +30,20 @@ shared Result landOnNode(variable Game game, Node node = game.playerLocation(gam
     }
     
     value rent = rentFee(game, player, node);
-    {Debt*} debts;
+    [Debt*] debts;
     
     if (rent > 0) {
         value owner = game.owner(node);
         
         if (is Player owner) {
-            debts = { Debt(player, rent, owner) };
+            debts = [ Debt(player, rent, owner) ];
         }
         else {
-            debts = {};
+            debts = empty;
         }
     }
     else {
-        debts = {};
+        debts = empty;
     }
     
     return game.with {

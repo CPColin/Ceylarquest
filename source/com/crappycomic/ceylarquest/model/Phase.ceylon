@@ -22,7 +22,7 @@ shared class RollingWithMultiplier(shared Integer multiplier) extends Phase() {}
 
 shared class PreLand(shared Boolean advancedToNode) extends Phase() {}
 
-shared class SettlingDebts(shared {Debt*} debts, shared Phase nextPhase) extends Phase() {}
+shared class SettlingDebts(shared [Debt*] debts, shared Phase nextPhase) extends Phase() {}
 
 shared object choosingNodeLostToLeague extends Phase() {}
 
