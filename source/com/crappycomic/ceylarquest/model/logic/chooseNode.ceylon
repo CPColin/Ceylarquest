@@ -8,8 +8,9 @@ import com.crappycomic.ceylarquest.model {
     postLand
 }
 
-// TODO: tests
-
+"Returns `true` if the player can choose the given [[node]], based on the given [[allowedNodes]].
+ If no node is allowed, the given node must be null. If some nodes are allowed, the given node must
+ be one of them."
 shared Boolean canChooseNode([Node*] allowedNodes, Node? node) {
     if (exists node) {
         return allowedNodes.contains(node);
@@ -17,6 +18,18 @@ shared Boolean canChooseNode([Node*] allowedNodes, Node? node) {
     else {
         return allowedNodes.empty;
     }
+}
+
+"Updates the state of the given [[game]] to make the given [[node]] owned by the given [[owner]]."
+shared Result chooseNode(Game game, [Node*](Game) allowedNodes, Node? node, Owner owner) {
+    if (!canChooseNode(allowedNodes(game), node)) {
+        return InvalidMove("Chosen node is invalid.");
+    }
+    
+    return game.with {
+        owners = if (exists node) then { node -> owner } else null;
+        phase = postLand;
+    };
 }
 
 shared Result loseNodeToLeague(Game game, Node? node) {
@@ -29,15 +42,4 @@ shared Result winNodeFromLeague(Game game, Node? node) {
 
 shared Result winNodeFromPlayer(Game game, Node? node) {
     return chooseNode(game, allowedNodesToWinFromPlayer, node, game.currentPlayer);
-}
-
-Result chooseNode(Game game, [Node*](Game) allowedNodes, Node? node, Owner owner) {
-    if (!canChooseNode(allowedNodes(game), node)) {
-        return InvalidMove("Chosen node is invalid.");
-    }
-    
-    return game.with {
-        owners = if (exists node) then { node -> owner } else null;
-        phase = postLand;
-    };
 }

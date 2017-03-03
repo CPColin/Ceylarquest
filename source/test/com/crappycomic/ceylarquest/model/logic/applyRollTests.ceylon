@@ -10,6 +10,7 @@ import com.crappycomic.ceylarquest.model {
     ChoosingAllowedMove,
     CostsFuelToLeave,
     Game,
+    Node,
     Rolled,
     Rules,
     drawingCard,
@@ -200,6 +201,30 @@ shared void applyRollInvalidRollZero() {
     else {
         assertTrue(result.message.contains("Invalid roll"),
             "Unexpected error message: ``result.message``");
+    }
+}
+
+test
+shared void applyRollNoFuelCost() {
+    value player = testGame.currentPlayer;
+    value node = testNodes<Node, CostsFuelToLeave>().first;
+    value game = testGame.with {
+        phase = Rolled([6, 5], null);
+        playerLocations = { player -> node };
+    };
+    value result = applyRoll(game);
+    
+    if (is Game result) {
+        value phase = result.phase;
+        
+        assertTrue(phase is ChoosingAllowedMove, "Phase needs to be ChoosingAllowedMove.");
+        
+        assert (is ChoosingAllowedMove phase);
+        
+        assertEquals(phase.fuel, 0, "Used fuel should be zero.");
+    }
+    else {
+        fail(result.message);
     }
 }
 
