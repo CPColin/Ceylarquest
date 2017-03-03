@@ -1,6 +1,7 @@
 import com.crappycomic.ceylarquest.model {
     Card,
     ChoosingAllowedMove,
+    Debt,
     DrewCard,
     FuelSalable,
     Game,
@@ -32,9 +33,11 @@ import com.crappycomic.ceylarquest.model.logic {
     canPurchaseNode,
     canSellFuelStation,
     canSellNode,
+    canSettleDebtWithCash,
     fuelAvailable,
     fuelFee,
-    nodePrice
+    nodePrice,
+    sellingPlayer
 }
 
 shared interface UserActionPanel<Child, ChooseNodeParameter> {
@@ -59,6 +62,8 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared formal Child createDrawCardButton(Game game);
     
     shared formal Child createEndTurnButton(Game game);
+    
+    shared formal Child createFinishSettlingDebtsButton(Game game);
     
     shared formal Child createLandOnNodeButton(Game game);
     
@@ -85,6 +90,8 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     
     shared formal Child createSellNodeButton(Game game, Boolean canSellNode);
     
+    shared formal Child createSettleDebtWithCashButton(Game game, Boolean canSettleDebtWithCash);
+    
     shared formal Child createTraversePathButton(Game game, Path path);
     
     shared formal void showError(String message);
@@ -105,6 +112,8 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared String drawCardButtonLabel => "Draw a Card";
     
     shared String endTurnButtonLabel => "End Turn";
+    
+    shared String finishSettlingDebtsButtonLabel => "Continue";
     
     shared String landOnNodeButtonLabel => "Continue";
     
@@ -130,6 +139,8 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     
     shared String sellNodeButtonLabel => "Sell Property";
     
+    shared String settleDebtWithCashButtonLabel => "Pay Cash";
+    
     shared void showChoosingAllowedMovePanel(Game game, [Path+] paths) {
         createPanel("``playerName(game)`` must choose a move.",
             *[ for (path in paths) createTraversePathButton(game, path) ]);
@@ -138,15 +149,17 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared void showChoosingNodeLostToLeaguePanel(Game game) {
         showChoosingNodePanel(game,
             "``playerName(game)`` lost a property to the ``game.board.strings.leagueShort``.",
-            allowedNodesToLoseOrSell,
+            allowedNodesToLoseOrSell(game.currentPlayer),
             false,
             createChooseNodeLostToLeagueButton);
     }
     
     shared void showChoosingNodeToSellPanel(Game game) {
+        value player = sellingPlayer(game);
+        
         showChoosingNodePanel(game,
-            "``playerName(game)`` is choosing a property to sell.",
-            allowedNodesToLoseOrSell,
+            "``playerName(game, player)`` is choosing a property to sell.",
+            allowedNodesToLoseOrSell(player),
             true,
             createChooseNodeToSellButton);
     }
@@ -254,6 +267,25 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
             createRollDiceButton(game));
     }
     
+    shared void showSettlingDebtsPanel(Game game, {Debt*} debts) {
+        value debt = debts.first;
+        
+        if (exists debt) {
+            value debtor = debt.debtor;
+            
+            createPanel("``playerName(game, debtor)`` owes $``debt.amount`` to \
+                         ``playerName(game, debt.creditor)``.",
+                createSellFuelStationButton(game, canSellFuelStation(game),
+                    game.rules.fuelStationPrice),
+                createSellNodeButton(game, canSellNode(game)),
+                createSettleDebtWithCashButton(game, canSettleDebtWithCash(game)));
+        }
+        else {
+            createPanel("All debts have been settled!",
+                createFinishSettlingDebtsButton(game));
+        }
+    }
+    
     shared String nodeName(Game game, Node node = game.playerLocation(game.currentPlayer)) {
         return node.name;
     }
@@ -262,8 +294,7 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
         return game.playerName(player);
     }
     
-    // TODO: returns Boolean temporarily so calling code knows if all phases are handled yet
-    shared default Boolean showPhase(Game game) {
+    shared default void showPhase(Game game) {
         value phase = game.phase;
         
         switch (phase)
@@ -283,7 +314,7 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
             showPreLandPanel(game);
         }
         case (is SettlingDebts) {
-            return false; // TODO
+            showSettlingDebtsPanel(game, phase.debts);
         }
         case (choosingNodeLostToLeague) {
             showChoosingNodeLostToLeaguePanel(game);
@@ -309,8 +340,6 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
         case (preRoll) {
             showPreRollPanel(game);
         }
-        
-        return true;
     }
     
     void showChoosingNodePanel(Game game, String label, [Node*](Game) allowedNodes,

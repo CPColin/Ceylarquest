@@ -28,9 +28,10 @@ shared void canSellFuelStationNoneToSell() {
         playerLocations = { player -> node };
     };
     
-    assertTrue(canSell(game, player), "The test game was not set up properly.");
+    assertTrue(canSell(game), "The test game was not set up properly.");
     
-    assertFalse(canSellFuelStation(game), "Player can't sell fuel station when none are on-hand.");
+    assertFalse(canSellFuelStation(game),
+        "Player can't sell fuel station when none are on-hand.");
 }
 
 test shared void canSellFuelStationTest() {
@@ -41,7 +42,7 @@ test shared void canSellFuelStationTest() {
         playerLocations = { player -> node };
     };
     
-    assertTrue(canSell(game, player), "The test game was not set up properly.");
+    assertTrue(canSell(game), "The test game was not set up properly.");
     
-    assertTrue(canSellFuelStation(game, player), "Should be able to sell a fuel station.");
+    assertTrue(canSellFuelStation(game), "Should be able to sell a fuel station.");
 }

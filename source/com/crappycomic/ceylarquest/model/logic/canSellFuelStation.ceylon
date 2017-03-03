@@ -1,14 +1,15 @@
 import com.crappycomic.ceylarquest.model {
-    Game,
-    Player
+    Game
 }
 
-"Returns `true` if the state of the given [[game]] allows the given [[player]] to sell a fuel
- station."
-shared Boolean canSellFuelStation(Game game, Player player = game.currentPlayer) {
+"Returns `true` if the state of the given [[game]] allows the [[selling player|sellingPlayer]] to
+ sell a fuel station."
+shared Boolean canSellFuelStation(Game game) {
+    value player = sellingPlayer(game);
+    
     if (game.playerFuelStationCount(player) <= 0) {
         return false;
     }
     
-    return canSell(game, player);
+    return canSell(game);
 }

@@ -30,7 +30,7 @@ test shared void canSellOnRightNode() {
         playerLocations = { player -> node };
     };
     
-    assertTrue(canSell(game, player), "Should be able to sell on an Administraion node.");
+    assertTrue(canSell(game), "Should be able to sell on an Administraion node.");
 }
 
 test shared void canSellOnWrongNode() {
@@ -41,7 +41,7 @@ test shared void canSellOnWrongNode() {
         playerLocations = { player -> node };
     };
     
-    assertFalse(canSell(game, player), "Should not be able to sell on a non-Administration node.");
+    assertFalse(canSell(game), "Should not be able to sell on a non-Administration node.");
 }
 
 test shared void canSellSettlingDebt() {
@@ -51,16 +51,15 @@ test shared void canSellSettlingDebt() {
         playerCashes = { debtor -> 1 };
     };
     
-    assertTrue(canSell(game, debtor), "Should be able to sell when settling debt.");
+    assertTrue(canSell(game), "Should be able to sell when settling debt.");
 }
 
 test shared void canSellSettlingDebtNotDebtor() {
-    value player = testGame.currentPlayer;
     value game = testGame.with {
         phase = SettlingDebts(empty, postLand);
     };
     
-    assertFalse(canSell(game, player), "Should not be able to sell when not a debtor.");
+    assertFalse(canSell(game), "Should not be able to sell when not a debtor.");
 }
 
 test shared void canSellSettlingDebtTooLow() {
@@ -70,5 +69,5 @@ test shared void canSellSettlingDebtTooLow() {
         playerCashes = { debtor -> 2 };
     };
     
-    assertFalse(canSell(game, debtor), "Should not be able to sell when cash can cover debt.");
+    assertFalse(canSell(game), "Should not be able to sell when cash can cover debt.");
 }

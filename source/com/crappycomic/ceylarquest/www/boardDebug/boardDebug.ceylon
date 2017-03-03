@@ -24,6 +24,7 @@ import com.crappycomic.ceylarquest.model.logic {
     condemnNode,
     drawCard,
     endTurn,
+    finishSettlingDebts,
     landOnNode,
     loseNodeToLeague,
     placeFuelStation,
@@ -32,6 +33,7 @@ import com.crappycomic.ceylarquest.model.logic {
     rollDice,
     sellFuelStation,
     sellNode,
+    settleDebtWithCash,
     traversePath,
     winNodeFromLeague,
     winNodeFromPlayer
@@ -222,6 +224,10 @@ shared void doEndTurn() {
     controller.updateGame(endTurn(game));
 }
 
+shared void doFinishSettlingDebts() {
+    controller.updateGame(finishSettlingDebts(game));
+}
+
 shared void doLandOnNode() {
     controller.updateGame(landOnNode(game));
 }
@@ -243,7 +249,6 @@ shared void doPurchaseNode() {
 }
 
 shared void doResign() {
-    // TODO: proper resign() function
     controller.updateGame(game.without(game.currentPlayer));
 }
 
@@ -259,11 +264,15 @@ shared void doSellNode(String? nodeId) {
     value node = game.board.node(nodeId);
     
     if (is Ownable node) {
-        controller.updateGame(sellNode(game, game.currentPlayer, node));
+        controller.updateGame(sellNode(game, node));
     }
     else {
         controller.updateGame(game);
     }
+}
+
+shared void doSettleDebtWithCash() {
+    controller.updateGame(settleDebtWithCash(game));
 }
 
 shared void doTraversePath(String nodeId) {

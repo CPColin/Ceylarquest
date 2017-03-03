@@ -2,12 +2,13 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Node,
     Ownable,
+    Player,
     unowned
 }
 
 "Returns all nodes that are owned by the current player."
-shared [Node*] allowedNodesToLoseOrSell(Game game) {
-    return let (player = game.currentPlayer) [
+shared [Node*] allowedNodesToLoseOrSell(Player player)(Game game) {
+    return [
         for (node in game.board.nodes.keys)
             if (game.owner(node) == player)
                 node

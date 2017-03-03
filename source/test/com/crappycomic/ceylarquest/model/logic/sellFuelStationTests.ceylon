@@ -31,9 +31,9 @@ shared void sellFuelStationTest() {
     value playerCash = game.playerCash(player);
     value playerFuelStationCount = game.playerFuelStationCount(player);
     
-    assertTrue(canSellFuelStation(game, player), "The test game was not set up properly.");
+    assertTrue(canSellFuelStation(game), "The test game was not set up properly.");
     
-    value result = sellFuelStation(game, player);
+    value result = sellFuelStation(game);
     
     if (is Game result) {
         assertEquals(result.playerCash(player), playerCash + result.rules.fuelStationPrice,

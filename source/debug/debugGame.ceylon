@@ -39,7 +39,8 @@ shared String debugGameJson => JsonObject {
         "eastFreePort" -> "red", // Invalid because it's not Ownable
         "westRum" -> "cyan", // Invalid because Cyan is not active
         "eastRum" -> "blue",
-        "eastC" -> "magenta"
+        "eastC" -> "magenta",
+        "eastD" -> "yellow"
     },
     //"phase" -> JsonObject {
     //    "name" -> "ChoosingAllowedMove",
@@ -86,6 +87,9 @@ shared String debugGameJson => JsonObject {
         "westC",
         "eastD",
         "eastFreeport" // Invalid becayse it's not FuelStationable
+    },
+    "playerCashes" -> JsonObject {
+        "yellow" -> 0
     },
     "playerFuels" -> JsonObject {
         "magenta" -> 0

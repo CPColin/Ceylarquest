@@ -1,13 +1,14 @@
 import com.crappycomic.ceylarquest.model {
     Game,
-    Ownable,
-    Player
+    Ownable
 }
 
-"Returns `true` if, considering the state of the given [[game]], the given [[player]] can sell the
- given [[node]]. If no node is given, this function returns `true` if the player has _any_ node that
- can be sold."
-shared Boolean canSellNode(Game game, Player player = game.currentPlayer, Ownable? node = null) {
+"Returns `true` if, considering the state of the given [[game]], the
+ [[selling player|sellingPlayer]] can sell the given [[node]]. If no node is given, this function
+ returns `true` if the player has _any_ node that can be sold."
+shared Boolean canSellNode(Game game, Ownable? node = null) {
+    value player = sellingPlayer(game);
+    
     if (exists node) {
         if (game.owner(node) != player) {
             return false;
@@ -19,5 +20,5 @@ shared Boolean canSellNode(Game game, Player player = game.currentPlayer, Ownabl
         }
     }
     
-    return canSell(game, player);
+    return canSell(game);
 }

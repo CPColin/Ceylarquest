@@ -29,9 +29,9 @@ shared void canSellNodeAnyOwned() {
         playerLocations = { player -> testNodes<Administration>().first };
     };
     
-    assertTrue(canSell(game, player), "The test game was not set up properly.");
+    assertTrue(canSell(game), "The test game was not set up properly.");
     
-    assertTrue(canSellNode(game, player, null), "Player should be able to sell a node.");
+    assertTrue(canSellNode(game, null), "Player should be able to sell a node.");
 }
 
 test
@@ -42,9 +42,9 @@ shared void canSellNodeAnyUnowned() {
         playerLocations = { player -> testNodes<Administration>().first };
     };
     
-    assertTrue(canSell(game, player), "The test game was not set up properly.");
+    assertTrue(canSell(game), "The test game was not set up properly.");
     
-    assertFalse(canSellNode(game, player, null), "Player should not be able to sell a node.");
+    assertFalse(canSellNode(game, null), "Player should not be able to sell a node.");
 }
 
 test
@@ -57,9 +57,9 @@ shared void canSellNodeOwned() {
         playerLocations = { player -> testNodes<Administration>().first };
     };
     
-    assertTrue(canSell(game, player), "The test game was not set up properly.");
+    assertTrue(canSell(game), "The test game was not set up properly.");
     
-    assertTrue(canSellNode(game, player, node), "Player should be able to sell owned node.");
+    assertTrue(canSellNode(game, node), "Player should be able to sell owned node.");
 }
 
 test
@@ -71,7 +71,7 @@ shared void canSellNodeUnowned() {
         playerLocations = { player -> testNodes<Administration>().first };
     };
     
-    assertTrue(canSell(game, player), "The test game was not set up properly.");
+    assertTrue(canSell(game), "The test game was not set up properly.");
     
-    assertFalse(canSellNode(game, player, node), "Player should not be able to sell unowned node.");
+    assertFalse(canSellNode(game, node), "Player should not be able to sell unowned node.");
 }

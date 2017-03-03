@@ -59,6 +59,10 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
         return actionButton(endTurnButtonLabel, "doEndTurn");
     }
     
+    shared actual Button createFinishSettlingDebtsButton(Game game) {
+        return actionButton(finishSettlingDebtsButtonLabel, "doFinishSettlingDebts");
+    }
+    
     shared actual Button createLandOnNodeButton(Game game) {
         return actionButton(landOnNodeButtonLabel, "doLandOnNode");
     }
@@ -147,6 +151,11 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
             "boardDebug.game()", canSellNode);
     }
     
+    shared actual Button createSettleDebtWithCashButton(Game game, Boolean canSettleDebtWithCash) {
+        return actionButton(settleDebtWithCashButtonLabel, "doSettleDebtWithCash", null,
+            canSettleDebtWithCash);
+    }
+    
     shared actual Button createTraversePathButton(Game game, Path path) {
         return let (node = path.last)
             actionButton(node.name, "doTraversePath", "'``node.id``'");
@@ -158,16 +167,14 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
         }
     }
     
-    shared actual Boolean showPhase(Game game) {
-        value result = super.showPhase(game);
+    shared actual void showPhase(Game game) {
+        super.showPhase(game);
         
         // TODO: the package needs to track the game separately, because the action buttons can't
         // pass the game around properly. if possible, find a better way to do this and remove the
         // default annotation from the supermethod
         // could serialize and pass the JSON? ugh
         package.game = game;
-        
-        return result;
     }
     
     Button actionButton(String label, String functionName, String? functionParameters = null,

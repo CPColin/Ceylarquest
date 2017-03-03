@@ -34,9 +34,9 @@ shared void sellNodeTest() {
     };
     value playerCash = game.playerCash(player);
     
-    assertTrue(canSellNode(game, player, node), "The test game was not set up properly.");
+    assertTrue(canSellNode(game, node), "The test game was not set up properly.");
     
-    value result = sellNode(game, player, node);
+    value result = sellNode(game, node);
     
     if (is Game result) {
         assertEquals(result.owner(node), unowned, "Node should have become unowned.");

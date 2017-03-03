@@ -15,6 +15,7 @@ import com.crappycomic.ceylarquest.model.logic {
     condemnNode,
     drawCard,
     endTurn,
+    finishSettlingDebts,
     landOnNode,
     loseNodeToLeague,
     placeFuelStation,
@@ -23,6 +24,7 @@ import com.crappycomic.ceylarquest.model.logic {
     rollDice,
     sellFuelStation,
     sellNode,
+    settleDebtWithCash,
     traversePath,
     winNodeFromLeague,
     winNodeFromPlayer
@@ -59,7 +61,7 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
     shared actual JButton createChooseNodeToSellButton(Game game, JComboBox<Node>? comboBox) {
         return chooseNodeButton(game, comboBox, (game, node) {
             if (is Ownable node) {
-                return sellNode(game, game.currentPlayer, node);
+                return sellNode(game, node);
             }
             else {
                 return game;
@@ -90,6 +92,10 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
     
     shared actual JButton createEndTurnButton(Game game) {
         return actionButton(endTurnButtonLabel, () => endTurn(game));
+    }
+    
+    shared actual JButton createFinishSettlingDebtsButton(Game game) {
+        return actionButton(finishSettlingDebtsButtonLabel, () => finishSettlingDebts(game));
     }
     
     shared actual JButton createLandOnNodeButton(Game game) {
@@ -169,6 +175,12 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
         return actionButton(sellNodeButtonLabel,
             () => showChoosingNodeToSellPanel(game),
             canSellNode);
+    }
+    
+    shared actual JButton createSettleDebtWithCashButton(Game game, Boolean canSettleDebtWithCash) {
+        return actionButton(settleDebtWithCashButtonLabel,
+            () => settleDebtWithCash(game),
+            canSettleDebtWithCash);
     }
     
     shared actual JButton createTraversePathButton(Game game, Path path) {
