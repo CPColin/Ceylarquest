@@ -54,7 +54,7 @@ shared void applyRolledWithMultiplierDontCheckFuel() {
     value player = testGame.currentPlayer;
     value node = testNodes<CostsFuelToLeave>().first;
     value game = testGame.with {
-        phase = Rolled([1, 2], 1);
+        phase = Rolled([6, 5], 1);
         playerFuels = { player -> 0 };
         playerLocations = { player -> node };
     };
