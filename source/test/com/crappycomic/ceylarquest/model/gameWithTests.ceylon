@@ -9,10 +9,8 @@ import ceylon.test {
 import com.crappycomic.ceylarquest.model {
     FuelStationable,
     Game,
-    Node,
     Ownable,
     Player,
-    Well,
     unowned
 }
 
@@ -139,7 +137,7 @@ shared void gameWithPlayerFuelStationCounts() {
 
 test
 shared void gameWithPlayerLocations() {
-    value [node1, node2] = testNodes<Node, Well>();
+    value [node1, node2] = testNodes<>();
     value gameStart = Game.test {
         board = testGame.board;
         playerNames = testPlayerNames;
