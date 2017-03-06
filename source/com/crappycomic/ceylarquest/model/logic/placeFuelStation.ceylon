@@ -10,7 +10,11 @@ import com.crappycomic.ceylarquest.model {
 
 "Alters the state of the given [[game]] to have the current player place a fuel station on the given
  [[node]]."
-shared Result placeFuelStation(Game game, Node node) {
+shared Result placeFuelStation(Game game, Node? node) {
+    if (!exists node) {
+        return game;
+    }
+    
     if (game.phase != preRoll && game.phase != postLand) {
         return incorrectPhase;
     }

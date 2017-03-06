@@ -58,6 +58,11 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
         return chooseNodeButton(game, comboBox, loseNodeToLeague);
     }
     
+    shared actual JButton createChooseNodeToPlaceFuelStationOnButton(Game game,
+            JComboBox<Node>? comboBox) {
+        return chooseNodeButton(game, comboBox, placeFuelStation);
+    }
+    
     shared actual JButton createChooseNodeToSellButton(Game game, JComboBox<Node>? comboBox) {
         return chooseNodeButton(game, comboBox, (game, node) {
             if (is Ownable node) {
@@ -131,7 +136,7 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
     
     shared actual JButton createPlaceFuelStationButton(Game game, Boolean canPlaceFuelStation) {
         return actionButton(placeFuelStationButtonLabel(game),
-            () => placeFuelStation(game, game.playerLocation(game.currentPlayer)),
+            () => showChoosingNodeToPlaceFuelStationOnPanel(game),
             canPlaceFuelStation);
     }
     

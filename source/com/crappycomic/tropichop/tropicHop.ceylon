@@ -344,7 +344,7 @@ shared object tropicHopBoard extends Board() {
     };
     
     strings = object extends Strings() {
-        fuelStationCapitalized = "Still";
+        fuelStation = "Still";
         
         leagueLong = "TropicHop Island Company";
         

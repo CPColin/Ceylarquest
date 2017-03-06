@@ -23,6 +23,13 @@ import test.com.crappycomic.ceylarquest.model {
 }
 
 test
+shared void placeFuelStationTestNoNode() {
+    value result = placeFuelStation(testGame, null);
+    
+    assertTrue(result === testGame, "Placing fuel station on a null node should be a no-op.");
+}
+
+test
 shared void placeFuelStationTest() {
     value node = testNodes<FuelStationable>().first;
     value player = testGame.currentPlayer;

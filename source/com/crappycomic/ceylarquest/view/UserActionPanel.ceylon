@@ -25,6 +25,7 @@ import com.crappycomic.ceylarquest.model {
 }
 import com.crappycomic.ceylarquest.model.logic {
     allowedNodesToLoseOrSell,
+    allowedNodesToPlaceFuelStationOn,
     allowedNodesToWinFromLeague,
     allowedNodesToWinFromPlayer,
     canCondemnNode,
@@ -46,6 +47,9 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared formal Child createApplyRollButton(Game game);
     
     shared formal Child createChooseNodeLostToLeagueButton(Game game,
+        ChooseNodeParameter? parameter);
+    
+    shared formal Child createChooseNodeToPlaceFuelStationOnButton(Game game,
         ChooseNodeParameter? parameter);
     
     shared formal Child createChooseNodeToSellButton(Game game,
@@ -118,14 +122,14 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared String landOnNodeButtonLabel => "Continue";
     
     shared String placeFuelStationButtonLabel(Game game)
-        => "Place ``game.board.strings.fuelStationCapitalized``";
+        => "Place ``game.board.strings.fuelStation``";
     
     shared String purchaseFuelButtonLabel(Game game, Boolean fuelAvailable, Integer price)
         => let (label = game.board.strings.purchaseFuel)
             if (fuelAvailable) then "``label`` ($``price``)" else label;
     
     shared String purchaseFuelStationButtonLabel(Game game, Integer price)
-        => "Purchase ``game.board.strings.fuelStationCapitalized`` ($``price``)";
+        => "Purchase ``game.board.strings.fuelStation`` ($``price``)";
     
     shared String purchaseNodeButtonLabel(Boolean canPurchaseNode, Integer price)
         => canPurchaseNode then "Purchase Property ($``price``)" else "Purchase Property";
@@ -135,7 +139,7 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared String rollDiceButtonLabel => "Roll Dice";
     
     shared String sellFuelStationButtonLabel(Game game, Integer price)
-        => "Sell ``game.board.strings.fuelStationCapitalized`` ($``price``)";
+        => "Sell ``game.board.strings.fuelStation`` ($``price``)";
     
     shared String sellNodeButtonLabel => "Sell Property";
     
@@ -152,6 +156,15 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
             allowedNodesToLoseOrSell(game.currentPlayer),
             false,
             createChooseNodeLostToLeagueButton);
+    }
+    
+    shared void showChoosingNodeToPlaceFuelStationOnPanel(Game game) {
+        showChoosingNodePanel(game,
+            "``playerName(game)`` is choosing where to place a \
+             ``game.board.strings.fuelStation.lowercased``.",
+            allowedNodesToPlaceFuelStationOn,
+            true,
+            createChooseNodeToPlaceFuelStationOnButton);
     }
     
     shared void showChoosingNodeToSellPanel(Game game) {

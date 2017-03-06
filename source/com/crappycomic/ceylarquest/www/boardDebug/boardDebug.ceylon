@@ -236,8 +236,8 @@ shared void doLoseNodeToLeague(String? nodeId) {
     controller.updateGame(loseNodeToLeague(game, game.board.node(nodeId)));
 }
 
-shared void doPlaceFuelStation() {
-    controller.updateGame(placeFuelStation(game, game.playerLocation(game.currentPlayer)));
+shared void doPlaceFuelStation(String? nodeId) {
+    controller.updateGame(placeFuelStation(game, game.board.node(nodeId)));
 }
 
 shared void doPurchaseFuelStation() {

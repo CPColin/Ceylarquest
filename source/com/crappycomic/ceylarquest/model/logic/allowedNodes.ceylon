@@ -6,7 +6,7 @@ import com.crappycomic.ceylarquest.model {
     unowned
 }
 
-"Returns all nodes that are owned by the current player."
+"Returns all nodes that are owned by the given [[player]]."
 shared [Node*] allowedNodesToLoseOrSell(Player player)(Game game) {
     return [
         for (node in game.board.nodes.keys)
@@ -15,13 +15,21 @@ shared [Node*] allowedNodesToLoseOrSell(Player player)(Game game) {
     ];
 }
 
+"Returns all nodes that the current player may place a fuel station on."
+shared [Node*] allowedNodesToPlaceFuelStationOn(Game game) {
+    return [
+        for (node in game.board.nodes.keys)
+            if (canPlaceFuelStation(game, node))
+                node
+    ];
+}
+
 "Returns all unowned nodes."
 shared [Node*] allowedNodesToWinFromLeague(Game game) {
     return [
         for (node in game.board.nodes.keys)
-            if (node is Ownable)
-                if (game.owner(node) == unowned)
-                    node
+            if (node is Ownable && game.owner(node) == unowned)
+                node
     ];
 }
 

@@ -1,5 +1,5 @@
 shared abstract class Strings() {
-    shared formal String fuelStationCapitalized;
+    shared formal String fuelStation;
     
     shared formal String leagueLong;
     

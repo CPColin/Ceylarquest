@@ -34,6 +34,10 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
         return chooseNodeButton(selectId, "doLoseNodeToLeague");
     }
     
+    shared actual Button createChooseNodeToPlaceFuelStationOnButton(Game game, String? selectId) {
+        return chooseNodeButton(selectId, "doPlaceFuelStation");
+    }
+    
     shared actual Button createChooseNodeToSellButton(Game game, String? selectId) {
         return chooseNodeButton(selectId, "doSellNode");
     }
@@ -111,8 +115,8 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
     }
     
     shared actual Button createPlaceFuelStationButton(Game game, Boolean canPlaceFuelStation) {
-        // TODO: current node only, for now
-        return actionButton(placeFuelStationButtonLabel(game), "doPlaceFuelStation", null,
+        return actionButton(placeFuelStationButtonLabel(game),
+            "userActionPanel().showChoosingNodeToPlaceFuelStationOnPanel", "boardDebug.game()",
             canPlaceFuelStation);
     }
     
