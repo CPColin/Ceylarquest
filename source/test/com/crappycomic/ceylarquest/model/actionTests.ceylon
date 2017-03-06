@@ -1,5 +1,6 @@
 import ceylon.test {
     assertEquals,
+    assertNotEquals,
     assertTrue,
     test
 }
@@ -15,6 +16,7 @@ import com.crappycomic.ceylarquest.model {
     collectCashAndRollAgain,
     collectFuelStation,
     currentPlayerEliminated,
+    postLand,
     preRoll,
     rollWithMultiplier,
     useFuel,
@@ -84,10 +86,15 @@ shared void collectCashTest() {
     value cash = 100;
     value player = testGame.currentPlayer;
     value playerCash = testGame.playerCash(player);
-    value result = collectCash(cash)(testGame);
+    value nextPhase = postLand;
+    
+    assertNotEquals(testGame.phase, nextPhase, "Incorrect starting phase.");
+    
+    value result = collectCash(cash)(testGame, nextPhase);
     
     assertEquals(result.playerCash(player), playerCash + cash,
         "Player's cash didn't change by expected amount.");
+    assertEquals(result.phase, nextPhase, "Incorrect ending phase.");
 }
 
 test
@@ -107,10 +114,15 @@ shared void collectFuelStationTest() {
     value player = testGame.currentPlayer;
     value playerFuelStationCount = testGame.playerFuelStationCount(player);
     value fuelStations = 2;
-    value result = collectFuelStation(fuelStations)(testGame);
+    value nextPhase = postLand;
+    
+    assertNotEquals(testGame.phase, nextPhase, "Incorrect starting phase.");
+    
+    value result = collectFuelStation(fuelStations)(testGame, nextPhase);
     
     assertEquals(result.playerFuelStationCount(player), playerFuelStationCount + fuelStations,
         "Player's fuel station count should have increased by ``fuelStations``.");
+    assertEquals(result.phase, nextPhase, "Incorrect ending phase.");
 }
 
 test
@@ -126,7 +138,7 @@ shared void collectFuelStationNoneRemainTest() {
     assertEquals(game.fuelStationsRemaining, 0,
         "Fuel stations remaining must be zero for this test.");
     
-    value result = collectFuelStation(1)(game);
+    value result = collectFuelStation(1)(game, postLand);
     
     assertEquals(result.playerFuelStationCount(player), playerFuelStationCount,
         "Player should not have gained a fuel station.");
@@ -149,7 +161,7 @@ shared void collectFuelStationSomeRemainTest() {
     assertEquals(game.fuelStationsRemaining, fuelStations,
         "Fuel stations remaining must be ``fuelStations`` for this test.");
     
-    value result = collectFuelStation(fuelStations * 2)(game);
+    value result = collectFuelStation(fuelStations * 2)(game, postLand);
     
     assertEquals(result.playerFuelStationCount(player), playerFuelStationCount + fuelStations,
         "Player gained incorrect number of fuel stations.");

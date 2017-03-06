@@ -14,7 +14,7 @@ import com.crappycomic.ceylarquest.model {
 "Updates the given [[game]] with the result of landing the [[current player|Game.currentPlayer]] on
  the given [[node]]. If the node is an [[ActionTrigger]], the action will fire. If rent is due, the
  updated phase will include the incurred debt."
-shared Result landOnNode(variable Game game, Node node = game.playerLocation(game.currentPlayer)) {
+shared Result landOnNode(Game game, Node node = game.playerLocation(game.currentPlayer)) {
     value phase = game.phase;
     
     if (!is PreLand phase) {
@@ -22,13 +22,6 @@ shared Result landOnNode(variable Game game, Node node = game.playerLocation(gam
     }
     
     value player = game.currentPlayer;
-    
-    if (phase.advancedToNode) {
-        if (is ActionTrigger node) {
-            game = node.action(game);
-        }
-    }
-    
     value rent = rentFee(game, player, node);
     [Debt*] debts;
     
@@ -46,7 +39,14 @@ shared Result landOnNode(variable Game game, Node node = game.playerLocation(gam
         debts = empty;
     }
     
-    return game.with {
-        phase = SettlingDebts(debts, postLand);
-    };
+    value nextPhase = SettlingDebts(debts, postLand);
+    
+    if (is ActionTrigger node, phase.advancedToNode) {
+        return node.action(game, nextPhase);
+    }
+    else {
+        return game.with {
+            phase = nextPhase;
+        };
+    }
 }

@@ -14,6 +14,7 @@ import com.crappycomic.ceylarquest.model {
     Strings,
     WellOrbit,
     advanceToNode,
+    collectCash,
     collectCashAndRollAgain,
     collectFuelStation,
     loseDisputeWithLeague,
@@ -66,7 +67,7 @@ shared object tropicHopBoard extends Board() {
     object westFreeport satisfies FreePort {
         name = "West Freeport";
         location = [144, 1078];
-        action = collectCashAndRollAgain(600);
+        action = collectCash(600);
     }
     object westB satisfies OwnablePort {
         name = "West B";

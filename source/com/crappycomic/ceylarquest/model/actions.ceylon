@@ -8,8 +8,8 @@ import com.crappycomic.ceylarquest.model.logic {
 shared alias CardAction => Game(Game);
 
 "Something that can happen when a [[Node]] is landed on. These actions may _not_ cause the
- [[phase|Game.phase]] of the [[Game]] to change."
-shared alias NodeAction => Game(Game);
+ [[phase|Game.phase]] of the [[Game]] to change, because one will be passed in."
+shared alias NodeAction => Game(Game, Phase);
 
 shared Game advanceToNode(Integer fuel, Node node)(Game game) 
     => let (player = game.currentPlayer)
@@ -20,9 +20,10 @@ shared Game advanceToNode(Integer fuel, Node node)(Game game)
         }
         else eliminatePlayerInsufficientFuel(game);
 
-shared Game collectCash(Integer amount)(Game game)
+shared Game collectCash(Integer amount)(Game game, Phase nextPhase)
     => let (player = game.currentPlayer)
         game.with {
+            phase = nextPhase;
             playerCashes = { player -> game.playerCash(player) + amount };
         };
 
@@ -33,11 +34,12 @@ shared Game collectCashAndRollAgain(Integer amount)(Game game)
             playerCashes = { player -> game.playerCash(player) + amount };
         };
 
-shared Game collectFuelStation(Integer amount)(Game game)
+shared Game collectFuelStation(Integer amount)(Game game, Phase nextPhase)
     => let (fuelStations = Integer.smallest(amount, game.fuelStationsRemaining),
             player = game.currentPlayer)
         if (fuelStations > 0)
         then game.with {
+            phase = nextPhase;
             playerFuelStationCounts
                 = { player -> game.playerFuelStationCount(player) + fuelStations };
         }
