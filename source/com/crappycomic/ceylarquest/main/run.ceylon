@@ -34,7 +34,9 @@ import java.util.concurrent {
 }
 
 import javax.swing {
+    BoxLayout,
     JFrame,
+    JPanel,
     JScrollPane
 }
 
@@ -49,10 +51,15 @@ shared void run() {
     }
     case (is Game) {
         value boardPanel = BoardPanel(game.board);
+        value playerInfoPanels = [
+            for (player in game.allPlayers)
+                PlayerInfoPanel(game, player)
+        ];
         
-        controller = Controller(game, userActionPanel, boardPanel.updateBoardImage);
+        controller
+            = Controller(game, userActionPanel, playerInfoPanels, boardPanel.updateBoardImage);
         
-        value frame = overlay(game, boardPanel);
+        value frame = overlay(game, boardPanel, playerInfoPanels);
         
         controller.updateGame(game);
         
@@ -62,7 +69,7 @@ shared void run() {
 
 variable BufferedImage? closestNodes = null;
 
-JFrame overlay(Game game, BoardPanel boardPanel) {
+JFrame overlay(Game game, BoardPanel boardPanel, {PlayerInfoPanel*} playerInfoPanels) {
     value frame = JFrame();
     
     boardPanel.preferredSize = Dimension(1280, 1280);
@@ -74,7 +81,13 @@ JFrame overlay(Game game, BoardPanel boardPanel) {
     frame.extendedState = JFrame.maximizedBoth;
     frame.layout = BorderLayout();
     
+    value playerInfo = JPanel();
+    
+    playerInfo.layout = BoxLayout(playerInfo, BoxLayout.yAxis);
+    playerInfoPanels.each((playerInfoPanel) => playerInfo.add(playerInfoPanel));
+    
     frame.add(userActionPanel, javaString(BorderLayout.north));
+    frame.add(playerInfo, javaString(BorderLayout.west));
     frame.add(JScrollPane(boardPanel), javaString(BorderLayout.center));
     
     //value executorService = Executors.newSingleThreadExecutor();

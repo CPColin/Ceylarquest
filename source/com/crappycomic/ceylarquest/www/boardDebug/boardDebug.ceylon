@@ -192,10 +192,11 @@ shared void clear() {
 }
 
 shared void createController() {
-    controller = Controller(game, userActionPanel, (game) {
-        g.clear();
-        boardOverlay.draw(g, game);
-    });
+    controller = Controller(game, userActionPanel, empty,
+        (game) {
+            g.clear();
+            boardOverlay.draw(g, game);
+        });
     
     controller.updateGame();
 }
