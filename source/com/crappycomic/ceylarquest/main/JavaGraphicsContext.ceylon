@@ -19,7 +19,6 @@ import com.crappycomic.ceylarquest.view {
 }
 
 import java.awt {
-    AwtColor=Color,
     BasicStroke,
     Graphics2D
 }
@@ -95,7 +94,4 @@ class JavaGraphicsContext(Graphics2D g, Integer width, Integer height) satisfies
         
         g.fillRect(topLeft[0], topLeft[1], width, height);
     }
-    
-    AwtColor awtColor(Color color)
-            => AwtColor(color.red, color.green, color.blue, color.alpha);
 }
