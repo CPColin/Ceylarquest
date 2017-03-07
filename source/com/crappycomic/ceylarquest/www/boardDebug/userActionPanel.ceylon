@@ -147,7 +147,8 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
     
     shared actual Button createSellFuelStationButton(Game game, Boolean canSellFuelStation,
             Integer price) {
-        return actionButton(sellFuelStationButtonLabel(game, price), "doSellFuelStation");
+        return actionButton(sellFuelStationButtonLabel(game, price), "doSellFuelStation", null,
+            canSellFuelStation);
     }
     
     shared actual Button createSellNodeButton(Game game, Boolean canSellNode) {
