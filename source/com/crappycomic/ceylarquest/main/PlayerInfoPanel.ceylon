@@ -13,8 +13,6 @@ import javax.swing {
     JPanel
 }
 
-// TODO: In order to show multiple players at once, this will have to become a class.
-// When it does, we can set up the border and the layout ahead of time.
 class PlayerInfoPanel extends JPanel satisfies Base {
     Player player;
     
