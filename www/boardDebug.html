@@ -20,7 +20,7 @@ require(
 </script>
 </head>
 <body>
-<div id="userActions">
+<div id="userActions" style="position: fixed;">
   <nav>
     <a href="#" onclick="boardDebug.clear(); return false;">Clear</a>
     <input id="parameter" type="number" value="20" />
@@ -31,6 +31,8 @@ require(
     <a href="#" onclick="boardDebug.createController(); return false;">Create Controller</a>
   </nav>
 </div>
+
+<div id="playerInfo" style="position: fixed; top: 0; right: 0; background-color: rgba(255, 255, 255, 0.25)"></div>
 
 <canvas id="board" width="1280" height="1280"></canvas>
 </body>

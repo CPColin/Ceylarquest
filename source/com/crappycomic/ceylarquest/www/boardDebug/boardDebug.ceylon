@@ -160,9 +160,6 @@ object g satisfies GraphicsContext {
         
         context.fillRect(topLeft[0], topLeft[1], width, height);
     }
-    
-    String rgba(Color color)
-        => "rgba(``color.red``, ``color.green``, ``color.blue``, ``color.alpha.float / 255``)";
 }
 
 shared variable Game game = loadDebugGame();
@@ -192,7 +189,14 @@ shared void clear() {
 }
 
 shared void createController() {
-    controller = Controller(game, userActionPanel, empty,
+    value playerInfoPanels = [
+        for (player in game.allPlayers)
+            PlayerInfoPanel(game, player)
+    ];
+    
+    playerInfoPanels.each((playerInfoPanel) => playerInfoPanel.createPanel(game));
+    
+    controller = Controller(game, userActionPanel, playerInfoPanels,
         (game) {
             g.clear();
             boardOverlay.draw(g, game);
