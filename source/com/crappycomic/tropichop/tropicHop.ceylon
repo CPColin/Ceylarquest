@@ -344,8 +344,12 @@ shared object tropicHopBoard extends Board() {
         totalFuelStationCount = 20;
     };
     
-    strings = object extends Strings() {
+    strings = object satisfies Strings {
+        fuel = "Rum";
+        
         fuelStation = "Still";
+        
+        fuelUnit = "barrel";
         
         leagueLong = "TropicHop Island Company";
         
