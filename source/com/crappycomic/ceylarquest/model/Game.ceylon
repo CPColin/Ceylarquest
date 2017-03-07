@@ -22,7 +22,7 @@ shared class Game {
     
     shared Player currentPlayer;
     
-    shared Map<Node, Owner> owners;
+    shared Map<Ownable, Owner> owners;
     
     shared Phase phase;
     
@@ -93,9 +93,10 @@ shared class Game {
         
         if (exists owners) {
             this.owners = map {
-                owners
-                    .filter((_ -> owner) => owner is Unowned || this.activePlayers.contains(owner))
-                    .filter((node -> _) => node is Ownable && board.nodes.defines(node));
+                for (node -> owner in owners)
+                    if (owner is Unowned || this.activePlayers.contains(owner))
+                        if (is Ownable node, board.nodes.defines(node))
+                            node -> owner
             };
         }
         else {
