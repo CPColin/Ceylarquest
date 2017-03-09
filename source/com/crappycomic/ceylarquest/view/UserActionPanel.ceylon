@@ -30,6 +30,7 @@ import com.crappycomic.ceylarquest.model.logic {
     allowedNodesToWinFromPlayer,
     canCondemnNode,
     canPlaceFuelStation,
+    canPurchaseFuel,
     canPurchaseFuelStation,
     canPurchaseNode,
     canSellFuelStation,
@@ -251,11 +252,9 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
         value node = game.playerLocation(player);
         
         createPanel("``playerName(game)`` is at ``nodeName(game, node)``.",
-            createPurchaseNodeButton(game, canPurchaseNode(game, node),
+            createPurchaseNodeButton(game, canPurchaseNode(game),
                 if (is Ownable node) then nodePrice(game, node) else 0),
-            createPurchaseFuelButton(game,
-                // TODO: canPurchaseFuel
-                fuelAvailable(game, node) && fuelTankSpace(game, player) > 0,
+            createPurchaseFuelButton(game, canPurchaseFuel(game),
                 if (is FuelSalable node) then fuelFee(game, player, node) else 0),
             createPlaceFuelStationButton(game,
                 game.board.nodes.keys.any((node) => canPlaceFuelStation(game, node))),
@@ -281,9 +280,7 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
         value node = game.playerLocation(player);
         
         createPanel("``playerName(game)``'s turn!",
-            createPurchaseFuelButton(game,
-                // TODO: canPurchaseFuel
-                fuelAvailable(game, node) && fuelTankSpace(game, player) > 0,
+            createPurchaseFuelButton(game, canPurchaseFuel(game),
                 if (is FuelSalable node) then fuelFee(game, player, node) else 0),
             createPlaceFuelStationButton(game,
                 game.board.nodes.keys.any((node) => canPlaceFuelStation(game, node))),
