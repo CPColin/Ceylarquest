@@ -355,6 +355,6 @@ shared object tropicHopBoard extends Board() {
         
         leagueShort = "Company";
         
-        purchaseFuel = "Buy Rum";
+        purchaseFuel = "Stock Rum";
     };
 }
