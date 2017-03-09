@@ -37,6 +37,9 @@ import com.crappycomic.ceylarquest.model.logic {
     canSettleDebtWithCash,
     fuelAvailable,
     fuelFee,
+    fuelTankSpace,
+    maximumFuelPerRoll,
+    maximumPurchaseableFuel,
     nodePrice,
     sellingPlayer
 }
@@ -45,6 +48,8 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared formal Child createApplyCardButton(Game game);
     
     shared formal Child createApplyRollButton(Game game);
+    
+    shared formal Child createCancelButton(Game game);
     
     shared formal Child createChooseNodeLostToLeagueButton(Game game,
         ChooseNodeParameter? parameter);
@@ -71,7 +76,7 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     
     shared formal Child createLandOnNodeButton(Game game);
     
-    shared formal Child[] createNodeSelect(Game game, [Node*] nodes, Boolean showCancelButton,
+    shared formal Child[] createNodeSelect(Game game, [Node+] nodes,
         Child(Game, ChooseNodeParameter?) createButton);
     
     shared formal void createPanel(String label, Child* children);
@@ -84,6 +89,14 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
         Integer price);
     
     shared formal Child createPurchaseNodeButton(Game game, Boolean canPurchaseNode, Integer price);
+    
+    shared formal Child[] createRefuelSpinner(Game game, Integer maximumUnits, Integer fee);
+    
+    shared formal Child createRefuelToFullButton(Game game, Boolean canRefuelToFull, Integer units,
+        Integer fee);
+    
+    shared formal Child createRefuelToLowFuelButton(Game game, Boolean canRefuelToLowFuel,
+        Integer units, Integer fee);
     
     shared formal Child createResignButton(Game game);
     
@@ -104,7 +117,7 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     
     shared String applyRollButtonLabel => "OK";
     
-    shared String cancelChoosingNodeButtonLabel => "Cancel";
+    shared String cancelButtonLabel => "Cancel";
     
     shared String chooseNodeButtonLabel => "Choose";
     
@@ -126,7 +139,9 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     
     shared String purchaseFuelButtonLabel(Game game, Boolean fuelAvailable, Integer price)
         => let (label = game.board.strings.purchaseFuel)
-            if (fuelAvailable) then "``label`` ($``price``)" else label;
+            if (fuelAvailable)
+                then "``label`` ($``price`` / ``game.board.strings.fuelUnit``)"
+                else label;
     
     shared String purchaseFuelStationButtonLabel(Game game, Integer price)
         => "Purchase ``game.board.strings.fuelStation`` ($``price``)";
@@ -134,6 +149,21 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     shared String purchaseNodeButtonLabel(Boolean canPurchaseNode, Integer price)
         => canPurchaseNode then "Purchase Property ($``price``)" else "Purchase Property";
     
+    shared String refuelSpinnerLabel(Game game) => game.board.strings.fuelUnit + "(s)";
+    
+    shared String refuelToFullButtonLabel(Game game, Boolean canRefuelToFull, Integer units,
+            Integer fee)
+        => canRefuelToFull
+            then "``game.board.strings.purchaseFuel`` to Full ($``units * fee``)"
+            else "``game.board.strings.purchaseFuel`` to Full";
+    
+    shared String refuelToLowFuelButtonLabel(Game game, Boolean canRefuelToLowFuel, Integer units,
+            Integer fee)
+        => let (lowFuel = maximumFuelPerRoll(game))
+            if (canRefuelToLowFuel)
+            then "``game.board.strings.purchaseFuel`` to ``lowFuel`` ($``units * fee``)"
+            else "``game.board.strings.purchaseFuel`` to ``lowFuel``";
+            
     shared String resignButtonLabel => "Resign";
     
     shared String rollDiceButtonLabel => "Roll Dice";
@@ -223,7 +253,9 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
         createPanel("``playerName(game)`` is at ``nodeName(game, node)``.",
             createPurchaseNodeButton(game, canPurchaseNode(game, node),
                 if (is Ownable node) then nodePrice(game, node) else 0),
-            createPurchaseFuelButton(game, fuelAvailable(game, node),
+            createPurchaseFuelButton(game,
+                // TODO: canPurchaseFuel
+                fuelAvailable(game, node) && fuelTankSpace(game, player) > 0,
                 if (is FuelSalable node) then fuelFee(game, player, node) else 0),
             createPlaceFuelStationButton(game,
                 game.board.nodes.keys.any((node) => canPlaceFuelStation(game, node))),
@@ -249,7 +281,9 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
         value node = game.playerLocation(player);
         
         createPanel("``playerName(game)``'s turn!",
-            createPurchaseFuelButton(game, fuelAvailable(game, node),
+            createPurchaseFuelButton(game,
+                // TODO: canPurchaseFuel
+                fuelAvailable(game, node) && fuelTankSpace(game, player) > 0,
                 if (is FuelSalable node) then fuelFee(game, player, node) else 0),
             createPlaceFuelStationButton(game,
                 game.board.nodes.keys.any((node) => canPlaceFuelStation(game, node))),
@@ -262,8 +296,32 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
     }
     
     shared void showPurchaseFuelPanel(Game game) {
-        // TODO
-        showError("TODO");
+        value player = game.currentPlayer;
+        value node = game.playerLocation(player);
+        
+        if (!is FuelSalable node) {
+            showError("Fuel is not available at this location.");
+            
+            return;
+        }
+        else if (!fuelAvailable(game, node)) {
+            showError("Fuel is not available at this location.");
+            
+            return;
+        }
+        
+        value refuelToLowFuel = maximumFuelPerRoll(game) - game.playerFuel(player);
+        value refuelToFull = fuelTankSpace(game, player);
+        value maximumPurchase = maximumPurchaseableFuel(game, player, node);
+        value fee = fuelFee(game, player, node);
+        
+        createPanel("``playerName(game)`` is pondering ``game.board.strings.fuelUnit``s.",
+            createRefuelToLowFuelButton(game,
+                refuelToLowFuel > 0 && maximumPurchase > refuelToLowFuel, refuelToLowFuel, fee),
+            createRefuelToFullButton(game,
+                refuelToFull > 0 && refuelToFull == maximumPurchase, refuelToFull, fee),
+            *createRefuelSpinner(game, maximumPurchase, fee)
+                .withTrailing(createCancelButton(game)));
     }
     
     shared void showRolledPanel(Game game, Roll roll, Integer? multiplier) {
@@ -359,8 +417,21 @@ shared interface UserActionPanel<Child, ChooseNodeParameter> {
             Boolean showCancelButton, Child(Game, ChooseNodeParameter?) createButton) {
         value nodes = allowedNodes(game)
             .sort(byIncreasing(Node.name));
+        Child[] children;
         
-        createPanel(label,
-            *createNodeSelect(game, nodes, showCancelButton, createButton));
+        if (nonempty nodes) {
+            if (showCancelButton) {
+                children = createNodeSelect(game, nodes, createButton)
+                    .withTrailing(createCancelButton(game));
+            }
+            else {
+                children = createNodeSelect(game, nodes, createButton);
+            }
+        }
+        else {
+            children = [createButton(game, null)];
+        }
+        
+        createPanel(label, *children);
     }
 }

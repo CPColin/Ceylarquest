@@ -19,6 +19,7 @@ import com.crappycomic.ceylarquest.model.logic {
     landOnNode,
     loseNodeToLeague,
     placeFuelStation,
+    purchaseFuel,
     purchaseFuelStation,
     purchaseNode,
     rollDice,
@@ -36,13 +37,18 @@ import com.crappycomic.ceylarquest.view {
 import java.awt {
     Component
 }
+import java.lang {
+    JInteger=Integer
+}
 
 import javax.swing {
     JButton,
     JComboBox,
     JLabel,
     JOptionPane,
-    JPanel
+    JPanel,
+    JSpinner,
+    SpinnerNumberModel
 }
 
 object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JComboBox<Node>> {
@@ -52,6 +58,10 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
     
     shared actual JButton createApplyRollButton(Game game) {
         return actionButton(applyRollButtonLabel, () => applyRoll(game));
+    }
+    
+    shared actual JButton createCancelButton(Game game) {
+        return actionButton(cancelButtonLabel, () => game);
     }
     
     shared actual JButton createChooseNodeLostToLeagueButton(Game game, JComboBox<Node>? comboBox) {
@@ -107,20 +117,12 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
         return actionButton(landOnNodeButtonLabel, () => landOnNode(game));
     }
     
-    shared actual Component[] createNodeSelect(Game game, [Node*] nodes,
-            Boolean showCancelButton, Component(Game, JComboBox<Node>?) createButton) {
-        if (nonempty nodes) {
-            value comboBox = JComboBox(createJavaObjectArray(nodes));
-            value cancelButton = cancelChoosingNodeButton(game);
-            value chooseButton = createButton(game, comboBox);
-            
-            return showCancelButton
-                then [comboBox, cancelButton, chooseButton]
-                else [comboBox, chooseButton];
-        }
-        else {
-            return [createButton(game, null)];
-        }
+    shared actual Component[] createNodeSelect(Game game, [Node+] nodes,
+            Component(Game, JComboBox<Node>?) createButton) {
+        value comboBox = JComboBox(createJavaObjectArray(nodes));
+        value chooseButton = createButton(game, comboBox);
+        
+        return [comboBox, chooseButton];
     }
     
     shared actual void createPanel(String label, Component* children) {
@@ -159,6 +161,34 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
         return actionButton(purchaseNodeButtonLabel(canPurchaseNode, price),
             () => purchaseNode(game),
             canPurchaseNode);
+    }
+    
+    shared actual Component[] createRefuelSpinner(Game game, Integer maximumUnits, Integer fee) {
+        value spinner = JSpinner(SpinnerNumberModel(maximumUnits, 1, maximumUnits, 1));
+        value button = actionButton(purchaseFuelButtonLabel(game, true, fee),
+            () {
+                value fuel = spinner.\ivalue;
+                
+                assert (is JInteger fuel);
+                
+                return purchaseFuel(game, fuel.longValue());
+            });
+        
+        return [spinner, JLabel(refuelSpinnerLabel(game)), button];
+    }
+    
+    shared actual JButton createRefuelToFullButton(Game game, Boolean canRefuelToFull,
+            Integer units, Integer fee) {
+        return actionButton(refuelToFullButtonLabel(game, canRefuelToFull, units, fee),
+            () => purchaseFuel(game, units),
+            canRefuelToFull);
+    }
+    
+    shared actual JButton createRefuelToLowFuelButton(Game game, Boolean canRefuelToLowFuel,
+            Integer units, Integer fee) {
+        return actionButton(refuelToLowFuelButtonLabel(game, canRefuelToLowFuel, units, fee),
+            () => purchaseFuel(game, units),
+            canRefuelToLowFuel);
     }
     
     shared actual JButton createResignButton(Game game) {
@@ -209,10 +239,6 @@ object userActionPanel extends JPanel() satisfies UserActionPanel<Component, JCo
         button.enabled = enabled;
         
         return button;
-    }
-    
-    JButton cancelChoosingNodeButton(Game game) {
-        return actionButton(cancelChoosingNodeButtonLabel, () => game);
     }
     
     JButton chooseNodeButton(Game game, JComboBox<Node>? comboBox,

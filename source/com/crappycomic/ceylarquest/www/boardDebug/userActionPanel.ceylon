@@ -4,6 +4,7 @@ import ceylon.html {
     Content,
     FlowCategory,
     H3,
+    Input,
     Option,
     Nav,
     Select,
@@ -28,6 +29,10 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
     
     shared actual Button createApplyRollButton(Game game) {
         return actionButton(applyRollButtonLabel, "doApplyRoll");
+    }
+    
+    shared actual Button createCancelButton(Game game) {
+        return actionButton(cancelButtonLabel, "doCancel", "null");
     }
     
     shared actual Button createChooseNodeLostToLeagueButton(Game game, String? selectId) {
@@ -71,31 +76,22 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
         return actionButton(landOnNodeButtonLabel, "doLandOnNode");
     }
     
-    shared actual Content<FlowCategory>[] createNodeSelect(Game game, [Node*] nodes,
-            Boolean showCancelButton, Content<FlowCategory>(Game, String?) createButton) {
-        if (nonempty nodes) {
-            value id = "nodeSelect";
-            value select = Select {
-                id = id;
-                children = {
-                    for (node in nodes)
-                        Option {
-                            val = node.id;
-                            node.name
-                        }
-                };
+    shared actual Content<FlowCategory>[] createNodeSelect(Game game, [Node+] nodes,
+            Content<FlowCategory>(Game, String?) createButton) {
+        value id = "nodeSelect";
+        value select = Select {
+            id = id;
+            children = {
+                for (node in nodes)
+                    Option {
+                        val = node.id;
+                        node.name
+                    }
             };
-            value cancelButton = cancelChoosingNodeButton();
-            value chooseButton = createButton(game, id);
-            
-            return showCancelButton
-                then [select, cancelButton, chooseButton]
-                else [select, chooseButton];
-
-        }
-        else {
-            return [createButton(game, null)];
-        }
+        };
+        value chooseButton = createButton(game, id);
+        
+        return [select, chooseButton];
     }
     
     shared actual void createPanel(String label, Content<FlowCategory>* children) {
@@ -135,6 +131,36 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
             Integer price) {
         return actionButton(purchaseNodeButtonLabel(canPurchaseNode, price),
             "doPurchaseNode", null, canPurchaseNode);
+    }
+    
+    shared actual Content<FlowCategory>[] createRefuelSpinner(Game game, Integer maximumUnits,
+            Integer fee) {
+        value id = "fuelSpinner";
+        value spinner = Input {
+            id = id;
+            type = "number";
+            min = 1;
+            max = maximumUnits;
+            val = maximumUnits.string;
+        };
+        value button = actionButton(purchaseFuelButtonLabel(game, true, fee),
+            "doPurchaseFuel", "parseInt(document.getElementById('``id``').value)");
+        
+        return [spinner, refuelSpinnerLabel(game), button];
+    }
+    
+    shared actual Button createRefuelToFullButton(Game game, Boolean canRefuelToFull,
+            Integer units, Integer fee) {
+        return actionButton(refuelToFullButtonLabel(game, canRefuelToFull, units, fee),
+            "doPurchaseFuel", units.string,
+            canRefuelToFull);
+    }
+    
+    shared actual Button createRefuelToLowFuelButton(Game game, Boolean canRefuelToLowFuel,
+            Integer units, Integer fee) {
+        return actionButton(refuelToLowFuelButtonLabel(game, canRefuelToLowFuel, units, fee),
+            "doPurchaseFuel", units.string,
+            canRefuelToLowFuel);
     }
     
     shared actual Button createResignButton(Game game) {
@@ -192,10 +218,6 @@ shared object userActionPanel satisfies UserActionPanel<Content<FlowCategory>, S
             ];
             label
         };
-    }
-    
-    Button cancelChoosingNodeButton() {
-        return actionButton(cancelChoosingNodeButtonLabel, "doCancelChoosingNode", "null");
     }
     
     Button chooseNodeButton(String? selectId, String functionName) {
