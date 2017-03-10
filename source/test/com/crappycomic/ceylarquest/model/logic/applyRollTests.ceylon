@@ -15,17 +15,16 @@ import com.crappycomic.ceylarquest.model {
     Rules,
     drawingCard,
     incorrectPhase,
-    rollTypeAlways,
-    rollTypeNever
+    rollTypeAlways
 }
 import com.crappycomic.ceylarquest.model.logic {
+    allowedMoves,
     applyRoll
 }
 
 import test.com.crappycomic.ceylarquest.model {
     testGame,
     testNodes,
-    testNodesBeforeAndAfterStart,
     testPlayerNames,
     wrongPhaseTest
 }
@@ -231,17 +230,13 @@ shared void applyRollNoFuelCost() {
 test
 shared void applyRollSuccess() {
     value player = testGame.currentPlayer;
-    value [startNode, endNode] = testNodesBeforeAndAfterStart;
-    value game = Game.test {
-        board = testGame.board;
-        currentPlayer = player;
-        phase = Rolled([1, 1], null);
-        playerLocations = { player -> startNode };
-        playerNames = testPlayerNames;
-        rules = object extends Rules() {
-            cardRollType = rollTypeNever;
-        };
+    value node = testNodes<>().first;
+    value roll = [3, 4];
+    value game = testGame.with {
+        phase = Rolled(roll, null);
+        playerLocations = { player -> node };
     };
+    value paths = allowedMoves(testGame.board, node, Integer.sum(roll));
     value result = applyRoll(game);
     
     if (is Game result) {
@@ -251,12 +246,7 @@ shared void applyRollSuccess() {
         
         assert (is ChoosingAllowedMove phase);
         
-        assertEquals(phase.paths.size, 1, "Wrong number of allowed paths.");
-        
-        value path = phase.paths.first;
-        
-        assertEquals(path.first, startNode, "Path didn't start at the right node.");
-        assertEquals(path.last, endNode, "Path didn't end at the right node.");
+        assertEquals(phase.paths, paths, "Allowed paths did not match expected paths.");
     }
     else {
         fail(result.message);
