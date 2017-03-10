@@ -7,9 +7,9 @@ import com.crappycomic.ceylarquest.model.logic {
     lowFuel
 }
 import com.crappycomic.ceylarquest.model {
-    Rules,
-    rollTypeNever,
-    Game
+    Game,
+    RollType,
+    Rules
 }
 import test.com.crappycomic.ceylarquest.model {
     testGame,
@@ -24,13 +24,13 @@ shared void lowFuelTest() {
         board = testGame.board;
         playerNames = testPlayerNames;
         rules = object extends Rules() {
-            cardRollType = rollTypeNever;
+            cardRollType = RollType.never;
         };
     };
     value player = game.currentPlayer;
     value maximumRoll = game.rules.diePips * game.rules.dieCount;
     
-    assertFalse(game.rules.cardRollType([game.rules.diePips].repeat(game.rules.dieCount)),
+    assertFalse(game.rules.cardRollType.matches([game.rules.diePips].repeat(game.rules.dieCount)),
         "Maximum roll should not draw a card for this test.");
     
     for (fuel in 0..maximumRoll) {

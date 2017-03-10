@@ -12,10 +12,10 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Node,
     Rolled,
+    RollType,
     Rules,
     drawingCard,
-    incorrectPhase,
-    rollTypeAlways
+    incorrectPhase
 }
 import com.crappycomic.ceylarquest.model.logic {
     allowedMoves,
@@ -36,7 +36,7 @@ shared void applyRollDrawCard() {
         phase = Rolled([1, 2], null);
         playerNames = testPlayerNames;
         rules = object extends Rules() {
-            cardRollType = rollTypeAlways;
+            cardRollType = RollType.always;
         };
     };
     value result = applyRoll(game);
@@ -84,7 +84,7 @@ shared void applyRolledWithMultiplierDontDrawCard() {
         phase = Rolled([1, 1], 1);
         playerNames = testPlayerNames;
         rules = object extends Rules() {
-            cardRollType = rollTypeAlways;
+            cardRollType = RollType.always;
         };
     };
     value node = game.playerLocation(game.currentPlayer);

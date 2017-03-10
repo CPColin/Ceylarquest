@@ -43,7 +43,7 @@ shared Result applyRoll(Game game) {
         distance = totalRoll * multiplier;
     }
     else {
-        if (game.rules.cardRollType(roll)) {
+        if (game.rules.cardRollType.matches(roll)) {
             // Draw a card.
             return game.with {
                 phase = drawingCard;

@@ -1,24 +1,28 @@
-"Returns `true` if the given [[Roll]] matches a certain criterion."
-shared alias RollType => Boolean(Roll);
-
-"Always returns `true`."
-see(`function rollTypeNever`)
-shared Boolean rollTypeAlways(Roll roll) {
-    return true;
-}
-
-"Returns `true` if all the dice are the same."
-shared Boolean rollTypeAllMatch(Roll roll) {
-    return if (nonempty roll) then roll.every((die) => die == roll.first) else false;
-}
-
-"Returns `true` if the roll is the highest that can possibly be rolled."
-shared Boolean rollTypeMaximum(Integer diePips)(Roll roll) {
-    return roll.every((die) => die == diePips);
-}
-
-"Always returns `false`."
-see(`function rollTypeAlways`)
-shared Boolean rollTypeNever(Roll roll) {
-    return false;
+"Enumerates various types of [[Roll]] that may result in certain actions, like drawing a [[Card]]."
+shared abstract class RollType of Specific | allMatch | always | never {
+    "Matches rolls where all dice have the [[given value|diePips]]."
+    shared static class Specific(Integer diePips) extends RollType() {
+        matches(Roll roll) => roll.every((die) => die == diePips);
+    }
+    
+    "Matches rolls where all dice have the same value."
+    shared static object allMatch extends RollType() {
+        matches(Roll roll) => roll.group(identity).size == 1;
+    }
+    
+    "Matches all rolls."
+    shared static object always extends RollType() {
+        matches(Roll roll) => true;
+    }
+    
+    "Matches no rolls."
+    shared static object never extends RollType() {
+        matches(Roll roll) => false;
+    }
+    
+    // Classes with static members can't have parameters.
+    shared new() {}
+    
+    "Returns `true` if the given roll matches the criteria of this instance."
+    shared formal Boolean matches(Roll roll);
 }

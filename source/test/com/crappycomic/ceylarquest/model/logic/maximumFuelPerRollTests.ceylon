@@ -5,9 +5,8 @@ import ceylon.test {
 
 import com.crappycomic.ceylarquest.model {
     Game,
-    Rules,
-    rollTypeMaximum,
-    rollTypeNever
+    RollType,
+    Rules
 }
 import com.crappycomic.ceylarquest.model.logic {
     maximumFuelPerRoll
@@ -24,7 +23,7 @@ shared void maximumFuelPerRollMaximum() {
         board = testGame.board;
         playerNames = testPlayerNames;
         rules = object extends Rules() {
-            cardRollType = rollTypeMaximum(testGame.rules.diePips);
+            cardRollType = RollType.Specific(testGame.rules.diePips);
         };
     };
     value maximumRoll = game.rules.diePips * game.rules.dieCount;
@@ -39,7 +38,7 @@ shared void maximumFuelPerRollNever() {
         board = testGame.board;
         playerNames = testPlayerNames;
         rules = object extends Rules() {
-            cardRollType = rollTypeNever;
+            cardRollType = RollType.never;
         };
     };
     value maximumRoll = game.rules.diePips * game.rules.dieCount;

@@ -1,6 +1,6 @@
 "Encapsulates various values that make up the rules of the game."
 shared class Rules() {
-    shared default RollType cardRollType = rollTypeNever;
+    shared default RollType cardRollType = RollType.allMatch;
     
     shared default Integer dieCount = 2;
     

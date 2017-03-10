@@ -12,7 +12,7 @@ shared Integer maximumFuelPerRoll(Game game) {
     value maximumRoll = [game.rules.diePips].repeat(game.rules.dieCount);
     value totalRoll = Integer.sum(maximumRoll);
     
-    if (cardRollType(maximumRoll)) {
+    if (cardRollType.matches(maximumRoll)) {
         return totalRoll - 1;
     }
     else {
