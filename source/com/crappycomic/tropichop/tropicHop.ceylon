@@ -19,7 +19,6 @@ import com.crappycomic.ceylarquest.model {
     collectFuelStation,
     loseDisputeWithLeague,
     mapNodes,
-    rollTypeAllMatch,
     rollWithMultiplier,
     useFuel,
     winDisputeWithLeague,
@@ -337,23 +336,35 @@ shared object tropicHopBoard extends Board() {
     ];
     
     defaultRules = object extends Rules() {
-        cardRollType = rollTypeAllMatch;
-        
         initialCash = 1500;
         
         totalFuelStationCount = 20;
     };
     
     strings = object satisfies Strings {
+        card = "Maelstrom";
+        
+        cashUnit = "Tropicbux";
+        
         fuel = "Rum";
         
         fuelStation = "Still";
         
         fuelUnit = "barrel";
         
+        game = "TropicHop";
+        
         leagueLong = "TropicHop Island Company";
         
         leagueShort = "Company";
+        
+        nodeTypes = [
+            [`Distillery`, "distillery"],
+            [`FreePort`, "freeport"],
+            [`OpenWater`, "open water"],
+            [`OwnablePort`, "ownable port"],
+            [`Resort`, "resort"]
+        ];
         
         purchaseFuel = "Stock Rum";
     };
