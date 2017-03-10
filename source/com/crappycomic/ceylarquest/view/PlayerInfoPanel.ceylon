@@ -19,15 +19,4 @@ shared interface PlayerInfoPanel {
             else { "Resigned" };
     
     shared formal void updatePanel(Game game);
-    
-    String format(Integer integer)
-        => Integer.format {
-            integer = integer;
-            groupingSeparator = ',';
-        };
-    
-    String pluralize(String string, Integer count)
-        => count == 1
-            then string
-            else string + "s";
 }
