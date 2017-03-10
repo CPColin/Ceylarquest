@@ -38,7 +38,7 @@ shared Type[2] testNodes<Type=Node, NotType=Nothing>()
 shared Node[2] testNodesBeforeAndAfterStart {
     value board = testGame.board;
     value start = board.start;
-    value afterStart = destinations(board, start).first;
+    value afterStart = destinations(board, start).last;
     value beforeStart = board.nodes.keys.find((node) => destinations(board, node).contains(start));
     
     assert (exists beforeStart);
