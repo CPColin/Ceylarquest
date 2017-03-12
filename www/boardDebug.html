@@ -35,5 +35,13 @@ require(
 <div id="playerInfo" style="position: fixed; top: 0; right: 0; background-color: rgba(255, 255, 255, 0.25)"></div>
 
 <canvas id="board" width="1280" height="1280"></canvas>
+
+<a style="position: fixed; bottom: 0; right: 0;" href="#" onclick="boardDebug.showManual(); return false;">?</a>
+
+<div id="manualFrame" style="display: none; position: absolute; top: 0; left: 0; margin: 2em; padding: 1em; background-color: white;">
+  <a href="#" onclick="document.getElementById('manualFrame').style.display = 'none'; return false;">X</a>
+  <div id="manualContent"></div>
+</div>
+
 </body>
 </html>

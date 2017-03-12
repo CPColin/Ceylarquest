@@ -46,6 +46,7 @@ import com.crappycomic.ceylarquest.view {
     bevelJoin,
     boardOverlay,
     buttCap,
+    manual,
     miterJoin,
     roundCap,
     roundJoin,
@@ -312,6 +313,15 @@ shared void doWinNodeFromPlayer(String? nodeId) {
 shared void drawActivePlayers() {
     clear();
     boardOverlay.drawActivePlayers(g, game);
+}
+
+shared void showManual() {
+    value html = manual.render(game);
+    
+    dynamic {
+        document.getElementById("manualContent").innerHTML = html;
+        document.getElementById("manualFrame").style.display = "block";
+    }
 }
 
 shared void colorNodes() {
