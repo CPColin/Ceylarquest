@@ -359,11 +359,27 @@ shared object tropicHopBoard extends Board() {
         leagueShort = "Company";
         
         nodeTypes = [
-            [`OwnablePort`, "Port", "TODO"],
-            [`FreePort`, "Freeport", "TODO"],
-            [`Distillery`, "Rum Distillery", "TODO"],
-            [`Resort`, "Resort", "TODO"],
-            [`OpenWater`, "Open Water", "TODO"]
+            [`OwnablePort`, "Ports",
+                "Ports in the island chain can be docked at. Since traversing the surf takes energy,
+                 sailors must consume rum in order to continue their journey. Players charge each
+                 other fees for docking at ports that they own. Players may also place stills in
+                 order to provide rum to weary travelers."],
+            [`FreePort`, "Freeports",
+                "The Company operates several outposts throughout the island chain. Players that
+                 land at a Freeport receive a bonus from the Company."],
+            [`Distillery`, "Rum Distilleries",
+                "Rum is such a vital resource that entrepreneurs have built distilleries at
+                 strategic points in the island chain. Players landing at distilleries may be
+                 required to pay a berthing fee, but may purchase rum after doing so."],
+            [`Resort`, "Resorts",
+                "There's always good times to be had somewhere in the tropics. Players can purchase
+                 controlling shares in resorts and then charge other players bed fees when they
+                 visit. No rum is available at resorts, though."],
+            [`OpenWater`, "Open Water",
+                "The space between islands is very dangerous. Players may never land on these
+                 spaces. If a player is circling an island and has not rolled a number high enough
+                 to pass the last bit of open water when leaving the island, the player must
+                 continue to circle the island."]
         ];
         
         purchaseFuel = "Stock Rum";

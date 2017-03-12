@@ -49,8 +49,8 @@ shared object manual {
         H2 { "The Board" },
         Dl {
             Dt { game.board.start.name },
-            Dd { start(game) }
-            // describe node types
+            Dd { start(game) },
+            *nodeTypeDescriptions(game)
         },
         nodeTypeChart(game)
     };
@@ -148,6 +148,11 @@ shared object manual {
                     Td { yesNo(type.subtypeOf(`ActionTrigger`)) }
                 }
         }
+    };
+    
+    {Dt|Dd*} nodeTypeDescriptions(Game game) => expand {
+        for ([_, name, description] in game.board.strings.nodeTypes)
+            [Dt { name }, Dd { description }]
     };
     
     // TODO
