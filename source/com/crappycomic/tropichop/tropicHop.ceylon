@@ -359,11 +359,11 @@ shared object tropicHopBoard extends Board() {
         leagueShort = "Company";
         
         nodeTypes = [
-            [`Distillery`, "distillery"],
-            [`FreePort`, "freeport"],
-            [`OpenWater`, "open water"],
-            [`OwnablePort`, "ownable port"],
-            [`Resort`, "resort"]
+            [`OwnablePort`, "Port", "TODO"],
+            [`FreePort`, "Freeport", "TODO"],
+            [`Distillery`, "Rum Distillery", "TODO"],
+            [`Resort`, "Resort", "TODO"],
+            [`OpenWater`, "Open Water", "TODO"]
         ];
         
         purchaseFuel = "Stock Rum";

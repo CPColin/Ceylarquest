@@ -1,8 +1,11 @@
 import ceylon.language.meta.model {
     Interface
 }
+
 "Provides ways for games to customize certain strings."
 shared interface Strings {
+    shared alias NodeType => [Interface<Node>, String, String];
+    
     shared formal String card;
     
     shared formal String cashUnit;
@@ -19,7 +22,7 @@ shared interface Strings {
     
     shared formal String leagueShort;
     
-    shared formal [Interface<Node>, String][] nodeTypes;
+    shared formal NodeType[] nodeTypes;
     
     shared formal String purchaseFuel;
 }
