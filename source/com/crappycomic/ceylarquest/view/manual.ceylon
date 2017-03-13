@@ -6,6 +6,7 @@ import ceylon.html {
     Dl,
     Doctype,
     Dt,
+    Em,
     FlowCategory,
     H1,
     H2,
@@ -34,8 +35,15 @@ import com.crappycomic.ceylarquest.model {
     RollType,
     Well
 }
+import com.crappycomic.ceylarquest.model.logic {
+    maximumFuelPerRoll
+}
+
+// Bypassing and laser battles aren't supported by the logic yet, so they're not mentioned here.
 
 shared object manual {
+    "Returns a `String` containing the rendered HTML for the instruction manual that describes the
+     given [[game]]."
     shared String render(Game game) {
         value stringBuilder = StringBuilder();
         
@@ -65,12 +73,80 @@ shared object manual {
             P {
                 "When a player rolls ``rollType.description``, he or she does not move, but instead
                  draws a ``game.board.strings.card`` card and follows the directions indicated."
+            },
+            P {
+                "Certain cards cause the player to consume ``game.board.strings.fuel.lowercased``.
+                 If a card requires more ``game.board.strings.fuel.lowercased`` than the player has
+                 on hand, that player immediately loses the game."
             }
         };
     
-    // TODO
-    Children fuel(Game game) => empty;
+    Children fuel(Game game) => {
+        H2 { "``game.board.strings.fuel``" },
+        P {
+            "Players consume ``game.board.strings.fuel.lowercased`` when they leave certain
+             locations (see the \"Features\" chart above). If a player is at a location that costs
+             ``game.board.strings.fuel.lowercased`` to leave and rolls a number higher than the
+             number of ``game.board.strings.fuelUnit``s of ``game.board.strings.fuel.lowercased`` on
+             hand, the player does not move. If the player is at a property owned by another player,
+             he or she must pay the owner rent again for remaining at the property for an extra
+             turn."
+        },
+        P {
+            "Players may ``game.board.strings.purchaseFuel.lowercased`` at certain locations (see
+             the \"Features\" chart above). If the property is owned, the player pays the owner the
+             price indicated on the deed per ``game.board.strings.fuelUnit`` of
+             ``game.board.strings.fuel.lowercased``. If the player owns multiple properties of the
+             same color, the price goes up. The price on an unowned property is the lowest price
+             listed on the deed. Players can ``game.board.strings.purchaseFuel.lowercased`` to a
+             maximum of ``game.rules.maximumFuel`` ``game.board.strings.fuelUnit``s."
+        },
+        P {
+            "To avoid becoming stuck at location, players may want to
+             ``game.board.strings.purchaseFuel.lowercased``  to at least
+             ``maximumFuelPerRoll(game)`` ``game.board.strings.fuelUnit``s, that being the greatest
+             number that can be rolled that does not result in drawing a ``game.board.strings.card``
+             card. If a player with ``maximumFuelPerRoll(game)`` or fewer
+             ``game.board.strings.fuelUnit``s of ``game.board.strings.fuel.lowercased`` docks at an
+             owned property that may have a ``game.board.strings.fuelStation.lowercased``, but
+             doesn't, the player may declare the owner negligent and purchase the property for the
+             full price indicated on the deed, instead of paying rent."
+        },
+        P {
+            "Players that start a turn at a location that costs fuel to leave must have at least
+             ``game.rules.dieCount`` ``game.board.strings.fuelUnit``s of
+             ``game.board.strings.fuel.lowercased`` before rolling the dice. If the player cannot
+             ``game.board.strings.purchaseFuel.lowercased`` to at least ``game.rules.dieCount``
+             ``game.board.strings.fuelUnit``s, he or she has become marooned and immediately loses
+             the game."
+        },
+        H2 { "``game.board.strings.fuelStation``s" },
+        P {
+            "Players may place a ``game.board.strings.fuelStation.lowercased`` on an owned property
+             immediately upon purchasing it or during a subsequent turn. Players do not have to be
+             ``game.board.strings.landPreposition`` the property in order to place a
+             ``game.board.strings.fuelStation.lowercased`` on it. Once placed,
+             ``game.board.strings.fuelStation.lowercased``s never move, even when the property later
+             changes hands. ``game.board.strings.fuelStation``s are worth
+             $``game.rules.fuelStationPrice`` at all times. They raise the deed price of properties,
+             when present. They can be purchased from the ``game.board.strings.leagueShort`` at
+             certain locations (see the \"Features\" chart above). They can be sold to the
+             ``game.board.strings.leagueShort`` at the same locations. They can also be sold to the
+             ``game.board.strings.leagueShort`` to settle a debt owed to another player. They may
+             never be traded between players; however, they ",
+            Em { "are" },
+            " turned over as spoils to the victor when one player knocks another out of the game."
+        },
+        P {
+            "The ``game.board.strings.leagueShort`` has a total supply of
+             ``game.rules.totalFuelStationCount`` ``game.board.strings.fuelStation.lowercased``s.
+             Players can buy up all remaining ``game.board.strings.fuelStation.lowercased``s in
+             order to withhold them from other players. This makes it more likely that other players
+             will run low on ``game.board.strings.fuel.lowercased`` and possibly become marooned."
+        }
+    };
     
+    "Creates and returns an `Html` instance that contains the instruction manual."
     Html html(Game game) => Html {
         doctype = Doctype.html5;
         Head {
@@ -85,7 +161,8 @@ shared object manual {
                 .chain(fuel(game))
                 .chain(cards(game))
                 .chain(winning)
-                .chain(losing(game));
+                .chain(losing(game))
+                .chain(license);
         }
     };
     
@@ -95,6 +172,14 @@ shared object manual {
             "``game.board.strings.game`` is a game of real estate market domination, this time not
              set in Atlantic City. Players compete with each other to travel around the board,
              buying and consolidating properties along the way."
+        }
+    };
+    
+    Children license => {
+        H2 { "License" },
+        P {
+            "This is currently a simple hobby project. Please contact the author if you want to use
+             this code."
         }
     };
     
