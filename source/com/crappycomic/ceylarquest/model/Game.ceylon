@@ -94,7 +94,7 @@ shared class Game {
         if (exists owners) {
             this.owners = map {
                 for (node -> owner in owners)
-                    if (owner is Unowned || this.activePlayers.contains(owner))
+                    if (owner is Nobody || this.activePlayers.contains(owner))
                         if (is Ownable node, board.nodes.defines(node))
                             node -> owner
             };
@@ -222,7 +222,7 @@ shared class Game {
         return nextPlayer else currentPlayer;
     }
     
-    shared Owner owner(Node node) => owners.getOrDefault(node, unowned);
+    shared Owner owner(Node node) => owners.getOrDefault(node, nobody);
     
     shared Boolean placedFuelStation(Node node) => placedFuelStations.contains(node);
     

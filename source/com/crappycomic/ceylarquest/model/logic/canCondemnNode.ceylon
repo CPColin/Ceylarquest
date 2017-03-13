@@ -2,7 +2,7 @@ import com.crappycomic.ceylarquest.model {
     FuelStationable,
     Game,
     Ownable,
-    unowned
+    nobody
 }
 
 "Returns `true` if the state of the given [[game]] allows the current player to condemn the node at
@@ -19,7 +19,7 @@ shared Boolean canCondemnNode(Game game) {
     }
     
     return lowFuel(game)
-        && owner != unowned
+        && owner != nobody
         && owner != player
         && !game.placedFuelStation(node)
         && game.playerCash(player) >= nodePrice(game, node);

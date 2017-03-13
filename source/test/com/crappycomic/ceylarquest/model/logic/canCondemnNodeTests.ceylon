@@ -8,7 +8,7 @@ import com.crappycomic.ceylarquest.model {
     FuelStationable,
     Game,
     Node,
-    unowned
+    nobody
 }
 import com.crappycomic.ceylarquest.model.logic {
     canCondemnNode
@@ -68,7 +68,7 @@ shared void canCondemnNodeTest() {
 test
 shared void canCondemnNodeUnowned() {
     value game = canCondemnNodeGame.with {
-        owners = { canCondemnNodeNode -> unowned };
+        owners = { canCondemnNodeNode -> nobody };
     };
     
     assertFalse(canCondemnNode(game), "Should not be able to condemn unowned node.");

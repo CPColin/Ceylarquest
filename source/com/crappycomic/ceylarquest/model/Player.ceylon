@@ -2,6 +2,12 @@ import ceylon.language.meta {
     classDeclaration
 }
 
+"Class that represents a value of \"no player\"."
+shared abstract class Nobody() of nobody {}
+
+shared object nobody extends Nobody() {}
+
+"One of the six possible people who are playing the game."
 shared abstract class Player(shared Color color)
         of blue | cyan | green | magenta | red | yellow {
     shared actual String string => classDeclaration(this).name;

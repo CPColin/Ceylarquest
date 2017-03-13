@@ -7,7 +7,7 @@ import ceylon.test {
 
 import com.crappycomic.ceylarquest.model {
     Ownable,
-    unowned
+    nobody
 }
 import com.crappycomic.ceylarquest.model.logic {
     canPurchaseNode
@@ -64,7 +64,7 @@ shared void canPurchaseNodeTest() {
         playerCashes = { player -> runtime.maxIntegerValue };
     };
     
-    assertEquals(game.owner(node), unowned, "Node should be unowned for this test.");
+    assertEquals(game.owner(node), nobody, "Node should be unowned for this test.");
     assertTrue(game.playerCash(player) >= node.price, "Player should be able to afford the node.");
     
     assertTrue(canPurchaseNode(game, node), "Node should be purchaseable.");

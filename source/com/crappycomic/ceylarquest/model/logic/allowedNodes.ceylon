@@ -3,7 +3,7 @@ import com.crappycomic.ceylarquest.model {
     Node,
     Ownable,
     Player,
-    unowned
+    nobody
 }
 
 "Returns all nodes that are owned by the given [[player]]."
@@ -28,7 +28,7 @@ shared [Node*] allowedNodesToPlaceFuelStationOn(Game game) {
 shared [Node*] allowedNodesToWinFromLeague(Game game) {
     return [
         for (node in game.board.nodes.keys)
-            if (node is Ownable && game.owner(node) == unowned)
+            if (node is Ownable && game.owner(node) == nobody)
                 node
     ];
 }
@@ -37,7 +37,7 @@ shared [Node*] allowedNodesToWinFromLeague(Game game) {
 shared [Node*] allowedNodesToWinFromPlayer(Game game) {
     return let (player = game.currentPlayer) [
         for (node in game.board.nodes.keys)
-            if (let (owner = game.owner(node)) owner != unowned && owner != player)
+            if (let (owner = game.owner(node)) owner != nobody && owner != player)
                 node    
     ];
 }

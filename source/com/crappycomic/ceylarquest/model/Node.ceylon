@@ -4,6 +4,8 @@ import ceylon.language.meta {
 
 shared alias Location => Integer[2];
 
+shared alias Owner => Player|Nobody;
+
 "A node that triggers a [[NodeAction]] when landed upon."
 shared interface ActionTrigger
         satisfies Node {

@@ -6,7 +6,7 @@ import ceylon.test {
 
 import com.crappycomic.ceylarquest.model {
     Ownable,
-    unowned
+    nobody
 }
 import com.crappycomic.ceylarquest.model.logic {
     rentFee
@@ -53,7 +53,7 @@ shared void rentFeeUnowned() {
     value node = testNodes<Ownable>().first;
     value game = testGame;
     
-    assertEquals(game.owner(node), unowned, "Somebody owns the test node.");
+    assertEquals(game.owner(node), nobody, "Somebody owns the test node.");
     
     assertEquals(rentFee(game, game.currentPlayer, node), 0,
         "Rent should be free on unowned node.");

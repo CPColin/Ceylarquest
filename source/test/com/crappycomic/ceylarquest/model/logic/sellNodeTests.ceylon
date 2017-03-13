@@ -9,8 +9,8 @@ import com.crappycomic.ceylarquest.model {
     Administration,
     Game,
     Ownable,
-    postLand,
-    unowned
+    nobody,
+    postLand
 }
 import com.crappycomic.ceylarquest.model.logic {
     canSellNode,
@@ -39,7 +39,7 @@ shared void sellNodeTest() {
     value result = sellNode(game, node);
     
     if (is Game result) {
-        assertEquals(result.owner(node), unowned, "Node should have become unowned.");
+        assertEquals(result.owner(node), nobody, "Node should have become unowned.");
         assertEquals(result.playerCash(player), playerCash + nodePrice(game, node),
             "Player's cash did not change by expected amount.");
     }

@@ -3,7 +3,7 @@ import com.crappycomic.ceylarquest.model {
     InvalidMove,
     Ownable,
     Result,
-    unowned
+    nobody
 }
 
 "Updates the state of the given [[game]] to have the [[selling player|sellingPlayer]] sell the given
@@ -16,7 +16,7 @@ shared Result sellNode(Game game, Ownable node) {
     }
     
     return game.with {
-        owners = { node -> unowned };
+        owners = { node -> nobody };
         playerCashes = { player -> game.playerCash(player) + nodePrice(game, node) };
     };
 }

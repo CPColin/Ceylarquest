@@ -4,7 +4,7 @@ import com.crappycomic.ceylarquest.model {
     Node,
     Owner,
     Result,
-    unowned,
+    nobody,
     postLand
 }
 
@@ -33,7 +33,7 @@ shared Result chooseNode(Game game, [Node*](Game) allowedNodes, Node? node, Owne
 }
 
 shared Result loseNodeToLeague(Game game, Node? node) {
-    return chooseNode(game, allowedNodesToLoseOrSell(game.currentPlayer), node, unowned);
+    return chooseNode(game, allowedNodesToLoseOrSell(game.currentPlayer), node, nobody);
 }
 
 shared Result winNodeFromLeague(Game game, Node? node) {

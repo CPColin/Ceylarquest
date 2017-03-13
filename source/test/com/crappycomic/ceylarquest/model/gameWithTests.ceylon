@@ -11,7 +11,7 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Ownable,
     Player,
-    unowned
+    nobody
 }
 
 // These tests aim to make sure Game.with makes only the changes that are passed to it, without
@@ -43,7 +43,7 @@ shared void gameWithOwnersDecreasing() {
     assertEquals(gameStart.owner(node2), player, "Second node isn't owned by the test player.");
     
     value gameEnd = gameStart.with {
-        owners = { node1 -> unowned };
+        owners = { node1 -> nobody };
     };
     
     assertFalse(gameEnd.owner(node1) is Player, "First node is still owned.");
@@ -61,7 +61,7 @@ shared void gameWithOwnersIncreasing() {
     };
     
     assertEquals(gameStart.owner(node1), player, "First node isn't owned by the test player.");
-    assertEquals(gameStart.owner(node2), unowned, "Second node is owned by somebody.");
+    assertEquals(gameStart.owner(node2), nobody, "Second node is owned by somebody.");
     
     value gameEnd = gameStart.with {
         owners = { node2 -> player };
@@ -166,7 +166,7 @@ shared void gameWithUnknownNode() {
         playerLocations = { player -> node };
     };
     
-    assertEquals(gameEnd.owner(node), unowned, "Unknown node shouldn't be owned.");
+    assertEquals(gameEnd.owner(node), nobody, "Unknown node shouldn't be owned.");
     assertFalse(gameEnd.placedFuelStation(node), "Unknown node shouldn't have a fuel station.");
     assertEquals(gameEnd.playerLocation(player), testGame.board.start,
         "Player shouldn't be at unknown node.");

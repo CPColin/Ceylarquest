@@ -2,7 +2,7 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Node,
     Ownable,
-    unowned
+    nobody
 }
 
 "Returns `true` if, considering the state of the given [[game]], the current player can purchase the
@@ -13,6 +13,6 @@ shared Boolean canPurchaseNode(Game game, Node node = game.playerLocation(game.c
         return false;
     }
     
-    return game.owner(node) == unowned
+    return game.owner(node) == nobody
         && game.playerCash(game.currentPlayer) >= nodePrice(game, node);
 }
