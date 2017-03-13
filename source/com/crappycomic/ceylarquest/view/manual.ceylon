@@ -33,9 +33,11 @@ import com.crappycomic.ceylarquest.model {
     Game,
     Ownable,
     RollType,
-    Well
+    Well,
+    nobody
 }
 import com.crappycomic.ceylarquest.model.logic {
+    fuelFee,
     maximumFuelPerRoll
 }
 
@@ -305,7 +307,7 @@ shared object manual {
         
         if (is FuelSalable node) {
             string.append(" ``game.board.strings.fuel`` is available on ``node.name`` for
-                           $``node.fuels[0]`` per ``game.board.strings.fuelUnit``.");
+                           $``fuelFee(game, nobody, node)`` per ``game.board.strings.fuelUnit``.");
         }
         
         return string.string;
