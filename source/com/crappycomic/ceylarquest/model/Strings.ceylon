@@ -18,7 +18,11 @@ shared interface Strings {
     
     shared formal String game;
     
-    shared formal String landOn;
+    shared String landOn => "``landVerb`` ``landPreposition``";
+    
+    shared formal String landPreposition;
+    
+    shared formal String landVerb;
     
     shared formal String leagueLong;
     

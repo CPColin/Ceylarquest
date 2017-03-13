@@ -118,10 +118,10 @@ shared object manual {
         },
         P {
             "When declaring bankruptcy, everything the player owned becomes the property of the
-             creditor or the attacker. When running out of ``game.board.strings.fuel.lowercased``,
-             everything the player owned becomes the property of the
-             ``game.board.strings.leagueShort``. All ``game.board.strings.fuelStation.lowercased``s
-             that were placed on properties remain where they are."
+             creditor. When running out of ``game.board.strings.fuel.lowercased``, everything the
+             player owned becomes the property of the ``game.board.strings.leagueShort``. All
+             ``game.board.strings.fuelStation.lowercased``s that were placed on properties remain
+             where they are."
         }
     };
     
@@ -129,7 +129,7 @@ shared object manual {
         Caption { "Features of the Various Locations" },
         Tr {
             Th {},
-            Th { "Can ``game.board.strings.landOn``" },
+            Th { "Can ``game.board.strings.landVerb``" },
             Th { "Costs ``game.board.strings.fuel`` To Leave" },
             Th { "Can Own" },
             Th { "Can ``game.board.strings.purchaseFuel``" },
@@ -169,8 +169,9 @@ shared object manual {
              that ``game.board.strings.landOn.lowercased`` an owned property must pay the owner for
              the privilege. The amount of money increases if the owner owns more properties in the
              same color group. It never costs anything for a player to
-             ``game.board.strings.landOn.lowercased`` a property he or she owns or a property that
-             belongs to the ``game.board.strings.leagueShort``."
+             ``game.board.strings.landOn.lowercased`` a property he or she owns or
+             ``game.board.strings.landPreposition.lowercased`` a property that belongs to the
+             ``game.board.strings.leagueShort``."
         },
         P {
             "Players may sell unwanted properties back to the ``game.board.strings.leagueShort`` at
