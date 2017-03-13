@@ -354,6 +354,8 @@ shared object tropicHopBoard extends Board() {
         
         game = "TropicHop";
         
+        landOn = "Dock At";
+        
         leagueLong = "TropicHop Island Company";
         
         leagueShort = "Company";

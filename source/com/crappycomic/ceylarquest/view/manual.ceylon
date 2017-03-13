@@ -1,5 +1,6 @@
 import ceylon.html {
     Body,
+    Caption,
     Content,
     Dd,
     Dl,
@@ -125,9 +126,10 @@ shared object manual {
     };
     
     Table nodeTypeChart(Game game) => Table {
+        Caption { "Features of the Various Locations" },
         Tr {
             Th {},
-            Th { "Can Land On" },
+            Th { "Can ``game.board.strings.landOn``" },
             Th { "Costs ``game.board.strings.fuel`` To Leave" },
             Th { "Can Own" },
             Th { "Can ``game.board.strings.purchaseFuel``" },
@@ -159,8 +161,25 @@ shared object manual {
             [Dt { name }, Dd { description }]
     };
     
-    // TODO
-    Children property(Game game) => empty;
+    Children property(Game game) => {
+        H2 { "Property" },
+        P {
+            "Players may purchase some of the properties they
+             ``game.board.strings.landOn.lowercased`` (see the \"Features\" chart above). Players
+             that ``game.board.strings.landOn.lowercased`` an owned property must pay the owner for
+             the privilege. The amount of money increases if the owner owns more properties in the
+             same color group. It never costs anything for a player to
+             ``game.board.strings.landOn.lowercased`` a property he or she owns or a property that
+             belongs to the ``game.board.strings.leagueShort``."
+        },
+        P {
+            "Players may sell unwanted properties back to the ``game.board.strings.leagueShort`` at
+             certain times (see the \"Features\" shart above). Players may sell properties to settle
+             a debt owed to another player. The player receives the full price on the deed, plus
+             $``game.rules.fuelStationPrice``, if a ``game.board.strings.fuelStation.lowercased`` is
+             present."
+        }
+    };
     
     Children setup(Game game) => {
         H2 { "Setup" },
@@ -194,7 +213,8 @@ shared object manual {
         }
         
         if (is ActionTrigger node) {
-            string.append(" Players who land on ``node.name`` receive an additional bonus!");
+            string.append(" Players who ``game.board.strings.landOn.lowercased`` ``node.name``
+                           receive an additional bonus!");
         }
         
         if (is FuelSalable node) {
@@ -210,6 +230,11 @@ shared object manual {
         "body
          {
             margin: 5px;
+         }
+         
+         caption
+         {
+            font-weight: bold;
          }
          
          dt

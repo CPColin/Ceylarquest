@@ -18,6 +18,8 @@ shared interface Strings {
     
     shared formal String game;
     
+    shared formal String landOn;
+    
     shared formal String leagueLong;
     
     shared formal String leagueShort;
