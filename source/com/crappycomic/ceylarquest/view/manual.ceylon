@@ -24,6 +24,7 @@ import ceylon.html {
 
 import com.crappycomic.ceylarquest.model {
     ActionTrigger,
+    Administration,
     CostsFuelToLeave,
     FuelSalable,
     FuelStationable,
@@ -44,7 +45,6 @@ shared object manual {
     
     alias Children => {Content<FlowCategory>*};
     
-    // TODO
     Children board(Game game) => {
         H2 { "The Board" },
         Dl {
@@ -131,6 +131,8 @@ shared object manual {
             Th { "Costs ``game.board.strings.fuel`` To Leave" },
             Th { "Can Own" },
             Th { "Can ``game.board.strings.purchaseFuel``" },
+            Th { "Can Sell Properties" },
+            Th { "Can Buy and Sell ``game.board.strings.fuelStation``s"},
             Th { "Has Other Effects" }
         },
         {
@@ -145,6 +147,8 @@ shared object manual {
                         then "With ``game.board.strings.fuelStation``"
                         else yesNo(type.subtypeOf(`FuelSalable`))
                     },
+                    Td { yesNo(type.subtypeOf(`Administration`)) },
+                    Td { yesNo(type.subtypeOf(`Administration`)) },
                     Td { yesNo(type.subtypeOf(`ActionTrigger`)) }
                 }
         }
