@@ -1,13 +1,15 @@
 import ceylon.test {
     assertEquals,
     assertTrue,
+    assumeTrue,
     test
 }
 
 import com.crappycomic.ceylarquest.model {
     FuelSalable,
     FuelStationable,
-    Ownable
+    Ownable,
+    nobody
 }
 import com.crappycomic.ceylarquest.model.logic {
     fuelAvailable,
@@ -34,6 +36,26 @@ shared void fuelFeeDifferentOwner() {
     
     assertTrue(fuelFee(game, player, node) > 0,
         "Fuel should not be free on node owned by somebody else.");
+}
+
+"Verifies the [[fuel fee|fuelFee]] matches the first possible value when the node is not
+ [[Ownable]]."
+test
+shared void fuelFeeNotOwnable() {
+    value node = testGame.board.nodes.keys
+        .narrow<FuelSalable>()
+        .filter((node) => !node is Ownable).first;
+    
+    assumeTrue(node exists);
+    
+    assert (exists node);
+    
+    assertTrue(fuelAvailable(testGame, node), "Fuel needs to be available for this test.");
+    
+    assertEquals(fuelFee(testGame, nobody, node), node.fuels[0],
+        "Non-Ownable node should always use first fuel fee.");
+    assertEquals(fuelFee(testGame, testGame.currentPlayer, node), node.fuels[0],
+        "Non-Ownable node should always use first fuel fee.");
 }
 
 "Verifies the [[fuel fee|fuelFee]] is zero when the current player owns the node."
