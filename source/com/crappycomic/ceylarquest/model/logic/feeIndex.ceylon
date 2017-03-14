@@ -1,7 +1,6 @@
 import com.crappycomic.ceylarquest.model {
     DeedGroup,
     Game,
-    Ownable,
     Player
 }
 
@@ -11,6 +10,5 @@ import com.crappycomic.ceylarquest.model {
  (Thus, it also does not make sense to check the fee index associated with a node that is not
  owned.)"
 shared Integer feeIndex(Game game, Player player, DeedGroup deedGroup) {
-    return game.owners.count((node -> owner)
-        => if (is Ownable node) then node.deedGroup == deedGroup && owner == player else false) - 1;
+    return game.owners.count((node -> owner) => node.deedGroup == deedGroup && owner == player) - 1;
 }
