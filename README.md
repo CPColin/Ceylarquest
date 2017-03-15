@@ -8,8 +8,6 @@ Ceylarquest is a port of the TropicHop Java code to Ceylon with the following so
 * Attempt to rework the `ServerModel` Java class into a web application that clients can `GET` game state from and `POST` moves to.
 * Attempt to create a platform-independent GUI.
 
-The current work-in-progress is in a branch.
-
 ## Running the code
 
 This code is, partially, an experiment in cross-platform development, so you can run it as a Java Swing application and as a web server that delivers the code to your browser. To run the code as a Java Swing application, run the `com.crappycomic.ceylarquest.main` module. To run a web server that will deliver the code, run the `com.crappycomic.ceylarquest.www.server` module, then access `localhost:8080/boardDebug.html` in your browser. You'll see some links for debugging the board layout. The "Create Controller" link will start the application and replace these links with buttons that let you play the game.
@@ -33,6 +31,14 @@ I admit that I never really "got" what people were saying about immutable object
 One nice lesson that came along with mutability was that it was more clear when a function was trying to do too much. I had been picturing updating the UI to show the new game state every time it changed, similar to how the TropicHop Java code did it. I'd heard a complaint, though, about too much stuff happening at once in the Java application; for example, rolling the dice could result in doubles, which could cause the player to draw a card, which could ask the player to expend more fuel than is available, which could cause the player to lose the game and relinquish all property. This would cause a multiple-second pause in the UI as the client received such a large burst of individual state updates.
 
 In the Ceylon code, I had started to worry about all the things that could happen when a player rolls the dice, as above. With a mutable state object, I probably would have passed the state through various functions, each of which would call various mutators on the object and continue to the next function. With immutable objects, it became clear that each function could, at most, make a single update to the initial state and return the new state; there could be no long chains of logic. This made it more clear that the functions should be smaller and make the smallest possible changes to the state.
+
+### Bugs and the 80/20 rule
+
+The 80/20 rule suggests you're bound to spend 80% of your bug-hunt time hunting for 20% of your bugs. It could also suggest that 20% of your bugs are going to ruin 80% of your program. If a certain bug falls into the latter category, it's perfectly reasonable to attack it until it also falls into the former category. Conversely, if you've encountered a bug that affects 1% of your program or could be worked around after spending 1% of your time on it, you owe it to yourself and your code to file the bug, work around it, and forget about it.
+
+Every developer learns and relearns that lesson many times. (Maybe we spend 80% of our careers learning 20% of that lesson?) I ran into a few weird edge cases where the workaround was relatively simple, but involved making the code more complicated or less elegant. The lesson I relearned was to swallow that tiny bit of pride, file the bug, and come back to it later.
+
+See [ceylon/ceylon#6865](https://github.com/ceylon/ceylon/issues/6865) for an example of a bug I spent too much time on before giving up and [ceylon/ceylon#6881](https://github.com/ceylon/ceylon/issues/6881) and [ceylon/ceylon#6978](https://github.com/ceylon/ceylon/issues/6978) for bugs I filed right away and came back to later. 
 
 ## Interesting bits of code
 
