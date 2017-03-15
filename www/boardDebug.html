@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+<title>Ceylarquest Testing</title>
+<script src="//requirejs.org/docs/release/2.1.22/minified/require.js"></script>
+<script type="text/javascript" defer>
+require.config({
+	baseUrl : 'modules'
+});
+
+var boardDebug;
+
+require(
+	[ 'com/crappycomic/ceylarquest/www/boardDebug/1.0.0/com.crappycomic.ceylarquest.www.boardDebug-1.0.0' ],
+	function(app) {
+		boardDebug = app;
+        boardDebug.setImages();
+	}
+);
+</script>
+</head>
+<body>
+<div id="userActions" style="position: fixed;">
+  <nav>
+    <a href="#" onclick="boardDebug.clear(); return false;">Clear</a>
+    <input id="parameter" type="number" value="20" />
+    <a href="#" onclick="boardDebug.drawActivePlayers(); return false;">Draw Players</a>
+    <a href="#" onclick="boardDebug.colorNodes(); return false;">Highlight</a>
+    <a href="#" onclick="boardDebug.drawNodeAreas(); return false;">Draw Areas</a>
+    <a href="#" onclick="boardDebug.drawAllowedMoves(); return false;">Draw Allowed Moves</a>
+    <a href="#" onclick="boardDebug.createController(); return false;">Create Controller</a>
+  </nav>
+</div>
+
+<div id="playerInfo" style="position: fixed; top: 0; right: 0; background-color: rgba(255, 255, 255, 0.25)"></div>
+
+<canvas id="board" width="1280" height="1280"></canvas>
+
+<a style="position: fixed; bottom: 0; right: 0;" href="#" onclick="boardDebug.showManual(); return false;">?</a>
+
+<div id="manualFrame" style="display: none; position: absolute; top: 0; left: 0; margin: 2em; padding: 1em; background-color: white;">
+  <a href="#" onclick="document.getElementById('manualFrame').style.display = 'none'; return false;">X</a>
+  <div id="manualContent"></div>
+</div>
+
+</body>
+</html>
