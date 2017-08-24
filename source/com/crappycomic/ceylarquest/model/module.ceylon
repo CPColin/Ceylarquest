@@ -4,7 +4,7 @@
  while [[package com.crappycomic.ceylarquest.model.logic]] deals with what the state of the game
  _means_."
 module com.crappycomic.ceylarquest.model "1.0.0" {
-    shared import ceylon.collection "1.3.2";
-    import ceylon.json "1.3.2";
-    import ceylon.random "1.3.2";
+    shared import ceylon.collection "1.3.3";
+    import ceylon.json "1.3.3";
+    import ceylon.random "1.3.3";
 }
