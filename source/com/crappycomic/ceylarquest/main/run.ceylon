@@ -1,7 +1,3 @@
-import ceylon.interop.java {
-    javaString
-}
-
 import com.crappycomic.ceylarquest.controller {
     Controller
 }
@@ -27,6 +23,11 @@ import java.awt {
 }
 import java.awt.image {
     BufferedImage
+}
+import java.lang {
+    Types {
+        nativeString
+    }
 }
 import java.util.concurrent {
     Executors,
@@ -86,9 +87,9 @@ JFrame overlay(Game game, BoardPanel boardPanel, {PlayerInfoPanel*} playerInfoPa
     playerInfo.layout = BoxLayout(playerInfo, BoxLayout.yAxis);
     playerInfoPanels.each((playerInfoPanel) => playerInfo.add(playerInfoPanel));
     
-    frame.add(userActionPanel, javaString(BorderLayout.north));
-    frame.add(playerInfo, javaString(BorderLayout.west));
-    frame.add(JScrollPane(boardPanel), javaString(BorderLayout.center));
+    frame.add(userActionPanel, nativeString(BorderLayout.north));
+    frame.add(playerInfo, nativeString(BorderLayout.west));
+    frame.add(JScrollPane(boardPanel), nativeString(BorderLayout.center));
     
     //value executorService = Executors.newSingleThreadExecutor();
     //

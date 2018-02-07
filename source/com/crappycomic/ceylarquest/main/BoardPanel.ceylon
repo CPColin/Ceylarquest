@@ -1,6 +1,3 @@
-import ceylon.interop.java {
-    javaClassFromInstance
-}
 import ceylon.language {
     cprint=print
 }
@@ -24,6 +21,11 @@ import java.awt.geom {
 import java.awt.image {
     BufferedImage
 }
+import java.lang {
+    Types {
+        classForInstance
+    }
+}
 
 import javax.imageio {
     ImageIO
@@ -35,7 +37,7 @@ import javax.swing {
 class BoardPanel extends JPanel {
     BufferedImage? loadImage(Board board, String name) {
         try {
-            value resource = javaClassFromInstance(board).getResourceAsStream(name);
+            value resource = classForInstance(board).getResourceAsStream(name);
            
             if (exists resource) {
                 return ImageIO.read(resource);
