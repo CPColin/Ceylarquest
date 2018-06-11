@@ -11,7 +11,7 @@ import com.crappycomic.ceylarquest.model {
 
 "Alters the state of the given [[game]] to have the current player traverse the given [[path]],
  using the given amount of fuel specified in the current phase."
-shared Result traversePath(variable Game game, Path path) {
+shared Result traversePath(Game game, Path path) {
     value phase = game.phase;
     
     if (!is ChoosingAllowedMove phase) {
